@@ -7,6 +7,7 @@ services:
     depends_on:
       - rabbitmq
       - bowling-auth
+      - bowling-main
     restart: on-failure
     build:
       context: .
@@ -15,6 +16,19 @@ services:
     command: pnpm run start:dev bowling-api
     ports:
       - '3000:3000'
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+  bowling-main:
+    depends_on:
+      - rabbitmq
+      - bowling-auth
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: ./apps/bowling-main/Dockerfile
+      target: development
+    command: pnpm run start:dev bowling-main
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules

@@ -45,6 +45,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/shared/tsconfig.lib.json"
       }
+    },
+    "bowling-main": {
+      "type": "application",
+      "root": "apps/bowling-main",
+      "entryFile": "main",
+      "sourceRoot": "apps/bowling-main/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/bowling-main/tsconfig.app.json"
+      }
     }
   }
 }
