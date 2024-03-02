@@ -13,17 +13,20 @@ const envSchema = z.object({
   JWT_SECRET: z.string(),
   JWT_EXPIRATION: z.string(),
   DB_URL: z.string(),
+  RABBITMQ_URL: z.string(),
+  RABBITMQ_AUTH_QUEUE: z.string(),
 });
 
 @Module({
   imports: [
     DatabaseModule,
+    UsersModule,
+    MicroservicesModule,
     ConfigModule.forRoot({
       isGlobal: true,
       validate: (env) => envSchema.parse(env),
-      envFilePath: './apps/bowling-auth/.env',
+      envFilePath: 'apps/bowling-auth/.env',
     }),
-    UsersModule,
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
@@ -33,7 +36,6 @@ const envSchema = z.object({
       }),
       inject: [ConfigService],
     }),
-    MicroservicesModule,
   ],
   controllers: [BowlingAuthController],
   providers: [BowlingAuthService, LocalStrategy, JwtStrategy],

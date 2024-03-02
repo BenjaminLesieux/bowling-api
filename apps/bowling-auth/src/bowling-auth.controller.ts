@@ -13,7 +13,7 @@ export class BowlingAuthController {
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   async login(@CurrentUser() user: User, @Res({ passthrough: true }) response) {
-    this.bowlingAuthService.login(user, response);
+    await this.bowlingAuthService.login(user, response);
     response.send(user);
   }
 
