@@ -1,0 +1,34 @@
+services:
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - '5672:5672'
+  bowling_api:
+    depends_on:
+      - rabbitmq
+      - bowling-auth
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: ./apps/bowling-api/Dockerfile
+      target: development
+    command: pnpm run start:dev bowling-api
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+  bowling-auth:
+    depends_on:
+      - rabbitmq
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: ./apps/bowling-auth/Dockerfile
+      target: development
+    command: pnpm run start:dev bowling-auth
+    ports:
+      - '3001:3001'
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules

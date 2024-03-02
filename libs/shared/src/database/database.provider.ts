@@ -2,7 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import * as postgres from 'postgres';
 import { drizzle, PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { Provider } from '@nestjs/common';
-import schema from '@/database/schemas/schemas';
+import schema from './schemas/schemas';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 
 export const DATABASE_PROVIDER = 'DATABASE_CONNECTION';
@@ -14,7 +14,7 @@ export const databaseProvider: Provider = {
   useFactory: async (
     configService: ConfigService,
   ): Promise<PostgresDatabase> => {
-    const connectionUrl = configService.get('DATABASE_URL');
+    const connectionUrl = configService.get('DB_URL');
 
     await doMigrations(connectionUrl);
 
