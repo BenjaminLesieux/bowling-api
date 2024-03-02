@@ -3,6 +3,9 @@ import { BowlingAuthModule } from './bowling-auth.module';
 import { MicroservicesService } from '@app/shared/microservices/microservices.service';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { MicroserviceOptions } from '@nestjs/microservices';
+import { Logger } from '@nestjs/common';
+
+const logger = new Logger('BowlingAuth');
 
 async function bootstrap() {
   const app = await NestFactory.create(BowlingAuthModule);
@@ -16,5 +19,5 @@ async function bootstrap() {
 }
 
 bootstrap().then(() => {
-  console.log('Bowling Auth Microservice is running');
+  logger.log('Bowling Auth Microservice is running');
 });
