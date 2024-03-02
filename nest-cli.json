@@ -1,22 +1,22 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/bowling-api/src",
+  "sourceRoot": "apps/bowling-gateway/src",
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "tsConfigPath": "apps/bowling-api/tsconfig.app.json"
+    "tsConfigPath": "apps/bowling-gateway/tsconfig.app.json"
   },
   "monorepo": true,
   "root": "apps/bowling-api",
   "projects": {
-    "bowling-api": {
+    "bowling-gateway": {
       "type": "application",
-      "root": "apps/bowling-api",
+      "root": "apps/bowling-gateway",
       "entryFile": "main",
-      "sourceRoot": "apps/bowling-api/src",
+      "sourceRoot": "apps/bowling-gateway/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/bowling-api/tsconfig.app.json"
+        "tsConfigPath": "apps/bowling-gateway/tsconfig.app.json"
       }
     },
     "bowling-auth": {

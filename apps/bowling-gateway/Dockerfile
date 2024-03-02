@@ -10,7 +10,7 @@ RUN pnpm install
 
 COPY . .
 
-RUN pnpm run build bowling-api
+RUN pnpm run build bowling-gateway
 
 FROM node:alpine as production
 
@@ -28,4 +28,4 @@ COPY . .
 
 COPY --from=development /usr/src/app/dist ./dist
 
-CMD ["node", "dist/apps/bowling-api/main"]
+CMD ["node", "dist/apps/bowling-gateway/main"]

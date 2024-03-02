@@ -8,6 +8,7 @@ import { z } from 'zod';
 
 const envSchema = z.object({
   DB_URL: z.string().url(),
+  RABBITMQ_URL: z.string().url(),
 });
 
 @Module({
@@ -15,7 +16,7 @@ const envSchema = z.object({
     ConfigModule.forRoot({
       isGlobal: true,
       validate: (config) => envSchema.parse(config),
-      envFilePath: './apps/bowling-api/.env',
+      envFilePath: './apps/bowling-gateway/.env',
     }),
     MicroservicesModule.register({
       name: AUTH_MICROSERVICE,
