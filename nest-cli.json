@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/bowling-api/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/bowling-api/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/bowling-api",
+  "projects": {
+    "bowling-api": {
+      "type": "application",
+      "root": "apps/bowling-api",
+      "entryFile": "main",
+      "sourceRoot": "apps/bowling-api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/bowling-api/tsconfig.app.json"
+      }
+    },
+    "bowling-auth": {
+      "type": "application",
+      "root": "apps/bowling-auth",
+      "entryFile": "main",
+      "sourceRoot": "apps/bowling-auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/bowling-auth/tsconfig.app.json"
+      }
+    },
+    "authentication": {
+      "type": "library",
+      "root": "libs/authentication",
+      "entryFile": "index",
+      "sourceRoot": "libs/authentication/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/authentication/tsconfig.lib.json"
+      }
+    },
+    "shared": {
+      "type": "library",
+      "root": "libs/shared",
+      "entryFile": "index",
+      "sourceRoot": "libs/shared/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/shared/tsconfig.lib.json"
+      }
+    }
+  }
+}
