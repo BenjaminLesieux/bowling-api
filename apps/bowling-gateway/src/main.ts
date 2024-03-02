@@ -6,5 +6,5 @@ async function bootstrap() {
   await app.listen(3000);
 }
 bootstrap().then(() => {
-  console.log('Server is running');
+  console.log('Gateway is running on http://localhost:3000/');
 });

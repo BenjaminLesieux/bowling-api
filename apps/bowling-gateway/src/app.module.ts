@@ -5,6 +5,8 @@ import { MicroservicesModule } from '@app/shared';
 import { AUTH_MICROSERVICE, MAIN_MICROSERVICE } from '@app/shared/services';
 import { ConfigModule } from '@nestjs/config';
 import { z } from 'zod';
+import { ProductController } from './product/product.controller';
+import { ProductService } from './product/product.service';
 
 const envSchema = z.object({
   DB_URL: z.string().url(),
@@ -25,7 +27,7 @@ const envSchema = z.object({
       name: MAIN_MICROSERVICE,
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, ProductController],
+  providers: [AppService, ProductService],
 })
 export class AppModule {}

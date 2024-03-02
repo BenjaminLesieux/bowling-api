@@ -10,7 +10,7 @@ RUN pnpm install
 
 COPY . .
 
-RUN pnpm run build bowling-auth
+RUN pnpm run build bowling-main
 
 FROM node:alpine as production
 
