@@ -32,5 +32,11 @@ export class ProductController {
   async updateProduct(@Payload() data: Omit<Product, 'id'> & { oldName: string }, @Ctx() context: RmqContext) {
     console.log(`Pattern: ${context.getPattern()}`)
     return await this.productService.updateProduct(data)
-    }
+  }
+
+  @MessagePattern({ cmd: 'delete-product' })
+  async deleteProduct(@Payload() data: { name: string }, @Ctx() context: RmqContext) {
+    console.log(`Pattern: ${context.getPattern()}`)
+    return await this.productService.deleteProduct(data.name)
+  }
 }

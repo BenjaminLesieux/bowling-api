@@ -1,11 +1,11 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { SearchProductDto } from './dto/searchProductDto';
 import { AddProductDto } from './dto/addProductDto';
 
 @Controller('products')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productService: ProductService) { }
 
   @Post('/search')
   async search(@Body() body: SearchProductDto) {
@@ -23,5 +23,11 @@ export class ProductController {
   async update(@Body() body: AddProductDto, @Param('name') name: string) {
     console.log('update', body)
     return await this.productService.update(name, body)
+  }
+
+  @Delete('/:name')
+  async deleteProduct(@Param('name') name: string) {
+    console.log('delete', name)
+    return await this.productService.deleteProduct(name)
   }
 }

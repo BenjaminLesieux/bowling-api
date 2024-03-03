@@ -61,9 +61,18 @@ export class ProductService {
           price: data.price
         })
         .where(eq(productTable.name, data.oldName))
-        return product
+      return product
     } catch (err) {
       console.log('Error updating product', data)
     }
   }
-}
+
+  async deleteProduct(name: string ) {
+    try {
+      const product = await this.db.delete(productTable)
+        .where(eq(productTable.name, name))
+    } catch (err) {
+      console.log('Error delete product', name)
+    }
+  }
+} 

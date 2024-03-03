@@ -65,4 +65,22 @@ export class ProductService {
       console.log(`Error updateing product: ${err}`)
     }
   }
+
+  async deleteProduct(name: string) {
+    try {
+      const product = await lastValueFrom(
+        this.mainClient.send(
+          {
+            cmd: 'delete-product'
+          },
+          {
+            name
+          }
+        )
+      )
+      return product
+    } catch (err) {
+      console.log(`Error deleting product: ${err}`)
+    }
+  }
 }
