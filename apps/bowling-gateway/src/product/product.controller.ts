@@ -9,6 +9,6 @@ export class ProductController {
   @Post('/search')
   async search(@Body() body: SearchProductDto) {
     console.log('search', body);
-    return await this.productService.search(body, '');
+    return await this.productService.search(body);
   }
 }

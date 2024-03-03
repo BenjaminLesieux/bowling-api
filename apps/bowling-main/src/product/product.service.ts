@@ -17,6 +17,7 @@ export class ProductService {
 
   async getProducts(lastItem: string | null) {
     try {
+      console.log('im called');
       const products = await this.db.query.productTable.findMany(
         withCursorPagination({
           limit: 32,

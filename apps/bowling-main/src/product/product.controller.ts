@@ -11,7 +11,7 @@ import { ProductService } from './product.service';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @MessagePattern({ cmd: 'get-products' })
+  @MessagePattern({ cmd: 'search-products' })
   async getProducts(@Payload() data: number[], @Ctx() context: RmqContext) {
     console.log(`Pattern: ${context.getPattern()}`);
     return await this.productService.getProducts('');

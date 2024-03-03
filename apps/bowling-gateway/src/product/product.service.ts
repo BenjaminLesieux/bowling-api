@@ -8,17 +8,14 @@ import { MAIN_MICROSERVICE } from '@app/shared/services';
 export class ProductService {
   constructor(@Inject(MAIN_MICROSERVICE) private mainClient: ClientProxy) {}
 
-  async search(data: SearchProductDto, authentication: string) {
+  async search(data: SearchProductDto) {
     try {
       const products = await lastValueFrom(
         this.mainClient.send(
           {
             cmd: 'search-products',
           },
-          {
-            data,
-            Authentication: authentication,
-          },
+          data,
         ),
       );
 
