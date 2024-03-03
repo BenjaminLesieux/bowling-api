@@ -7,15 +7,19 @@ import { AddProductDto } from './dto/addProductDto';
 
 @Injectable()
 export class ProductService {
-  constructor(@Inject(MAIN_MICROSERVICE) private mainClient: ClientProxy) {}
+  constructor(
+    @Inject(MAIN_MICROSERVICE) private readonly mainClient: ClientProxy,
+  ) {}
 
   async search(data: SearchProductDto, authentication: string) {
     try {
       const products = await lastValueFrom(
-        this.mainClient.send('get-products', {
+        this.mainClient.send(
+          {
+            cmd: 'get-products',
+          },
           data,
-          Authentication: authentication,
-        }),
+        ),
       );
 
       console.log('products', products);

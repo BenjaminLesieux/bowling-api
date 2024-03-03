@@ -19,9 +19,14 @@ export class JwtAuthGuard implements CanActivate {
     const authentication = this.getAuthentication(context);
 
     return this.authClient
-      .send('validate-user', {
-        Authentication: authentication,
-      })
+      .send(
+        {
+          cmd: 'validate-user',
+        },
+        {
+          Authentication: authentication,
+        },
+      )
       .pipe(
         tap((response) => {
           this.addUser(response, context);

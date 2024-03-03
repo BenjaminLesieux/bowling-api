@@ -6,7 +6,9 @@ export function getCurrentUserByContext(context: ExecutionContext): User {
     return context.switchToHttp().getRequest().user;
   }
   if (context.getType() === 'rpc') {
-    return context.switchToRpc().getContext().user;
+    return context.switchToRpc().getContext().user
+      ? context.switchToRpc().getContext().user
+      : context.switchToRpc().getData();
   }
 }
 

@@ -1,17 +1,20 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MicroservicesModule } from '@app/shared';
-import { AUTH_MICROSERVICE, MAIN_MICROSERVICE } from '@app/shared/services';
+import { AuthenticationModule, MicroservicesModule } from '@app/shared';
+import { MAIN_MICROSERVICE } from '@app/shared/services';
 import { ConfigModule } from '@nestjs/config';
 import { z } from 'zod';
 import { ProductController } from './product/product.controller';
 import { ProductService } from './product/product.service';
 import { AuthenticationController } from './authentication/authentication.controller';
+import { AuthenticationService } from './authentication/authentication.service';
 
 const envSchema = z.object({
   DB_URL: z.string().url(),
   RABBITMQ_URL: z.string().url(),
+  RABBITMQ_AUTH_QUEUE: z.string(),
+  RABBITMQ_MAIN_QUEUE: z.string(),
 });
 
 @Module({
@@ -19,16 +22,14 @@ const envSchema = z.object({
     ConfigModule.forRoot({
       isGlobal: true,
       validate: (config) => envSchema.parse(config),
-      envFilePath: './apps/bowling-gateway/.env',
+      envFilePath: '.env',
     }),
-    MicroservicesModule.register({
-      name: AUTH_MICROSERVICE,
-    }),
+    AuthenticationModule,
     MicroservicesModule.register({
       name: MAIN_MICROSERVICE,
     }),
   ],
   controllers: [AppController, ProductController, AuthenticationController],
-  providers: [AppService, ProductService],
+  providers: [AppService, ProductService, AuthenticationService],
 })
 export class AppModule {}
