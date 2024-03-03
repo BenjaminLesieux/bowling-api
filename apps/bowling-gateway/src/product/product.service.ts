@@ -9,14 +9,14 @@ import { AddProductDto } from './dto/addProductDto';
 export class ProductService {
   constructor(
     @Inject(MAIN_MICROSERVICE) private readonly mainClient: ClientProxy,
-  ) {}
+  ) { }
 
   async search(data: SearchProductDto, authentication: string) {
     try {
       const products = await lastValueFrom(
         this.mainClient.send(
           {
-            cmd: 'get-products',
+            cmd: 'search-products',
           },
           data,
         ),
@@ -30,12 +30,18 @@ export class ProductService {
       throw err;
     }
   }
-  async add(data: AddProductDto, authentication: string) {
+
+  async add(data: AddProductDto) {
     try {
-      this.mainClient.send('add-product', {
-        data,
-        authentication: authentication
-      })
+      const product = await lastValueFrom(
+        this.mainClient.send(
+          {
+            cmd: 'add-product'
+          },
+          data,
+        )
+      )
+      return product
     } catch (err) {
       console.log(`Error adding product: ${err}`)
     }

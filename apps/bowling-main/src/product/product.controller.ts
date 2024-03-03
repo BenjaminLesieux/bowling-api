@@ -10,7 +10,7 @@ import { Product } from '@app/shared/database/schemas/schemas';
 
 @Controller()
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productService: ProductService) { }
 
   @MessagePattern({ cmd: 'search-products' })
   async getProducts(@Payload() data: number[], @Ctx() context: RmqContext) {
@@ -22,7 +22,7 @@ export class ProductController {
     return await this.productService.getProductById(id);
   }
 
-  @MessagePattern('add-product')
+  @MessagePattern({ cmd: 'add-product' })
   async addProduct(@Payload() data: Omit<Product, 'id'>, @Ctx() context: RmqContext) {
     console.log(`Pattern: ${context.getPattern()}`)
     return await this.productService.addProduct(data)

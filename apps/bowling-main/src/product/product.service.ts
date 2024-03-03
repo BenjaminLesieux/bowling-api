@@ -8,7 +8,6 @@ import { Product, productTable, userTable } from '@app/shared/database/schemas/s
 
 import { withCursorPagination } from 'drizzle-pagination';
 import { eq } from 'drizzle-orm';
-import { AddProductDto } from 'apps/bowling-gateway/src/product/dto/addProductDto';
 
 @Injectable()
 export class ProductService {
