@@ -47,8 +47,8 @@ export class BowlingPaymentService {
     if (event.type === 'checkout.session.completed') {
       await this.db.update(orderTable).set({ status: 'completed' }).where(eq(orderTable.stripeCheckOutSessionId, event.data.object.id));
     }
-    if (event.type === 'checkout.session.cancelled') {
-      await this.db.update(orderTable).set({ status: 'cancelled' }).where(eq(orderTable.stripeCheckOutSessionId, event.data.object.id));
+    if (event.type === 'checkout.session.expired') {
+      await this.db.update(orderTable).set({ status: 'expired' }).where(eq(orderTable.stripeCheckOutSessionId, event.data.object.id));
     }
     return;
   }

@@ -8,6 +8,13 @@
       "when": 1709024300316,
       "tag": "0000_short_elektra",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1709505413804,
+      "tag": "0001_first_master_chief",
+      "breakpoints": true
     }
   ]
 }
