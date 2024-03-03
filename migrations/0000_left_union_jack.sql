@@ -13,5 +13,9 @@ CREATE TABLE IF NOT EXISTS "products" (
 	CONSTRAINT "products_name_unique" UNIQUE("name")
 );
 --> statement-breakpoint
-ALTER TABLE "users" ADD PRIMARY KEY ("id");--> statement-breakpoint
-ALTER TABLE "users" ALTER COLUMN "id" SET NOT NULL;
+CREATE TABLE IF NOT EXISTS "users" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"email" varchar(255),
+	"password" varchar(255),
+	CONSTRAINT "users_email_unique" UNIQUE("email")
+);

@@ -44,6 +44,7 @@ export class BowlingPaymentService {
   }
 
   async handleStripeWebhook(event: any) {
+    console.log('event', event);
     if (event.type === 'checkout.session.completed') {
       await this.db.update(orderTable).set({ status: 'completed' }).where(eq(orderTable.stripeCheckOutSessionId, event.data.object.id));
     }

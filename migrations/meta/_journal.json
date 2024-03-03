@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1709024300316,
-      "tag": "0000_short_elektra",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1709505413804,
-      "tag": "0001_first_master_chief",
+      "when": 1709506336542,
+      "tag": "0000_left_union_jack",
       "breakpoints": true
     }
   ]

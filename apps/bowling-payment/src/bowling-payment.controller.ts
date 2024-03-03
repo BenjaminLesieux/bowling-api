@@ -1,13 +1,15 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseGuards } from '@nestjs/common';
 import { MessagePattern, RpcException } from '@nestjs/microservices';
 import { BowlingPaymentService } from './bowling-payment.service';
 import { CurrentUser } from 'apps/bowling-auth/src/current-user.decorator';
 import { User } from '@app/shared/database/schemas/schemas';
+import { JwtAuthGuard } from '@app/shared';
 
 @Controller()
 export class BowlingPaymentController {
   constructor(private readonly bowlingPaymentService: BowlingPaymentService) {}
 
+  @UseGuards(JwtAuthGuard)
   @MessagePattern({
     cmd: 'create-checkout-session',
   })
@@ -35,6 +37,7 @@ export class BowlingPaymentController {
     const res = await this.bowlingPaymentService.createCheckoutSession(products);
     if (res.url) {
       // create order in db
+      console.log('created user is', user);
       await this.bowlingPaymentService.createOrder(res.id, user.id);
       return res.url;
     }
@@ -44,6 +47,7 @@ export class BowlingPaymentController {
     });
   }
 
+  @UseGuards(JwtAuthGuard)
   @MessagePattern({
     cmd: 'stripe-webhook',
   })

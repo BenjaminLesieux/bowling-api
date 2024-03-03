@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post, UseGuards } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { SearchProductDto } from './dto/searchProductDto';
 import { AddProductDto } from './dto/addProductDto';
+import { JwtAuthGuard } from '@app/shared';
 
 @Controller('products')
 export class ProductController {
@@ -31,6 +32,7 @@ export class ProductController {
     return await this.productService.deleteProduct(name);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('/checkout')
   async checkout(@Body() body: any) {
     console.log('checkout', body);
