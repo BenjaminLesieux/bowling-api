@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { BowlingPaymentController } from './bowling-payment.controller';
 import { BowlingPaymentService } from './bowling-payment.service';
 
-import { AuthenticationModule, MicroservicesModule } from '@app/shared';
+import { AuthenticationModule, DatabaseModule, MicroservicesModule } from '@app/shared';
 import { z } from 'zod';
 import { ConfigModule } from '@nestjs/config';
 
@@ -23,6 +23,7 @@ const envSchema = z.object({
       validate: (config) => envSchema.parse(config),
       envFilePath: '.env',
     }),
+    DatabaseModule,
   ],
   controllers: [BowlingPaymentController],
   providers: [BowlingPaymentService],

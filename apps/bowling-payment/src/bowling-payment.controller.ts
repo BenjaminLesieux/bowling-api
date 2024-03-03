@@ -1,6 +1,8 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, RpcException } from '@nestjs/microservices';
 import { BowlingPaymentService } from './bowling-payment.service';
+import { CurrentUser } from 'apps/bowling-auth/src/current-user.decorator';
+import { User } from '@app/shared/database/schemas/schemas';
 
 @Controller()
 export class BowlingPaymentController {
@@ -9,7 +11,7 @@ export class BowlingPaymentController {
   @MessagePattern({
     cmd: 'create-checkout-session',
   })
-  async create(): Promise<any> {
+  async create(@CurrentUser() user: User): Promise<any> {
     const products = [
       {
         id: 1,
@@ -31,7 +33,11 @@ export class BowlingPaymentController {
       },
     ];
     const res = await this.bowlingPaymentService.createCheckoutSession(products);
-    if (res.url) return res.url;
+    if (res.url) {
+      // create order in db
+      await this.bowlingPaymentService.createOrder(res.id, user.id);
+      return res.url;
+    }
     throw new RpcException({
       message: 'Error creating checkout session',
       code: 500,

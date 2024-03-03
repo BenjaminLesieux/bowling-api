@@ -17,7 +17,7 @@ export const orderTable = pgTable('orders', {
   userId: uuid('user_id'),
   productId: uuid('product_id'),
   stripeCheckOutSessionId: varchar('stripe_checkout_session_id', { length: 255 }),
-  status: varchar('status', { length: 255 }),
+  status: varchar('status', { length: 255 }), // pending, completed
 });
 
 export type User = typeof userTable.$inferSelect;

@@ -1,16 +1,11 @@
 import { Controller } from '@nestjs/common';
-import {
-  Ctx,
-  MessagePattern,
-  Payload,
-  RmqContext,
-} from '@nestjs/microservices';
+import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
 import { ProductService } from './product.service';
 import { Product } from '@app/shared/database/schemas/schemas';
 
 @Controller()
 export class ProductController {
-  constructor(private readonly productService: ProductService) { }
+  constructor(private readonly productService: ProductService) {}
 
   @MessagePattern({ cmd: 'search-products' })
   async getProducts(@Payload() data: number[], @Ctx() context: RmqContext) {
@@ -24,19 +19,19 @@ export class ProductController {
 
   @MessagePattern({ cmd: 'add-product' })
   async addProduct(@Payload() data: Omit<Product, 'id'>, @Ctx() context: RmqContext) {
-    console.log(`Pattern: ${context.getPattern()}`)
-    return await this.productService.addProduct(data)
+    console.log(`Pattern: ${context.getPattern()}`);
+    return await this.productService.addProduct(data);
   }
 
   @MessagePattern({ cmd: 'update-product' })
   async updateProduct(@Payload() data: Omit<Product, 'id'> & { oldName: string }, @Ctx() context: RmqContext) {
-    console.log(`Pattern: ${context.getPattern()}`)
-    return await this.productService.updateProduct(data)
+    console.log(`Pattern: ${context.getPattern()}`);
+    return await this.productService.updateProduct(data);
   }
 
   @MessagePattern({ cmd: 'delete-product' })
   async deleteProduct(@Payload() data: { name: string }, @Ctx() context: RmqContext) {
-    console.log(`Pattern: ${context.getPattern()}`)
-    return await this.productService.deleteProduct(data.name)
+    console.log(`Pattern: ${context.getPattern()}`);
+    return await this.productService.deleteProduct(data.name);
   }
 }
