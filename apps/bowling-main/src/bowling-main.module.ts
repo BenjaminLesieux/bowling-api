@@ -5,6 +5,7 @@ import { AuthenticationModule, MicroservicesModule } from '@app/shared';
 import { z } from 'zod';
 import { ConfigModule } from '@nestjs/config';
 import { ProductModule } from './product/product.module';
+import { QrcodeService } from './qrcode/qrcode.service';
 
 const envSchema = z.object({
   DB_URL: z.string().url(),
@@ -24,6 +25,6 @@ const envSchema = z.object({
     }),
   ],
   controllers: [BowlingMainController],
-  providers: [BowlingMainService],
+  providers: [BowlingMainService, QrcodeService],
 })
 export class BowlingMainModule {}
