@@ -6,10 +6,6 @@ export class BowlingPaymentService {
   constructor(private readonly config: ConfigService) {}
   stripe = new Stripe(this.config.get('STRIPE_SK_KEY'));
 
-  getHello(): string {
-    return 'Hello World!';
-  }
-
   async createCheckoutSession(products: any[]) {
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],

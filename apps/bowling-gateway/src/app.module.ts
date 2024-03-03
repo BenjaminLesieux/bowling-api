@@ -9,6 +9,8 @@ import { ProductController } from './product/product.controller';
 import { ProductService } from './product/product.service';
 import { AuthenticationController } from './authentication/authentication.controller';
 import { AuthenticationService } from './authentication/authentication.service';
+import { StripeController } from './stripe/stripe.controller';
+import { StripeService } from './stripe/stripe.service';
 
 const envSchema = z.object({
   DB_URL: z.string().url(),
@@ -32,7 +34,7 @@ const envSchema = z.object({
       name: PAYMENT_MICROSERVICE,
     }),
   ],
-  controllers: [AppController, ProductController, AuthenticationController],
-  providers: [AppService, ProductService, AuthenticationService],
+  controllers: [AppController, ProductController, AuthenticationController, StripeController],
+  providers: [AppService, ProductService, AuthenticationService, StripeService],
 })
 export class AppModule {}
