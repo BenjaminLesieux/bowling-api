@@ -6,14 +6,16 @@ import { MAIN_MICROSERVICE } from '@app/shared/services';
 
 @Injectable()
 export class ProductService {
-  constructor(@Inject(MAIN_MICROSERVICE) private mainClient: ClientProxy) {}
+  constructor(
+    @Inject(MAIN_MICROSERVICE) private readonly mainClient: ClientProxy,
+  ) {}
 
-  async search(data: SearchProductDto) {
+  async search(data: SearchProductDto, authentication: string) {
     try {
       const products = await lastValueFrom(
         this.mainClient.send(
           {
-            cmd: 'search-products',
+            cmd: 'get-products',
           },
           data,
         ),

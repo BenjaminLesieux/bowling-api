@@ -22,7 +22,7 @@ const envSchema = z.object({
     ConfigModule.forRoot({
       isGlobal: true,
       validate: (config) => envSchema.parse(config),
-      envFilePath: './apps/bowling-gateway/.env',
+      envFilePath: '.env',
     }),
     AuthenticationModule,
     MicroservicesModule.register({
