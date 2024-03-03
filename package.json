@@ -33,6 +33,7 @@
     "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.10.3",
     "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
     "drizzle-orm": "^0.29.4",
     "drizzle-pagination": "^1.0.10",
@@ -44,6 +45,7 @@
     "qrcode": "1.5.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
+    "stripe": "^14.19.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {

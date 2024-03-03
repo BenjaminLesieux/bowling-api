@@ -1,10 +1,4 @@
-import {
-  CallHandler,
-  ExecutionContext,
-  HttpException,
-  Injectable,
-  NestInterceptor,
-} from '@nestjs/common';
+import { CallHandler, ExecutionContext, HttpException, Injectable, NestInterceptor } from '@nestjs/common';
 import { catchError, throwError } from 'rxjs';
 
 @Injectable()
@@ -13,10 +7,7 @@ export class RpcErrorsInterceptor implements NestInterceptor {
     return next.handle().pipe(
       catchError((error) => {
         return throwError(() => {
-          throw new HttpException(
-            error.message,
-            error.status === 'error' ? 500 : error.status,
-          );
+          throw new HttpException(error.message, error.status === 'error' ? 500 : error.status);
         });
       }),
     );

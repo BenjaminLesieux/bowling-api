@@ -2,19 +2,23 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthenticationModule, MicroservicesModule } from '@app/shared';
-import { MAIN_MICROSERVICE } from '@app/shared/services';
+import { MAIN_MICROSERVICE, PAYMENT_MICROSERVICE } from '@app/shared/services';
 import { ConfigModule } from '@nestjs/config';
 import { z } from 'zod';
 import { ProductController } from './product/product.controller';
 import { ProductService } from './product/product.service';
 import { AuthenticationController } from './authentication/authentication.controller';
 import { AuthenticationService } from './authentication/authentication.service';
+import { StripeController } from './stripe/stripe.controller';
+import { StripeService } from './stripe/stripe.service';
 
 const envSchema = z.object({
   DB_URL: z.string().url(),
   RABBITMQ_URL: z.string().url(),
   RABBITMQ_AUTH_QUEUE: z.string(),
   RABBITMQ_MAIN_QUEUE: z.string(),
+  STRIPE_SK_KEY: z.string(),
+  STRIPE_WEBHOOK_SECRET: z.string(),
 });
 
 @Module({
@@ -28,8 +32,11 @@ const envSchema = z.object({
     MicroservicesModule.register({
       name: MAIN_MICROSERVICE,
     }),
+    MicroservicesModule.register({
+      name: PAYMENT_MICROSERVICE,
+    }),
   ],
-  controllers: [AppController, ProductController, AuthenticationController],
-  providers: [AppService, ProductService, AuthenticationService],
+  controllers: [AppController, ProductController, AuthenticationController, StripeController],
+  providers: [AppService, ProductService, AuthenticationService, StripeService],
 })
 export class AppModule {}
