@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Param, Post } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { SearchProductDto } from './dto/searchProductDto';
 import { AddProductDto } from './dto/addProductDto';
@@ -17,5 +17,11 @@ export class ProductController {
   async add(@Body() body: AddProductDto) {
     console.log('add', body)
     return await this.productService.add(body)
+  }
+
+  @Post('/update/:name')
+  async update(@Body() body: AddProductDto, @Param('name') name: string) {
+    console.log('update', body)
+    return await this.productService.update(name, body)
   }
 }

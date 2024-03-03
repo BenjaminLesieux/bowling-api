@@ -27,4 +27,10 @@ export class ProductController {
     console.log(`Pattern: ${context.getPattern()}`)
     return await this.productService.addProduct(data)
   }
+
+  @MessagePattern({ cmd: 'update-product' })
+  async updateProduct(@Payload() data: Omit<Product, 'id'> & { oldName: string }, @Ctx() context: RmqContext) {
+    console.log(`Pattern: ${context.getPattern()}`)
+    return await this.productService.updateProduct(data)
+    }
 }

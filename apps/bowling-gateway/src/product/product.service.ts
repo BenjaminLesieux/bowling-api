@@ -46,4 +46,23 @@ export class ProductService {
       console.log(`Error adding product: ${err}`)
     }
   }
+
+  async update(oldName: string, data: AddProductDto) {
+    try {
+      const product = await lastValueFrom(
+        this.mainClient.send(
+          {
+            cmd: 'update-product'
+          },
+          {
+            ...data,
+            oldName
+          }
+        )
+      )
+      return product
+    } catch (err) {
+      console.log(`Error updateing product: ${err}`)
+    }
+  }
 }
