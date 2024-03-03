@@ -3,6 +3,7 @@ import { SearchProductDto } from './dto/searchProductDto';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { MAIN_MICROSERVICE } from '@app/shared/services';
+import { AddProductDto } from './dto/addProductDto';
 
 @Injectable()
 export class ProductService {
@@ -23,6 +24,16 @@ export class ProductService {
     } catch (err) {
       console.error('Error fetching products:', err);
       throw err;
+    }
+  }
+  async add(data: AddProductDto, authentication: string) {
+    try {
+      this.mainClient.send('add-product', {
+        data,
+        authentication: authentication
+      })
+    } catch (err) {
+      console.log(`Error adding product: ${err}`)
     }
   }
 }

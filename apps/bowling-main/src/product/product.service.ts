@@ -4,10 +4,11 @@ import {
   DATABASE_PROVIDER,
   PostgresDatabase,
 } from '@app/shared/database/database.provider';
-import { userTable } from '@app/shared/database/schemas/schemas';
+import { Product, productTable, userTable } from '@app/shared/database/schemas/schemas';
 
 import { withCursorPagination } from 'drizzle-pagination';
 import { eq } from 'drizzle-orm';
+import { AddProductDto } from 'apps/bowling-gateway/src/product/dto/addProductDto';
 
 @Injectable()
 export class ProductService {
@@ -42,4 +43,14 @@ export class ProductService {
       throw error;
     }
   }
+  async addProduct(data: Omit<Product, "id">){
+    try {
+      const product = await this.db.insert(productTable).values(data)
+      return product
+    } catch (err) {
+      console.log(`Error adding product`, data)
+      throw err
+    }
+  }
+
 }
