@@ -66,7 +66,7 @@ export class ProductService {
 
   async deleteProduct(name: string) {
     try {
-      const product = await this.db.delete(productTable).where(eq(productTable.name, name));
+      await this.db.delete(productTable).where(eq(productTable.name, name));
     } catch (err) {
       console.log('Error delete product', name);
     }
