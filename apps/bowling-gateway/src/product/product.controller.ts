@@ -11,4 +11,10 @@ export class ProductController {
     console.log('search', body);
     return await this.productService.search(body);
   }
+
+  @Post('/checkout')
+  async checkout(@Body() body: any) {
+    console.log('checkout', body);
+    return await this.productService.checkout(body);
+  }
 }

@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
-import {
-  DATABASE_PROVIDER,
-  PostgresDatabase,
-} from '@app/shared/database/database.provider';
+import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
 import { userTable } from '@app/shared/database/schemas/schemas';
 
 import { withCursorPagination } from 'drizzle-pagination';
@@ -11,9 +8,7 @@ import { eq } from 'drizzle-orm';
 
 @Injectable()
 export class ProductService {
-  constructor(
-    @Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase,
-  ) {}
+  constructor(@Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase) {}
 
   async getProducts(lastItem: string | null) {
     try {

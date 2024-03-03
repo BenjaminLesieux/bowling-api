@@ -1,22 +1,23 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
-const stripe = new Stripe('sk_test_...');
-
 @Injectable()
 export class BowlingPaymentService {
+  constructor(private readonly config: ConfigService) {}
+  stripe = new Stripe(this.config.get('STRIPE_SK_KEY'));
+
   getHello(): string {
     return 'Hello World!';
   }
 
   async createCheckoutSession(products: any[]) {
-    const session = await stripe.checkout.sessions.create({
+    const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: products.map((product) => ({
         price_data: {
           currency: 'eur',
           product_data: {
             name: product.name,
-            images: [product.image],
           },
           unit_amount: product.price * 100,
         },

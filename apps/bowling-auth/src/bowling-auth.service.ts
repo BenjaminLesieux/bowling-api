@@ -20,9 +20,7 @@ export class BowlingAuthService {
   async login(user: User, response) {
     const tokenPayload: TokenPayload = { userId: user.id };
     const expires = new Date();
-    expires.setSeconds(
-      expires.getSeconds() + this.configService.get<number>('JWT_EXPIRATION'),
-    );
+    expires.setSeconds(expires.getSeconds() + this.configService.get<number>('JWT_EXPIRATION'));
     const token = this.jwtService.sign(tokenPayload);
 
     response.cookie('Authentication', token, {
@@ -41,9 +39,7 @@ export class BowlingAuthService {
         ).id;
     const tokenPayload: TokenPayload = { userId };
     const expires = new Date();
-    expires.setSeconds(
-      expires.getSeconds() + this.configService.get('JWT_EXPIRATION'),
-    );
+    expires.setSeconds(expires.getSeconds() + this.configService.get('JWT_EXPIRATION'));
     const token = this.jwtService.sign(tokenPayload);
     const t = {
       user: {
