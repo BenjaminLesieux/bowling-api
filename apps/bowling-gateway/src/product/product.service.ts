@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { SearchProductDto } from './dto/searchProductDto';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
@@ -11,7 +11,7 @@ export class ProductService {
   async search(data: SearchProductDto, authentication: string) {
     try {
       const products = await lastValueFrom(
-        this.mainClient.emit('get-products', {
+        this.mainClient.send('get-products', {
           data,
           Authentication: authentication,
         }),

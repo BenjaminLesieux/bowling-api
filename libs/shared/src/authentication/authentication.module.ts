@@ -1,12 +1,12 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { MicroservicesModule } from '@app/shared/microservices/microservices.module';
-import { AUTHENTICATION_SERVICE } from '@app/shared/authentication/constants';
 import * as cookieParser from 'cookie-parser';
+import { AUTH_MICROSERVICE } from '@app/shared/services';
 
 @Module({
   imports: [
     MicroservicesModule.register({
-      name: AUTHENTICATION_SERVICE,
+      name: AUTH_MICROSERVICE,
     }),
   ],
   exports: [MicroservicesModule],
