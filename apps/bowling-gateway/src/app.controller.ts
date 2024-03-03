@@ -9,4 +9,11 @@ export class AppController {
   async getHello() {
     return this.appService.getHello();
   }
+
+  @Get('/qr')
+  async getQr() {
+    // TODO: replace data with requested alley id
+    const data = 'https://www.youtube.com/watch?v=I4hoJzPllDo' 
+    return `<img src="${await this.appService.getQr(data)}">`;
+  }
 }

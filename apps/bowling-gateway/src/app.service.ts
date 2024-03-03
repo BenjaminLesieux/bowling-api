@@ -12,4 +12,8 @@ export class AppService {
   async getHello() {
     return await lastValueFrom<string>(this.client.send({ cmd: 'hello' }, ''));
   }
+
+  async getQr(data: string) {
+    return await lastValueFrom<string>(this.client.send({ cmd: 'qr' }, data));
+  }
 }
