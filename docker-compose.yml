@@ -32,6 +32,19 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+  bowling-payment:
+    depends_on:
+      - rabbitmq
+      - bowling-auth
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: ./apps/bowling-payment/Dockerfile
+      target: development
+    command: pnpm run start:dev bowling-payment
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
   bowling-auth:
     depends_on:
       - rabbitmq

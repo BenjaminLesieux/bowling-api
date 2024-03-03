@@ -18,16 +18,27 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@app/authentication": ["libs/authentication/src"],
-      "@app/authentication/*": ["libs/authentication/src/*"],
-      "@app/shared": ["libs/shared/src"],
-      "@app/shared/*": ["libs/shared/src/*"]
+      "@app/authentication": [
+        "libs/authentication/src"
+      ],
+      "@app/authentication/*": [
+        "libs/authentication/src/*"
+      ],
+      "@app/shared": [
+        "libs/shared/src"
+      ],
+      "@app/shared/*": [
+        "libs/shared/src/*"
+      ]
     }
   },
   "watchOptions": {
     // Use a dynamic polling instead of system’s native events for file changes.
     "watchFile": "dynamicPriorityPolling",
     "watchDirectory": "dynamicPriorityPolling",
-    "excludeDirectories": ["**/node_modules", "dist"]
+    "excludeDirectories": [
+      "**/node_modules",
+      "dist"
+    ]
   }
 }

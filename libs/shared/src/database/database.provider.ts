@@ -11,9 +11,7 @@ export type PostgresDatabase = PostgresJsDatabase<typeof schema>;
 
 export const databaseProvider: Provider = {
   provide: DATABASE_PROVIDER,
-  useFactory: async (
-    configService: ConfigService,
-  ): Promise<PostgresDatabase> => {
+  useFactory: async (configService: ConfigService): Promise<PostgresDatabase> => {
     const connectionUrl = configService.get('DB_URL');
 
     await doMigrations(connectionUrl);

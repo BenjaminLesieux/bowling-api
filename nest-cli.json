@@ -54,6 +54,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/bowling-main/tsconfig.app.json"
       }
+    },
+    "bowling-payment": {
+      "type": "application",
+      "root": "apps/bowling-payment",
+      "entryFile": "main",
+      "sourceRoot": "apps/bowling-payment/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/bowling-payment/tsconfig.app.json"
+      }
     }
   }
 }
