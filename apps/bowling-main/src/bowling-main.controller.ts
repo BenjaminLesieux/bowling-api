@@ -9,4 +9,9 @@ export class BowlingMainController {
   getHello(): string {
     return this.bowlingMainService.getHello();
   }
+
+  @Get('/metrics')
+  getMetrics(): Promise<string> {
+    return this.bowlingMainService.getMetrics();
+  }
 }

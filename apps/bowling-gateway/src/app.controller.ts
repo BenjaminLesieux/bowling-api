@@ -9,4 +9,9 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('/metrics')
+  getMetrics(): Promise<string> {
+    return this.appService.getMetrics();
+  }
 }

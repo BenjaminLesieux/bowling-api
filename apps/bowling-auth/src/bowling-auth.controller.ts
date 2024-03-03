@@ -1,4 +1,4 @@
-import { Controller, Post, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { BowlingAuthService } from './bowling-auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CurrentUser } from './current-user.decorator';
@@ -21,5 +21,10 @@ export class BowlingAuthController {
   @MessagePattern('validate-user')
   async validateUser(@CurrentUser() user: User) {
     return user;
+  }
+
+  @Get('/metrics')
+  getMetrics(): Promise<string> {
+    return this.bowlingAuthService.getMetrics();
   }
 }
