@@ -1,0 +1,125 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: bowling-auth
+  labels:
+    app: bowling
+    tier: auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bowling
+      tier: auth
+  template:
+    metadata:
+      labels:
+        app: bowling
+        tier: auth
+    spec:
+      containers:
+      - name: bowling-auth
+        image: bowling-api-bowling-auth
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: bowling-auth
+  labels:
+    app: bowling
+    tier: auth
+spec:
+  selector:
+    app: bowling
+    tier: auth
+  ports:
+  - protocol: TCP
+    port: 3001
+    targetPort: 3000
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: bowling-main
+  labels:
+    app: bowling
+    tier: main
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bowling
+      tier: main
+  template:
+    metadata:
+      labels:
+        app: bowling
+        tier: main
+    spec:
+      containers:
+      - name: bowling-main
+        image: bowling-api-bowling-main
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: bowling-main
+  labels:
+    app: bowling
+    tier: main
+spec:
+  selector:
+    app: bowling
+    tier: main
+  ports:
+  - protocol: TCP
+    port: 3002
+    targetPort: 3000
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: bowling-gateway
+  labels:
+    app: bowling
+    tier: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bowling
+      tier: gateway
+  template:
+    metadata:
+      labels:
+        app: bowling
+        tier: gateway
+    spec:
+      containers:
+      - name: bowling-gateway
+        image: bowling-api-bowling_gateway
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 3000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: bowling-gateway
+  labels:
+    app: bowling
+    tier: gateway
+spec:
+  selector:
+    app: bowling
+    tier: gateway
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
