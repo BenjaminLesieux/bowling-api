@@ -1,9 +1,4 @@
-import {
-  Inject,
-  Injectable,
-  UnauthorizedException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import {
   DATABASE_PROVIDER,
   PostgresDatabase,
@@ -12,6 +7,7 @@ import { eq } from 'drizzle-orm';
 import schemas, { User } from '@app/shared/database/schemas/schemas';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
+import { RmqContext, RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class UsersService {
@@ -19,8 +15,13 @@ export class UsersService {
     @Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase,
   ) {}
 
-  async createUser(user: CreateUserDto) {
-    await this.validateUserCreation(user);
+  async createUser(user: CreateUserDto, ctx: RmqContext) {
+    if (!(await this.validateUserCreation(user))) {
+      throw new RpcException({
+        status: 400,
+        message: 'User already exists',
+      });
+    }
 
     const createdUser = await this.db
       .insert(schemas.userTable)
@@ -55,16 +56,12 @@ export class UsersService {
   }
 
   private async validateUserCreation(user: CreateUserDto) {
-    try {
-      const dbUser = await this.db.query.userTable.findFirst({
-        where: eq(schemas.userTable.email, user.email),
-      });
+    const dbUser = await this.db
+      .select()
+      .from(schemas.userTable)
+      .where(eq(schemas.userTable.email, user.email))
+      .execute();
 
-      return !!dbUser;
-    } catch (error) {
-      throw new UnprocessableEntityException(
-        'User with that email already exists',
-      );
-    }
+    return dbUser.length <= 0;
   }
 }

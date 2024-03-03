@@ -1,13 +1,17 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern } from '@nestjs/microservices';
+import {
+  Ctx,
+  MessagePattern,
+  Payload,
+  RmqContext,
+} from '@nestjs/microservices';
 import { ProductService } from './product.service';
-import { Ctx, Payload, RmqContext } from '@nestjs/microservices';
 
 @Controller()
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @MessagePattern('get-products')
+  @MessagePattern({ cmd: 'get-products' })
   async getProducts(@Payload() data: number[], @Ctx() context: RmqContext) {
     console.log(`Pattern: ${context.getPattern()}`);
     return await this.productService.getProducts('');

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from '@app/shared/database/schemas/schemas';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { RmqContext } from '@nestjs/microservices';
 
 export interface TokenPayload {
   userId: string;
@@ -26,6 +27,13 @@ export class BowlingAuthService {
       httpOnly: true,
       expires,
     });
+  }
+
+  async loginMicroservice(user: User, context: RmqContext) {
+    const channel = context.getChannelRef();
+    const originalMsg = context.getMessage();
+    const tokenPayload: TokenPayload = { userId: user.id };
+    return this.jwtService.sign(tokenPayload);
   }
 
   async logout(response) {

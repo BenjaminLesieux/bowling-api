@@ -11,10 +11,15 @@ export class ProductService {
   async search(data: SearchProductDto, authentication: string) {
     try {
       const products = await lastValueFrom(
-        this.mainClient.send('get-products', {
-          data,
-          Authentication: authentication,
-        }),
+        this.mainClient.send(
+          {
+            cmd: 'search-products',
+          },
+          {
+            data,
+            Authentication: authentication,
+          },
+        ),
       );
 
       console.log('products', products);

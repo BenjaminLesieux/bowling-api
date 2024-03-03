@@ -25,7 +25,7 @@ const envSchema = z.object({
     ConfigModule.forRoot({
       isGlobal: true,
       validate: (env) => envSchema.parse(env),
-      envFilePath: 'apps/bowling-auth/.env',
+      envFilePath: './apps/bowling-auth/.env',
     }),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({

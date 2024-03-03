@@ -6,20 +6,12 @@ export const createUserSchema = z
     email: z.string().email(),
     password: z
       .password()
+      .atLeastOne('digit')
       .atLeastOne('lowercase')
       .atLeastOne('uppercase')
-      .atLeastOne('digit')
       .min(8),
-    rePassword: z
-      .password()
-      .atLeastOne('lowercase')
-      .atLeastOne('uppercase')
-      .atLeastOne('digit')
-      .min(8),
+    rePassword: z.string(),
   })
-  .refine((data) => data.password === data.rePassword, {
-    message: 'Passwords do not match',
-    path: ['rePassword'],
-  });
+  .refine((data) => data.password === data.rePassword);
 
 export class CreateUserDto extends createZodDto(createUserSchema) {}

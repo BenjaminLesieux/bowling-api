@@ -1,2 +1,2 @@
-export const AUTH_MICROSERVICE = 'auth';
-export const MAIN_MICROSERVICE = 'main';
+export const AUTH_MICROSERVICE = 'AUTH';
+export const MAIN_MICROSERVICE = 'MAIN';

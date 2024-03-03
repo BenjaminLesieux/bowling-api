@@ -3,10 +3,11 @@ import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import { patchNestJsSwagger } from 'nestjs-zod';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { RpcErrorsInterceptor } from '@app/shared/rpc-errors.interceptor';
 
 patchNestJsSwagger();
 
-const logger = new Logger('BowlingGateway');
+export const logger = new Logger('BowlingGateway');
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,6 +19,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+  app.useGlobalInterceptors(new RpcErrorsInterceptor());
   await app.listen(3000);
 }
 bootstrap().then(() => {
