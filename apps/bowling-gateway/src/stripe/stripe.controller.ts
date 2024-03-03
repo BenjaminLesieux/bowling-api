@@ -14,6 +14,13 @@ export class StripeController {
   @Post('/webhook')
   async handleStripWebhook(@Req() req) {
     const event = req.stripeEvent;
-    return await lastValueFrom(this.paymentClient.send('stripe-webhook', event));
+    return await lastValueFrom(
+      this.paymentClient.send(
+        {
+          cmd: 'stripe-webhook',
+        },
+        { ...event },
+      ),
+    );
   }
 }

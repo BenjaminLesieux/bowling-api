@@ -27,7 +27,7 @@ export class BowlingPaymentService {
   }
 
   async handleStripeWebhook(event: any) {
-    console.log('MICROSERVICE PAYMENT RECEIVED WEBHOOK EVENT: ');
+    console.log('MICROSERVICE PAYMENT RECEIVED WEBHOOK EVENT: ', event);
     return { received: true };
   }
 }
