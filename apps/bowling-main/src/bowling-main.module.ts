@@ -4,6 +4,7 @@ import { BowlingMainService } from './bowling-main.service';
 import { AuthenticationModule, MicroservicesModule } from '@app/shared';
 import { z } from 'zod';
 import { ConfigModule } from '@nestjs/config';
+import { ProductModule } from './product/product.module';
 
 const envSchema = z.object({
   DB_URL: z.string().url(),
@@ -15,10 +16,11 @@ const envSchema = z.object({
   imports: [
     MicroservicesModule,
     AuthenticationModule,
+    ProductModule,
     ConfigModule.forRoot({
       isGlobal: true,
       validate: (config) => envSchema.parse(config),
-      envFilePath: './apps/bowling-main/.env',
+      envFilePath: '.env',
     }),
   ],
   controllers: [BowlingMainController],

@@ -13,8 +13,7 @@ export class ProductController {
 
   @MessagePattern({ cmd: 'search-products' })
   async getProducts(@Payload() data: number[], @Ctx() context: RmqContext) {
-    console.log(`Pattern: ${context.getPattern()}`);
-    return await this.productService.getProducts('');
+    return this.productService.getProducts('');
   }
 
   @MessagePattern('get-product-by-id')

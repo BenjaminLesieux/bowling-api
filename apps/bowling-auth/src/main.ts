@@ -5,6 +5,7 @@ import { patchNestJsSwagger, ZodValidationPipe } from 'nestjs-zod';
 import { MicroserviceOptions } from '@nestjs/microservices';
 import { Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
 patchNestJsSwagger();
 
@@ -25,6 +26,7 @@ async function bootstrap() {
   const microserviceOptions = microservicesService.getOptions('AUTH', true);
   app.connectMicroservice<MicroserviceOptions>(microserviceOptions);
   app.useGlobalPipes(new ZodValidationPipe());
+  console.log(app.get(ConfigService));
   await app.startAllMicroservices();
   // await app.listen(3001);
 }

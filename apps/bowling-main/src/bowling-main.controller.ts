@@ -1,11 +1,14 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { BowlingMainService } from './bowling-main.service';
+import { MessagePattern } from '@nestjs/microservices';
 
 @Controller()
 export class BowlingMainController {
   constructor(private readonly bowlingMainService: BowlingMainService) {}
 
-  @Get()
+  @MessagePattern({
+    cmd: 'hello',
+  })
   getHello(): string {
     return this.bowlingMainService.getHello();
   }

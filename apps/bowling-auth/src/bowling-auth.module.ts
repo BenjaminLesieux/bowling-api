@@ -6,7 +6,6 @@ import { DatabaseModule, MicroservicesModule } from '@app/shared';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { z } from 'zod';
 import { JwtModule } from '@nestjs/jwt';
-import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
 const envSchema = z.object({
@@ -25,7 +24,7 @@ const envSchema = z.object({
     ConfigModule.forRoot({
       isGlobal: true,
       validate: (env) => envSchema.parse(env),
-      envFilePath: './apps/bowling-auth/.env',
+      envFilePath: '.env',
     }),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
@@ -38,6 +37,6 @@ const envSchema = z.object({
     }),
   ],
   controllers: [BowlingAuthController],
-  providers: [BowlingAuthService, LocalStrategy, JwtStrategy],
+  providers: [BowlingAuthService, JwtStrategy],
 })
 export class BowlingAuthModule {}
