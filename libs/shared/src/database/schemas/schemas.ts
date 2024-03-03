@@ -13,7 +13,7 @@ export const productTable = pgTable('products', {
 });
 
 export const orderTable = pgTable('orders', {
-  id: uuid('id').defaultRandom(),
+  id: uuid('id').defaultRandom().primaryKey(),
   userId: uuid('user_id'),
   productId: uuid('product_id'),
   stripeCheckOutSessionId: varchar('stripe_checkout_session_id', { length: 255 }),

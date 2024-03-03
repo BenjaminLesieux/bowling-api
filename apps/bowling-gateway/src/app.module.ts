@@ -17,6 +17,8 @@ const envSchema = z.object({
   RABBITMQ_URL: z.string().url(),
   RABBITMQ_AUTH_QUEUE: z.string(),
   RABBITMQ_MAIN_QUEUE: z.string(),
+  STRIPE_SK_KEY: z.string(),
+  STRIPE_WEBHOOK_SECRET: z.string(),
 });
 
 @Module({

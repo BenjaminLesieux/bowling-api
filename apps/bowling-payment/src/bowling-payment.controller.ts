@@ -37,4 +37,11 @@ export class BowlingPaymentController {
       code: 500,
     });
   }
+
+  @MessagePattern({
+    cmd: 'stripe-webhook',
+  })
+  async handleStripeWebhook(event: any) {
+    return await this.bowlingPaymentService.handleStripeWebhook(event);
+  }
 }

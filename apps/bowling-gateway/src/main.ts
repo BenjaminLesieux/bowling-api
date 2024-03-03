@@ -5,12 +5,18 @@ import { patchNestJsSwagger } from 'nestjs-zod';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { RpcErrorsInterceptor } from '@app/shared/rpc-errors.interceptor';
 
+import { raw } from 'body-parser';
+
 patchNestJsSwagger();
 
 export const logger = new Logger('BowlingGateway');
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // webhook get rawBody
+  app.use('/stripe/webhook', raw({ type: 'application/json' }));
+
   const config = new DocumentBuilder().setTitle('Bowling API').setDescription('The Bowling API description').setVersion('1.0').addTag('bowling').build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

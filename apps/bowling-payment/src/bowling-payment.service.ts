@@ -25,4 +25,9 @@ export class BowlingPaymentService {
     });
     return session;
   }
+
+  async handleStripeWebhook(event: any) {
+    console.log('MICROSERVICE PAYMENT RECEIVED WEBHOOK EVENT: ');
+    return { received: true };
+  }
 }
