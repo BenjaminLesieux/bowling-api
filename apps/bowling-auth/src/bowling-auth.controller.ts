@@ -1,4 +1,4 @@
-import { Controller, Logger, Post, Res, UseGuards } from '@nestjs/common';
+import { Controller, Logger, UseGuards } from '@nestjs/common';
 import { BowlingAuthService } from './bowling-auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CurrentUser } from './current-user.decorator';
@@ -9,13 +9,6 @@ import { Ctx, MessagePattern, RmqContext } from '@nestjs/microservices';
 @Controller()
 export class BowlingAuthController {
   constructor(private readonly bowlingAuthService: BowlingAuthService) {}
-
-  @UseGuards(LocalAuthGuard)
-  @Post('/login')
-  async login(@CurrentUser() user: User, @Res({ passthrough: true }) response) {
-    await this.bowlingAuthService.login(user, response);
-    response.send(user);
-  }
 
   @UseGuards(LocalAuthGuard)
   @MessagePattern({
@@ -30,8 +23,11 @@ export class BowlingAuthController {
   @MessagePattern({
     cmd: 'validate-user',
   })
-  async validateUser(@CurrentUser() user: User) {
-    Logger.log('Validating user ' + user.email);
-    return user;
+  async validateUser(@CurrentUser() user: User, @Ctx() rmqCtx: RmqContext) {
+    console.log(user);
+    return {
+      ...user,
+      password: undefined,
+    };
   }
 }
