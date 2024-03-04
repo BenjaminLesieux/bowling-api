@@ -81,10 +81,10 @@ export class ProductService {
   async getProductsByIds(data: any) {
     try {
       const ids = data.map((d) => d.id);
-      const products = await this.db.query.productTable.findMany({
-        where: inArray(productTable.id, ids),
+      const productsData = await this.db.query.products.findMany({
+        where: inArray(products.id, ids),
       });
-      return products;
+      return productsData;
     } catch (error) {
       console.error('Error fetching products by ids:', error);
       throw error;

@@ -11,6 +11,8 @@ import { BowlingParksController } from './bowling-parks/bowling-parks.controller
 import { BowlingParksService } from './bowling-parks/bowling-parks.service';
 import { BowlingAlleysController } from './bowling-alleys/bowling-alleys.controller';
 import { BowlingAlleysService } from './bowling-alleys/bowling-alleys.service';
+import { OrderController } from './order/order.controller';
+import { OrderService } from './order/order.service';
 
 const envSchema = z.object({
   DB_URL: z.string().url(),
@@ -34,7 +36,7 @@ const envSchema = z.object({
       name: PAYMENT_MICROSERVICE,
     }),
   ],
-  controllers: [BowlingMainController, BowlingParksController, BowlingAlleysController],
-  providers: [BowlingMainService, BowlingParksService, QrcodeService, BowlingAlleysService],
+  controllers: [BowlingMainController, BowlingParksController, BowlingAlleysController, OrderController],
+  providers: [BowlingMainService, BowlingParksService, QrcodeService, BowlingAlleysService, OrderService],
 })
 export class BowlingMainModule {}

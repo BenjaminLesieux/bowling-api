@@ -31,6 +31,8 @@ export const orders = pgTable('orders', {
     length: 255,
   }),
   status: varchar('status', { length: 255 }),
+  totalAmount: integer('total_amount'),
+  payedAmount: integer('payed_amount'),
 });
 
 export const products = pgTable(
