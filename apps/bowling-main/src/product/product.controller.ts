@@ -9,7 +9,7 @@ export class ProductController {
 
   @MessagePattern({ cmd: 'search-products' })
   async getProducts() {
-    return this.productService.getProducts('');
+    return this.productService.getProducts();
   }
 
   @MessagePattern({ cmd: 'get-products-by-ids' })
