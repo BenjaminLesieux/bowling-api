@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
 import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
 
-import { Product, productTable, userTable } from '@app/shared/database/schemas/schemas';
+import { Product, products, users } from '@app/shared/database/schemas/schemas';
 
 import { withCursorPagination } from 'drizzle-pagination';
 import { eq } from 'drizzle-orm';
@@ -14,10 +14,10 @@ export class ProductService {
   async getProducts(lastItem: string | null) {
     try {
       console.log('im called');
-      const products = await this.db.query.productTable.findMany(
+      const products = await this.db.query.products.findMany(
         withCursorPagination({
           limit: 32,
-          cursors: [[userTable.id, 'asc', lastItem]],
+          cursors: [[users.id, 'asc', lastItem]],
         }),
       );
       return products;
@@ -29,8 +29,8 @@ export class ProductService {
   }
   async getProductById(id: string) {
     try {
-      const product = await this.db.query.productTable.findFirst({
-        where: eq(userTable.id, id),
+      const product = await this.db.query.products.findFirst({
+        where: eq(users.id, id),
       });
       return product;
     } catch (error) {
@@ -41,13 +41,13 @@ export class ProductService {
   }
   async addProduct(data: Omit<Product, 'id'>) {
     try {
-      const existingProduct = await this.db.query.productTable.findFirst({
-        where: eq(productTable.name, data.name),
+      const existingProduct = await this.db.query.products.findFirst({
+        where: eq(products.name, data.name),
       });
 
       if (existingProduct) throw new Error(`Product ${existingProduct.name} already exists`);
 
-      const product = await this.db.insert(productTable).values(data);
+      const product = await this.db.insert(products).values(data);
       return product;
     } catch (err) {
       console.log(`Error adding product`, data);
@@ -58,12 +58,12 @@ export class ProductService {
   async updateProduct(data: Product) {
     try {
       const product = await this.db
-        .update(productTable)
+        .update(products)
         .set({
           name: data.name,
           price: data.price,
         })
-        .where(eq(productTable.id, data.id));
+        .where(eq(products.id, data.id));
       return product;
     } catch (err) {
       console.log('Error updating product', data);
@@ -72,7 +72,7 @@ export class ProductService {
 
   async deleteProduct(id: string) {
     try {
-      await this.db.delete(productTable).where(eq(productTable.id, id));
+      await this.db.delete(products).where(eq(products.id, id));
     } catch (err) {
       console.log('Error delete product', id);
     }

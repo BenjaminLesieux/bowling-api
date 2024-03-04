@@ -3,7 +3,7 @@ import { z } from 'nestjs-zod/z';
 import { createInsertSchema } from 'drizzle-zod';
 import schemas from '@app/shared/database/schemas/schemas';
 
-export const createParkSchema = createInsertSchema(schemas.bowlingParkTable);
+export const createParkSchema = createInsertSchema(schemas.bowlingParks);
 export const updateParkSchema = z.object({
   id: z.string(),
   name: z.string().optional(),
