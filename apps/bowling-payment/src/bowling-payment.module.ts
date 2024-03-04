@@ -10,6 +10,7 @@ const envSchema = z.object({
   DB_URL: z.string().url(),
   RABBITMQ_URL: z.string().url(),
   RABBITMQ_MAIN_QUEUE: z.string(),
+  RABBITMQ_PAYMENT_QUEUE: z.string(),
   STRIPE_SK_KEY: z.string(),
   STRIPE_PK_KEY: z.string(),
 });

@@ -7,9 +7,7 @@ import { LoggedUserResponseDto } from './dto/logged-user-response.dto';
 
 @Injectable()
 export class AuthenticationService {
-  constructor(
-    @Inject(AUTH_MICROSERVICE) private readonly client: ClientProxy,
-  ) {}
+  constructor(@Inject(AUTH_MICROSERVICE) private readonly client: ClientProxy) {}
 
   async register(user: CreateUserDto) {
     return await lastValueFrom(

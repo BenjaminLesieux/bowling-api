@@ -4,6 +4,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { MAIN_MICROSERVICE, PAYMENT_MICROSERVICE } from '@app/shared/services';
 import { AddProductDto } from './dto/addProductDto';
+import { CreateCheckoutDto } from './dto/createCheckoutDto';
 
 @Injectable()
 export class ProductService {
@@ -32,18 +33,26 @@ export class ProductService {
     }
   }
 
-  async checkout(data: any) {
+  async checkout(data: CreateCheckoutDto) {
     try {
+      // check if products are available
+      const products = await lastValueFrom(
+        this.mainClient.send(
+          {
+            cmd: 'get-products-by-ids',
+          },
+          data.products,
+        ),
+      );
+      console.log('products', products);
       const res = await lastValueFrom(
         this.paymentClient.send(
           {
             cmd: 'create-checkout-session',
           },
-          data,
+          products,
         ),
       );
-
-      console.log('checkout is', res);
 
       return res;
     } catch (err) {

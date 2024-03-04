@@ -8,8 +8,16 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @MessagePattern({ cmd: 'search-products' })
-  async getProducts(@Payload() data: number[], @Ctx() context: RmqContext) {
+  async getProducts() {
     return this.productService.getProducts('');
+  }
+
+  @MessagePattern({ cmd: 'get-products-by-ids' })
+  async getProductsByIds(
+    @Payload()
+    data: any,
+  ) {
+    return this.productService.getProductsByIds(data);
   }
 
   @MessagePattern('get-product-by-id')
