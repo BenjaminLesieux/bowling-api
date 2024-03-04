@@ -4,6 +4,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { MAIN_MICROSERVICE, PAYMENT_MICROSERVICE } from '@app/shared/services';
 import { AddProductDto } from './dto/addProductDto';
+import { UpdateProductDto } from './dto/updateProductDto';
 
 @Injectable()
 export class ProductService {
@@ -11,6 +12,23 @@ export class ProductService {
     @Inject(MAIN_MICROSERVICE) private readonly mainClient: ClientProxy,
     @Inject(PAYMENT_MICROSERVICE) private readonly paymentClient: ClientProxy,
   ) {}
+
+  async get(id: string) {
+    try {
+      const product = await lastValueFrom(
+        this.mainClient.send(
+          {
+            cmd: 'get-product-by-id',
+          },
+          id,
+        ),
+      );
+      return product;
+    } catch (err) {
+      console.error('Error getting product:', err);
+      throw err;
+    }
+  }
 
   async search(data: SearchProductDto) {
     try {
@@ -67,7 +85,7 @@ export class ProductService {
     }
   }
 
-  async update(name: string, data: AddProductDto) {
+  async update(id: string, data: UpdateProductDto) {
     try {
       const product = await lastValueFrom(
         this.mainClient.send(
@@ -76,7 +94,7 @@ export class ProductService {
           },
           {
             ...data,
-            name,
+            id,
           },
         ),
       );
@@ -86,7 +104,7 @@ export class ProductService {
     }
   }
 
-  async deleteProduct(name: string) {
+  async deleteProduct(id: string) {
     try {
       const product = await lastValueFrom(
         this.mainClient.send(
@@ -94,7 +112,7 @@ export class ProductService {
             cmd: 'delete-product',
           },
           {
-            name,
+            id,
           },
         ),
       );

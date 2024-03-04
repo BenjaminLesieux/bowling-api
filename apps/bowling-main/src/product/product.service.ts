@@ -55,26 +55,26 @@ export class ProductService {
     }
   }
 
-  async updateProduct(data: Omit<Product, 'id'> & { newName: string }) {
+  async updateProduct(data: Product) {
     try {
       const product = await this.db
         .update(productTable)
         .set({
-          name: data.newName ?? data.name,
+          name: data.name,
           price: data.price,
         })
-        .where(eq(productTable.name, data.name));
+        .where(eq(productTable.id, data.id));
       return product;
     } catch (err) {
       console.log('Error updating product', data);
     }
   }
 
-  async deleteProduct(name: string) {
+  async deleteProduct(id: string) {
     try {
-      await this.db.delete(productTable).where(eq(productTable.name, name));
+      await this.db.delete(productTable).where(eq(productTable.id, id));
     } catch (err) {
-      console.log('Error delete product', name);
+      console.log('Error delete product', id);
     }
   }
 }
