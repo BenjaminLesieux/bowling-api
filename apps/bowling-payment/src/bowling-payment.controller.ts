@@ -15,7 +15,7 @@ export class BowlingPaymentController {
   })
   async create(
     @Payload()
-    data: { orderId: string; products: CheckoutProduct[] },
+    data: { orderId: string; amountToPay: number },
     @CurrentUser() user: User,
   ): Promise<any> {
     // first we should check if transaction is not already pending
@@ -27,7 +27,7 @@ export class BowlingPaymentController {
         code: 400,
       });
     }
-    const res = await this.bowlingPaymentService.createCheckoutSession(data.products);
+    const res = await this.bowlingPaymentService.createCheckoutSession(data);
     if (res.url) {
       // create order in db
       await this.bowlingPaymentService.createTransaction(res.id, user.id, data.orderId);

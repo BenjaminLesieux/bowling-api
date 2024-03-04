@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
-import { orders, transactions } from '@app/shared/database/schemas/schemas';
+import { transactions } from '@app/shared/database/schemas/schemas';
 import { and, eq } from 'drizzle-orm';
 
 export interface CheckoutProduct {
@@ -20,19 +20,22 @@ export class BowlingPaymentService {
     @Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase,
   ) {}
 
-  async createCheckoutSession(products: CheckoutProduct[]) {
+  async createCheckoutSession(data: { orderId: string; amountToPay: number }) {
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      line_items: products.map((product) => ({
-        price_data: {
-          currency: 'eur',
-          product_data: {
-            name: product.name,
+      line_items: [
+        {
+          price_data: {
+            currency: 'eur',
+            product_data: {
+              name: 'Paiement pour ' + data.orderId,
+            },
+            unit_amount: data.amountToPay,
           },
-          unit_amount: product.price * 100,
         },
-        quantity: product.quantity,
-      })),
+        //quantity: product.quantity,
+      ],
+
       mode: 'payment',
       success_url: 'https://example.com/success',
       cancel_url: 'https://example.com/cancel',
@@ -40,13 +43,14 @@ export class BowlingPaymentService {
     return session;
   }
 
-  async createTransaction(id: string, userId: string, orderId: string) {
+  async createTransaction(id: string, userId: string, orderId: string, amountToPay: number) {
     // create order in db
     await this.db.insert(transactions).values({
       orderId,
       userId,
       status: 'pending',
       stripeCheckoutSessionId: id,
+      amount: amountToPay,
     });
   }
 
