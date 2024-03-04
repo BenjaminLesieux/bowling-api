@@ -99,7 +99,7 @@ export const bowlingParkToProductsTable = pgTable(
       .references(() => products.id),
   },
   (t) => ({
-    pk: primaryKey(t.bowlingParkId, t.productId),
+    pk: primaryKey({ columns: [t.bowlingParkId, t.productId] }),
   }),
 );
 
@@ -125,7 +125,7 @@ export const ordersToProductsTable = pgTable(
       .references(() => products.id),
   },
   (t) => ({
-    pk: primaryKey(t.orderId, t.productId),
+    pk: primaryKey({ columns: [t.orderId, t.productId] }),
   }),
 );
 
