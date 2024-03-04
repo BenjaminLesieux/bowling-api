@@ -1,7 +1,9 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { SearchProductDto } from './dto/searchProductDto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('products')
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
@@ -9,6 +11,6 @@ export class ProductController {
   @Post('/search')
   async search(@Body() body: SearchProductDto) {
     console.log('search', body);
-    return await this.productService.search(body);
+    return await this.productService.search(body, '');
   }
 }

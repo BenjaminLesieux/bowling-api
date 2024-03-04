@@ -15,7 +15,7 @@ export class ProductService {
       const products = await lastValueFrom(
         this.mainClient.send(
           {
-            cmd: 'get-products',
+            cmd: 'search-products',
           },
           data,
         ),

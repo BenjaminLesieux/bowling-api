@@ -13,7 +13,9 @@ import { AuthenticationService } from './authentication.service';
 import { CurrentUser } from '../../../bowling-auth/src/current-user.decorator';
 import { User } from '@app/shared/database/schemas/schemas';
 import { JwtAuthGuard } from '@app/shared';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('authentication')
 @Controller('authentication')
 export class AuthenticationController {
   constructor(private readonly authService: AuthenticationService) {}
