@@ -4,22 +4,16 @@ import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/databa
 
 import { Product, products, users } from '@app/shared/database/schemas/schemas';
 
-import { withCursorPagination } from 'drizzle-pagination';
 import { eq, inArray } from 'drizzle-orm';
 
 @Injectable()
 export class ProductService {
   constructor(@Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase) {}
 
-  async getProducts(lastItem: string | null) {
+  async getProducts() {
     try {
-      console.log('im called');
-      const products = await this.db.query.products.findMany(
-        withCursorPagination({
-          limit: 32,
-          cursors: [[users.id, 'asc', lastItem]],
-        }),
-      );
+      // TODO FIX PAGINATION
+      const products = await this.db.query.products.findMany();
       return products;
     } catch (error) {
       // Handle errors appropriately (e.g., log, throw, or return a default value)
