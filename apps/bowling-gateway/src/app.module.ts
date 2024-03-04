@@ -15,6 +15,8 @@ import { BowlingAlleysService } from './bowling-alleys/bowling-alleys.service';
 import { BowlingAlleysController } from './bowling-alleys/bowling-alleys.controller';
 import { StripeController } from './stripe/stripe.controller';
 import { StripeService } from './stripe/stripe.service';
+import { OrderController } from './order/order.controller';
+import { OrderService } from './order/order.service';
 
 const envSchema = z.object({
   DB_URL: z.string().url(),
@@ -41,7 +43,7 @@ const envSchema = z.object({
       name: PAYMENT_MICROSERVICE,
     }),
   ],
-  controllers: [AppController, ProductController, AuthenticationController, BowlingParksController, BowlingAlleysController, StripeController],
-  providers: [AppService, ProductService, AuthenticationService, BowlingParksService, BowlingAlleysService, StripeService],
+  controllers: [AppController, ProductController, AuthenticationController, BowlingParksController, BowlingAlleysController, StripeController, OrderController],
+  providers: [AppService, ProductService, AuthenticationService, BowlingParksService, BowlingAlleysService, StripeService, OrderService],
 })
 export class AppModule {}
