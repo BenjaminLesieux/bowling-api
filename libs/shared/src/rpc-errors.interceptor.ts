@@ -13,7 +13,6 @@ export class RpcErrorsInterceptor implements NestInterceptor {
     return next.handle().pipe(
       catchError((error) =>
         throwError(() => {
-          console.log(error);
           throw new HttpException(
             error.message,
             error.status === 'error' ? 500 : error.status,

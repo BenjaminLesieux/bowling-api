@@ -41,7 +41,7 @@ const productRelations = relations(productTable, ({ many }) => ({
   bowlingParks: many(bowlingParkTable),
 }));
 
-export const orders = pgTable('orders', {
+export const orderTable = pgTable('orders', {
   id: uuid('id').defaultRandom().primaryKey().notNull(),
   userId: uuid('user_id'),
   productId: uuid('product_id'),
@@ -71,6 +71,7 @@ export type BowlingPark = typeof bowlingParkTable.$inferSelect;
 export type AddBowlingPark = typeof bowlingParkTable.$inferInsert;
 export type BowlingAlley = typeof bowlingAlleyTable.$inferSelect;
 export type AddBowlingAlley = typeof bowlingAlleyTable.$inferInsert;
+export type Order = typeof orderTable.$inferSelect;
 
 export default {
   userTable,
@@ -80,5 +81,5 @@ export default {
   bowlingParksRelations,
   bowlingAlleysRelations,
   productRelations,
-  orders,
+  orderTable,
 };

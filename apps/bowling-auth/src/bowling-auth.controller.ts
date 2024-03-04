@@ -21,10 +21,7 @@ export class BowlingAuthController {
   @MessagePattern({
     cmd: 'login',
   })
-  async loginMicroservice(
-    @CurrentUser() user: User,
-    @Ctx() context: RmqContext,
-  ) {
+  async loginMicroservice(@CurrentUser() user: User, @Ctx() context: RmqContext) {
     Logger.log('Received login request from microservice');
     return await this.bowlingAuthService.loginMicroservice(user, context);
   }

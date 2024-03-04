@@ -6,13 +6,8 @@ export function getCurrentUserByContext(context: ExecutionContext): User {
     return context.switchToHttp().getRequest().user;
   }
   if (context.getType() === 'rpc') {
-    return context.switchToRpc().getContext().user
-      ? context.switchToRpc().getContext().user
-      : context.switchToRpc().getData();
+    return context.switchToRpc().getContext().user ? context.switchToRpc().getContext().user : context.switchToRpc().getData();
   }
 }
 
-export const CurrentUser = createParamDecorator(
-  (_data: unknown, context: ExecutionContext) =>
-    getCurrentUserByContext(context),
-);
+export const CurrentUser = createParamDecorator((_data: unknown, context: ExecutionContext) => getCurrentUserByContext(context));

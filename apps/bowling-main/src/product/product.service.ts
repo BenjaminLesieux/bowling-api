@@ -1,19 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
-import {
-  DATABASE_PROVIDER,
-  PostgresDatabase,
-} from '@app/shared/database/database.provider';
-import { userTable } from '@app/shared/database/schemas/schemas';
+import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
+
+import { Product, productTable, userTable } from '@app/shared/database/schemas/schemas';
 
 import { withCursorPagination } from 'drizzle-pagination';
 import { eq } from 'drizzle-orm';
 
 @Injectable()
 export class ProductService {
-  constructor(
-    @Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase,
-  ) {}
+  constructor(@Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase) {}
 
   async getProducts(lastItem: string | null) {
     try {
@@ -41,6 +37,38 @@ export class ProductService {
       // Handle errors appropriately (e.g., log, throw, or return a default value)
       console.error('Error fetching product:', error);
       throw error;
+    }
+  }
+  async addProduct(data: Omit<Product, 'id'>) {
+    try {
+      const product = await this.db.insert(productTable).values(data);
+      return product;
+    } catch (err) {
+      console.log(`Error adding product`, data);
+      throw err;
+    }
+  }
+
+  async updateProduct(data: Omit<Product, 'id'> & { oldName: string }) {
+    try {
+      const product = await this.db
+        .update(productTable)
+        .set({
+          name: data.name,
+          price: data.price,
+        })
+        .where(eq(productTable.name, data.oldName));
+      return product;
+    } catch (err) {
+      console.log('Error updating product', data);
+    }
+  }
+
+  async deleteProduct(name: string) {
+    try {
+      await this.db.delete(productTable).where(eq(productTable.name, name));
+    } catch (err) {
+      console.log('Error delete product', name);
     }
   }
 }

@@ -9,6 +9,7 @@ import {
 import { z } from 'zod';
 import { ConfigModule } from '@nestjs/config';
 import { ProductModule } from './product/product.module';
+import { QrcodeService } from './qrcode/qrcode.service';
 import { BowlingParksController } from './bowling-parks/bowling-parks.controller';
 import { BowlingParksService } from './bowling-parks/bowling-parks.service';
 
@@ -31,6 +32,6 @@ const envSchema = z.object({
     }),
   ],
   controllers: [BowlingMainController, BowlingParksController],
-  providers: [BowlingMainService, BowlingParksService],
+  providers: [BowlingMainService, BowlingParksService, QrcodeService],
 })
 export class BowlingMainModule {}
