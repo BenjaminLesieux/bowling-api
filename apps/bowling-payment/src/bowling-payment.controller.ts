@@ -18,10 +18,18 @@ export class BowlingPaymentController {
     data: { orderId: string; products: CheckoutProduct[] },
     @CurrentUser() user: User,
   ): Promise<any> {
+    // first we should check if transaction is not already pending
+    const transaction = await this.bowlingPaymentService.getPendingTransaction(data.orderId);
+    // manage the concurrency between the payment sessions.
+    if (transaction) {
+      throw new RpcException({
+        message: 'Transaction already pending',
+        code: 400,
+      });
+    }
     const res = await this.bowlingPaymentService.createCheckoutSession(data.products);
     if (res.url) {
       // create order in db
-      console.log('created user is', user);
       await this.bowlingPaymentService.createTransaction(res.id, user.id, data.orderId);
       return res.url;
     }

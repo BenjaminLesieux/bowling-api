@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
 import { orders, transactions } from '@app/shared/database/schemas/schemas';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 
 export interface CheckoutProduct {
   id: string;
@@ -59,5 +59,11 @@ export class BowlingPaymentService {
       await this.db.update(transactions).set({ status: 'expired' }).where(eq(transactions.stripeCheckoutSessionId, event.data.object.id));
     }
     return;
+  }
+
+  async getPendingTransaction(orderId: string) {
+    return await this.db.query.transactions.findFirst({
+      where: and(eq(transactions.orderId, orderId), eq(transactions.status, 'pending')),
+    });
   }
 }
