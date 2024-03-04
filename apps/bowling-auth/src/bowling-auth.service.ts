@@ -7,6 +7,8 @@ import { UsersService } from './users/users.service';
 
 export interface TokenPayload {
   userId: string;
+  email: string;
+  role: 'admin' | 'manager' | 'user';
 }
 
 @Injectable()
@@ -17,48 +19,26 @@ export class BowlingAuthService {
     private readonly userService: UsersService,
   ) {}
 
-  async login(user: User, response) {
-    const tokenPayload: TokenPayload = { userId: user.id };
-    const expires = new Date();
-    expires.setSeconds(expires.getSeconds() + this.configService.get<number>('JWT_EXPIRATION'));
-    const token = this.jwtService.sign(tokenPayload);
-
-    response.cookie('Authentication', token, {
-      httpOnly: true,
-      expires,
-    });
-  }
-
   async loginMicroservice(user: User, context: RmqContext) {
-    const userId = user.hasOwnProperty('id')
-      ? user.id
-      : (
-          await this.userService.getBy({
-            email: user.email,
-          })
-        ).id;
-    const tokenPayload: TokenPayload = { userId };
+    const foundUser = await this.userService.getBy({ email: user.email });
+    const tokenPayload: TokenPayload = { userId: user.id, email: user.email, role: user.role };
     const expires = new Date();
     expires.setSeconds(expires.getSeconds() + this.configService.get('JWT_EXPIRATION'));
     const token = this.jwtService.sign(tokenPayload);
     const t = {
       user: {
-        ...user,
+        ...foundUser,
         password: undefined,
       },
       token,
       expiresIn: expires.getTime(),
     };
-    console.log(t);
     return t;
   }
 
   async validateToken(token: string) {
     try {
-      const decoded = this.jwtService.verify<TokenPayload>(token);
-      return this.userService.getBy({
-        id: decoded.userId,
-      });
+      return this.jwtService.verify<TokenPayload>(token);
     } catch (error) {
       throw new RpcException({
         message: error.message,

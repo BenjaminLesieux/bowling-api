@@ -3,7 +3,6 @@ import { AUTH_MICROSERVICE } from '@app/shared/services';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateUserDto } from './dto/create-user.dto';
 import { lastValueFrom } from 'rxjs';
-import { LoggedUserResponseDto } from './dto/logged-user-response.dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -21,7 +20,7 @@ export class AuthenticationService {
   }
 
   async login(user: CreateUserDto, res) {
-    const response = await lastValueFrom<LoggedUserResponseDto>(
+    const response = await lastValueFrom(
       this.client.send(
         {
           cmd: 'login',
@@ -32,6 +31,16 @@ export class AuthenticationService {
 
     res.cookie('Authentication', response.token, {
       httpOnly: true,
+    });
+    res.cookie('User', JSON.stringify(response.user), {
+      httpOnly: true,
+    });
+  }
+
+  async logout(res) {
+    res.cookie('Authentication', '', {
+      httpOnly: true,
+      expires: new Date(0),
     });
   }
 

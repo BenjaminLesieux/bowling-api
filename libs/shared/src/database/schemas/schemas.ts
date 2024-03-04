@@ -1,9 +1,12 @@
 import { date, integer, pgEnum, pgTable, primaryKey, unique, uuid, varchar } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
+export const userRoles = pgEnum('user_role', ['admin', 'manager', 'user']);
+
 export const users = pgTable('users', {
   id: uuid('id').defaultRandom().primaryKey(),
   email: varchar('email', { length: 255 }).unique(),
+  role: userRoles('role').default('user'),
   password: varchar('password', { length: 255 }),
 });
 
@@ -27,12 +30,21 @@ export const bowlingAlleys = pgTable('bowling_alleys', {
 export const orders = pgTable('orders', {
   id: uuid('id').defaultRandom().primaryKey().notNull(),
   userId: uuid('user_id'),
-  stripeCheckoutSessionId: varchar('stripe_checkout_session_id', {
-    length: 255,
-  }),
   status: varchar('status', { length: 255 }),
   totalAmount: integer('total_amount'),
   payedAmount: integer('payed_amount'),
+});
+
+export const transactions = pgTable('transactions', {
+  id: uuid('id').defaultRandom().primaryKey().notNull(),
+  orderId: uuid('order_id')
+    .notNull()
+    .references(() => orders.id),
+  amount: integer('amount').notNull(),
+  status: varchar('status', { length: 255 }).notNull(),
+  stripeCheckoutSessionId: varchar('stripe_checkout_session_id', {
+    length: 255,
+  }),
 });
 
 export const products = pgTable(
@@ -153,6 +165,14 @@ export const productRelations = relations(products, ({ many }) => ({
 export const orderRelations = relations(orders, ({ one, many }) => ({
   session: one(sessions),
   products: many(ordersToProductsTable),
+  transactions: many(transactions),
+}));
+
+export const transactionRelations = relations(transactions, ({ one }) => ({
+  order: one(orders, {
+    fields: [transactions.orderId],
+    references: [orders.id],
+  }),
 }));
 
 /*
@@ -169,6 +189,7 @@ export type Session = typeof sessions.$inferSelect;
 
 export default {
   users,
+  userRoles,
   products,
   bowlingParks,
   bowlingAlleys,
