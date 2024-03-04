@@ -41,21 +41,7 @@ const envSchema = z.object({
       name: PAYMENT_MICROSERVICE,
     }),
   ],
-  controllers: [
-    AppController,
-    ProductController,
-    AuthenticationController,
-    BowlingParksController,
-    BowlingAlleysController,
-    StripeController
-  ],
-  providers: [
-    AppService,
-    ProductService,
-    AuthenticationService,
-    BowlingParksService,
-    BowlingAlleysService,
-    StripeService,
-  ],
+  controllers: [AppController, ProductController, AuthenticationController, BowlingParksController, BowlingAlleysController, StripeController],
+  providers: [AppService, ProductService, AuthenticationService, BowlingParksService, BowlingAlleysService, StripeService],
 })
 export class AppModule {}

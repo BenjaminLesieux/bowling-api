@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
-import { orders } from '@app/shared/database/schemas/schemas';
+import { orders, transactions } from '@app/shared/database/schemas/schemas';
 import { eq } from 'drizzle-orm';
 
 export interface CheckoutProduct {
@@ -40,22 +40,23 @@ export class BowlingPaymentService {
     return session;
   }
 
-  async createOrder(id: string, userId: string) {
+  async createTransaction(id: string, userId: string, orderId: string) {
     // create order in db
-    await this.db.insert(orders).values({
-      stripeCheckoutSessionId: id,
+    await this.db.insert(transactions).values({
+      orderId,
+      userId,
       status: 'pending',
-      id: userId,
+      stripeCheckoutSessionId: id,
     });
   }
 
   async handleStripeWebhook(event: any) {
     console.log('event', event);
     if (event.type === 'checkout.session.completed') {
-      await this.db.update(orders).set({ status: 'completed' }).where(eq(orders.stripeCheckoutSessionId, event.data.object.id));
+      await this.db.update(transactions).set({ status: 'completed' }).where(eq(transactions.stripeCheckoutSessionId, event.data.object.id));
     }
     if (event.type === 'checkout.session.expired') {
-      await this.db.update(orders).set({ status: 'expired' }).where(eq(orders.stripeCheckoutSessionId, event.data.object.id));
+      await this.db.update(transactions).set({ status: 'expired' }).where(eq(transactions.stripeCheckoutSessionId, event.data.object.id));
     }
     return;
   }

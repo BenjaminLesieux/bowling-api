@@ -15,14 +15,14 @@ export class BowlingPaymentController {
   })
   async create(
     @Payload()
-    data: CheckoutProduct[],
+    data: { orderId: string; products: CheckoutProduct[] },
     @CurrentUser() user: User,
   ): Promise<any> {
-    const res = await this.bowlingPaymentService.createCheckoutSession(data);
+    const res = await this.bowlingPaymentService.createCheckoutSession(data.products);
     if (res.url) {
       // create order in db
       console.log('created user is', user);
-      await this.bowlingPaymentService.createOrder(res.id, user.id);
+      await this.bowlingPaymentService.createTransaction(res.id, user.id, data.orderId);
       return res.url;
     }
     throw new RpcException({

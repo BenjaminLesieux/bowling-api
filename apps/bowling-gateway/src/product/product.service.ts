@@ -58,6 +58,7 @@ export class ProductService {
           data.products,
         ),
       );
+
       const productsWithQuantity = products.map((product) => {
         const quantity = data.products.find((p) => p.id === product.id).quantity;
         return {
@@ -65,12 +66,16 @@ export class ProductService {
           quantity,
         };
       });
+      const checkoutData = {
+        products: productsWithQuantity,
+        orderId: data.orderId,
+      };
       const res = await lastValueFrom(
         this.paymentClient.send(
           {
             cmd: 'create-checkout-session',
           },
-          productsWithQuantity,
+          checkoutData,
         ),
       );
 

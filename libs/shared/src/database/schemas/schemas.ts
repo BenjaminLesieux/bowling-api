@@ -1,4 +1,4 @@
-import { date, integer, pgEnum, pgTable, primaryKey, unique, uuid, varchar } from 'drizzle-orm/pg-core';
+import { boolean, date, integer, pgEnum, pgTable, primaryKey, unique, uuid, varchar } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 export const userRoles = pgEnum('user_role', ['admin', 'manager', 'user']);
@@ -40,7 +40,8 @@ export const transactions = pgTable('transactions', {
   orderId: uuid('order_id')
     .notNull()
     .references(() => orders.id),
-  amount: integer('amount').notNull(),
+  amount: integer('amount'),
+  userId: uuid('user_id').notNull(),
   status: varchar('status', { length: 255 }).notNull(),
   stripeCheckoutSessionId: varchar('stripe_checkout_session_id', {
     length: 255,
@@ -123,6 +124,7 @@ export const ordersToProductsTable = pgTable(
     productId: uuid('product_id')
       .notNull()
       .references(() => products.id),
+    quantity: integer('quantity').notNull(),
   },
   (t) => ({
     pk: primaryKey({ columns: [t.orderId, t.productId] }),
@@ -186,11 +188,13 @@ export type BowlingAlley = typeof bowlingAlleys.$inferSelect;
 export type AddBowlingAlley = typeof bowlingAlleys.$inferInsert;
 export type Order = typeof orders.$inferSelect;
 export type Session = typeof sessions.$inferSelect;
+export type Transaction = typeof transactions.$inferSelect;
 
 export default {
   users,
   userRoles,
   products,
+  transactions,
   bowlingParks,
   bowlingAlleys,
   orders,

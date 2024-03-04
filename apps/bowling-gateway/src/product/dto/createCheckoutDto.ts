@@ -8,5 +8,6 @@ export const createCheckoutSchema = z.object({
       quantity: z.number().positive('quantity must be positive'),
     }),
   ),
+  orderId: z.string(),
 });
 export class CreateCheckoutDto extends createZodDto(createCheckoutSchema) {}
