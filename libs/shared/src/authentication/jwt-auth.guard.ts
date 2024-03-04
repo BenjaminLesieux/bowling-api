@@ -32,9 +32,7 @@ export class JwtAuthGuard implements CanActivate {
           this.addUser(response, context);
         }),
         catchError((error) => {
-          throw new UnauthorizedException(
-            'Invalid authentication token:' + error,
-          );
+          throw new UnauthorizedException(error.message);
         }),
       );
   }
