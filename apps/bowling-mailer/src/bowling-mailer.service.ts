@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 });
 
 @Injectable()
-export class MailService {
+export class BowlingMailerService {
   constructor() {}
 
   getHello(): string {

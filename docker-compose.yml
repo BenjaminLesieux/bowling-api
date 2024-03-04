@@ -63,9 +63,9 @@ services:
     restart: on-failure
     build:
       context: .
-      dockerfile: ./apps/mailer/Dockerfile
+      dockerfile: ./apps/bowling-mailer/Dockerfile
       target: development
-    command: pnpm run start:dev mailer
+    command: pnpm run start:dev bowling-mailer
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules

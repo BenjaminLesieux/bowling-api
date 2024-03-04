@@ -10,7 +10,7 @@ RUN pnpm install
 
 COPY . .
 
-RUN pnpm run build mailer
+RUN pnpm run build bowling-mailer
 
 FROM node:alpine as production
 
@@ -28,4 +28,4 @@ COPY . .
 
 COPY --from=development /usr/src/app/dist ./dist
 
-CMD ["node", "dist/apps/mailer/src/main"]
+CMD ["node", "dist/apps/bowling-mailer/src/main"]

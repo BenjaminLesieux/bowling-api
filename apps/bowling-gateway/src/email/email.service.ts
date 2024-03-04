@@ -13,6 +13,9 @@ export class EmailService {
   }
 
   async sendEmail(email: EmailDto) {
-    return await lastValueFrom(this.client.send({ cmd: 'send-email' }, email));
+    console.log('sending')
+    await lastValueFrom(this.client.send({ cmd: 'send-email' }, email));
+    console.log('sent')
+    return;
   }
 }

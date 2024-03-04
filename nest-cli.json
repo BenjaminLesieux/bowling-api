@@ -72,6 +72,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/mailer/tsconfig.app.json"
       }
+    },
+    "bowling-mailer": {
+      "type": "application",
+      "root": "apps/bowling-mailer",
+      "entryFile": "main",
+      "sourceRoot": "apps/bowling-mailer/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/bowling-mailer/tsconfig.app.json"
+      }
     }
   }
 }
