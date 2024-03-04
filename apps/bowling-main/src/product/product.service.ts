@@ -5,7 +5,7 @@ import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/databa
 import { Product, products, users } from '@app/shared/database/schemas/schemas';
 
 import { withCursorPagination } from 'drizzle-pagination';
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 
 @Injectable()
 export class ProductService {
@@ -75,6 +75,19 @@ export class ProductService {
       await this.db.delete(products).where(eq(products.id, id));
     } catch (err) {
       console.log('Error delete product', id);
+    }
+  }
+
+  async getProductsByIds(data: any) {
+    try {
+      const ids = data.map((d) => d.id);
+      const products = await this.db.query.productTable.findMany({
+        where: inArray(productTable.id, ids),
+      });
+      return products;
+    } catch (error) {
+      console.error('Error fetching products by ids:', error);
+      throw error;
     }
   }
 }
