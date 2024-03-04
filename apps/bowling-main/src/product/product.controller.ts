@@ -12,7 +12,7 @@ export class ProductController {
     return 'hi';
   }
 
-  @MessagePattern('get-product-by-id')
+  @MessagePattern({ cmd: 'get-product-by-id' })
   async getProductById(id: string) {
     return await this.productService.getProductById(id);
   }
@@ -24,14 +24,14 @@ export class ProductController {
   }
 
   @MessagePattern({ cmd: 'update-product' })
-  async updateProduct(@Payload() data: Omit<Product, 'id'> & { oldName: string }, @Ctx() context: RmqContext) {
+  async updateProduct(@Payload() data: Product, @Ctx() context: RmqContext) {
     console.log(`Pattern: ${context.getPattern()}`);
     return await this.productService.updateProduct(data);
   }
 
   @MessagePattern({ cmd: 'delete-product' })
-  async deleteProduct(@Payload() data: { name: string }, @Ctx() context: RmqContext) {
+  async deleteProduct(@Payload() data: { id: string }, @Ctx() context: RmqContext) {
     console.log(`Pattern: ${context.getPattern()}`);
-    return await this.productService.deleteProduct(data.name);
+    return await this.productService.deleteProduct(data.id);
   }
 }
