@@ -67,7 +67,7 @@ export class ProductService {
     }
   }
 
-  async update(oldName: string, data: AddProductDto) {
+  async update(name: string, data: AddProductDto) {
     try {
       const product = await lastValueFrom(
         this.mainClient.send(
@@ -76,7 +76,7 @@ export class ProductService {
           },
           {
             ...data,
-            oldName,
+            name,
           },
         ),
       );

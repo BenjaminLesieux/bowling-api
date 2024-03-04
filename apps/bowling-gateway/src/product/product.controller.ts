@@ -1,8 +1,10 @@
-import { Body, Controller, Delete, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Patch, Post, UseGuards } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { SearchProductDto } from './dto/searchProductDto';
 import { AddProductDto } from './dto/addProductDto';
 import { JwtAuthGuard } from '@app/shared';
+import { UpdateProductDto } from './dto/updateProductDto';
+import { DeleteProductDto } from './dto/deleteProductDto';
 
 @Controller('products')
 export class ProductController {
@@ -14,22 +16,23 @@ export class ProductController {
     return await this.productService.search(body);
   }
 
-  @Post('/add')
+  @Post('')
   async add(@Body() body: AddProductDto) {
     console.log('add', body);
     return await this.productService.add(body);
   }
 
-  @Post('/update/:name')
-  async update(@Body() body: AddProductDto, @Param('name') name: string) {
+  @Patch('')
+  async update(@Body() body: UpdateProductDto) {
     console.log('update', body);
-    return await this.productService.update(name, body);
+    const { name, ...newData } = body;
+    return await this.productService.update(name, newData);
   }
 
-  @Delete('/:name')
-  async deleteProduct(@Param('name') name: string) {
-    console.log('delete', name);
-    return await this.productService.deleteProduct(name);
+  @Delete('')
+  async deleteProduct(@Body() body: DeleteProductDto) {
+    console.log('delete', body);
+    return await this.productService.deleteProduct(body.name);
   }
 
   @UseGuards(JwtAuthGuard)
