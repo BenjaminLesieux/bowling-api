@@ -30,7 +30,7 @@ export class BowlingPaymentController {
     const res = await this.bowlingPaymentService.createCheckoutSession(data);
     if (res.url) {
       // create order in db
-      await this.bowlingPaymentService.createTransaction(res.id, user.id, data.orderId);
+      await this.bowlingPaymentService.createTransaction(res.id, user.id, data.orderId, data.amountToPay);
       return res.url;
     }
     throw new RpcException({
