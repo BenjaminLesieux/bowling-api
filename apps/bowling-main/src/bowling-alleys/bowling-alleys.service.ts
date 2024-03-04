@@ -16,7 +16,7 @@ export class BowlingAlleysService {
   async addBowlingAlley(data: CreateAlleyDto) {
     try {
       const alley = await this.db
-        .insert(schemas.bowlingAlleyTable)
+        .insert(schemas.bowlingAlleys)
         .values({
           laneNumber: data.laneNumber,
           bowlingParkId: data.bowlingParkId,
@@ -34,7 +34,7 @@ export class BowlingAlleysService {
 
   async deleteBowlingAlley(id: string) {
     try {
-      const deleted = await this.db.delete(schemas.bowlingAlleyTable).where(eq(schemas.bowlingAlleyTable.id, id)).returning();
+      const deleted = await this.db.delete(schemas.bowlingAlleys).where(eq(schemas.bowlingAlleys.id, id)).returning();
       return deleted[0];
     } catch (error) {
       throw new RpcError({
@@ -45,14 +45,14 @@ export class BowlingAlleysService {
   }
 
   async getBowlingAlleys() {
-    return await this.db.select().from(schemas.bowlingAlleyTable).execute();
+    return await this.db.select().from(schemas.bowlingAlleys).execute();
   }
 
   async getBowlingAlleyBy(search: SearchAlleyDto) {
     const selectQuery = {
-      bowlingAlleyId: schemas.bowlingAlleyTable.id,
-      laneNumber: schemas.bowlingAlleyTable.laneNumber,
-      bowlingParkId: schemas.bowlingAlleyTable.bowlingParkId,
+      bowlingAlleyId: schemas.bowlingAlleys.id,
+      laneNumber: schemas.bowlingAlleys.laneNumber,
+      bowlingParkId: schemas.bowlingAlleys.bowlingParkId,
     };
 
     const limit = search.limit || 10;
@@ -60,25 +60,19 @@ export class BowlingAlleysService {
     const offset = (page - 1) * limit;
 
     if (search.id) {
-      return await this.db
-        .select(selectQuery)
-        .from(schemas.bowlingAlleyTable)
-        .where(eq(schemas.bowlingAlleyTable.id, search.id))
-        .limit(limit)
-        .offset(offset)
-        .execute();
+      return await this.db.select(selectQuery).from(schemas.bowlingAlleys).where(eq(schemas.bowlingAlleys.id, search.id)).limit(limit).offset(offset).execute();
     } else {
       if (search.laneNumber) {
         return this.db
           .select(selectQuery)
-          .from(schemas.bowlingAlleyTable)
-          .where(eq(schemas.bowlingAlleyTable.laneNumber, search.laneNumber))
-          .having(eq(schemas.bowlingAlleyTable.bowlingParkId, search.bowlingParkId))
+          .from(schemas.bowlingAlleys)
+          .where(eq(schemas.bowlingAlleys.laneNumber, search.laneNumber))
+          .having(eq(schemas.bowlingAlleys.bowlingParkId, search.bowlingParkId))
           .limit(limit)
           .offset(offset)
           .execute();
       } else {
-        return await this.db.select(selectQuery).from(schemas.bowlingAlleyTable).limit(limit).offset(offset).execute();
+        return await this.db.select(selectQuery).from(schemas.bowlingAlleys).limit(limit).offset(offset).execute();
       }
     }
   }

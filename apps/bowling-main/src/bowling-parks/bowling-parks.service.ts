@@ -10,35 +10,29 @@ export class BowlingParksService {
   constructor(@Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase) {}
 
   async getBowlingParks() {
-    return await this.db.select().from(schemas.bowlingParkTable).execute();
+    return await this.db.select().from(schemas.bowlingParks).execute();
   }
 
   async getBowlingParkBy(search: SearchParkDto) {
     if (search.id) {
-      return await this.db.select().from(schemas.bowlingParkTable).where(eq(schemas.bowlingParkTable.id, search.id)).execute();
+      return await this.db.select().from(schemas.bowlingParks).where(eq(schemas.bowlingParks.id, search.id)).execute();
     } else {
       const limit = search.limit || 10;
       const page = search.page || 1;
       const offset = (page - 1) * limit;
 
       if (search.name) {
-        return await this.db
-          .select()
-          .from(schemas.bowlingParkTable)
-          .where(eq(schemas.bowlingParkTable.name, search.name))
-          .limit(limit)
-          .offset(offset)
-          .execute();
+        return await this.db.select().from(schemas.bowlingParks).where(eq(schemas.bowlingParks.name, search.name)).limit(limit).offset(offset).execute();
       }
 
-      return await this.db.select().from(schemas.bowlingParkTable).limit(limit).offset(offset).execute();
+      return await this.db.select().from(schemas.bowlingParks).limit(limit).offset(offset).execute();
     }
   }
 
   async createBowlingPark(data: BowlingParkDto) {
     try {
       const inserted = await this.db
-        .insert(schemas.bowlingParkTable)
+        .insert(schemas.bowlingParks)
         .values(data as BowlingPark)
         .returning();
 
@@ -53,7 +47,7 @@ export class BowlingParksService {
 
   async updateBowlingPark(data: UpdateParkDto) {
     try {
-      const updated = await this.db.update(schemas.bowlingParkTable).set(data).returning();
+      const updated = await this.db.update(schemas.bowlingParks).set(data).returning();
       return updated[0];
     } catch (error) {
       throw new RpcError({
@@ -65,7 +59,7 @@ export class BowlingParksService {
 
   async deleteBowlingPark(id: string) {
     try {
-      const deleted = await this.db.delete(schemas.bowlingParkTable).where(eq(schemas.bowlingParkTable.id, id)).returning();
+      const deleted = await this.db.delete(schemas.bowlingParks).where(eq(schemas.bowlingParks.id, id)).returning();
       return deleted[0];
     } catch (error) {
       throw new RpcError({

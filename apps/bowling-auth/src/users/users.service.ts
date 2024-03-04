@@ -19,7 +19,7 @@ export class UsersService {
     }
 
     const createdUser = await this.db
-      .insert(schemas.userTable)
+      .insert(schemas.users)
       .values({
         ...user,
         password: await bcrypt.hash(user.password, 10),
@@ -30,8 +30,8 @@ export class UsersService {
   }
 
   async validate(email: string, password: string) {
-    const user = await this.db.query.userTable.findFirst({
-      where: eq(schemas.userTable.email, email),
+    const user = await this.db.query.users.findFirst({
+      where: eq(schemas.users.email, email),
     });
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
@@ -43,13 +43,13 @@ export class UsersService {
   }
 
   async getBy(userArgs: Partial<Omit<User, 'password'>>) {
-    return this.db.query.userTable.findFirst({
-      where: userArgs.id ? eq(schemas.userTable.id, userArgs.id) : eq(schemas.userTable.email, userArgs.email),
+    return this.db.query.users.findFirst({
+      where: userArgs.id ? eq(schemas.users.id, userArgs.id) : eq(schemas.users.email, userArgs.email),
     });
   }
 
   private async validateUserCreation(user: CreateUserDto) {
-    const dbUser = await this.db.select().from(schemas.userTable).where(eq(schemas.userTable.email, user.email)).execute();
+    const dbUser = await this.db.select().from(schemas.users).where(eq(schemas.users.email, user.email)).execute();
 
     return dbUser.length <= 0;
   }
