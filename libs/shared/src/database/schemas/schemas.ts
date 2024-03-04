@@ -75,7 +75,7 @@ export const sessionRelations = relations(sessions, ({ one }) => ({
 }));
 
 export const bowlingParkToProductsTable = pgTable(
-  'bowling_park_to_products',
+  'bowling_parks_to_products',
   {
     bowlingParkId: uuid('bowling_park_id')
       .notNull()
