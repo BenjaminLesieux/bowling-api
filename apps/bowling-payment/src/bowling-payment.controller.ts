@@ -1,6 +1,6 @@
 import { Controller, UseGuards } from '@nestjs/common';
 import { MessagePattern, RpcException, Payload } from '@nestjs/microservices';
-import { BowlingPaymentService, CheckoutProduct } from './bowling-payment.service';
+import { BowlingPaymentService } from './bowling-payment.service';
 import { CurrentUser } from 'apps/bowling-auth/src/current-user.decorator';
 import { User } from '@app/shared/database/schemas/schemas';
 import { JwtAuthGuard } from '@app/shared';
