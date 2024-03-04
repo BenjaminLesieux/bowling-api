@@ -9,7 +9,7 @@ export class ProductController {
 
   @MessagePattern({ cmd: 'search-products' })
   async getProducts(@Payload() data: number[], @Ctx() context: RmqContext) {
-    return this.productService.getProducts('');
+    return 'hi';
   }
 
   @MessagePattern({ cmd: 'get-product-by-id' })
