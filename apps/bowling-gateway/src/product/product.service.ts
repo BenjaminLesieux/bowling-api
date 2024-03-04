@@ -5,6 +5,7 @@ import { lastValueFrom } from 'rxjs';
 import { MAIN_MICROSERVICE, PAYMENT_MICROSERVICE } from '@app/shared/services';
 import { AddProductDto } from './dto/addProductDto';
 import { CreateCheckoutDto } from './dto/createCheckoutDto';
+import { UpdateProductDto } from './dto/updateProductDto';
 
 @Injectable()
 export class ProductService {
@@ -13,9 +14,26 @@ export class ProductService {
     @Inject(PAYMENT_MICROSERVICE) private readonly paymentClient: ClientProxy,
   ) {}
 
+  async get(id: string) {
+    try {
+      const product = await lastValueFrom(
+        this.mainClient.send(
+          {
+            cmd: 'get-product-by-id',
+          },
+          id,
+        ),
+      );
+      return product;
+    } catch (err) {
+      console.error('Error getting product:', err);
+      throw err;
+    }
+  }
+
   async search(data: SearchProductDto) {
     try {
-      const products = await lastValueFrom(
+      return await lastValueFrom(
         this.mainClient.send(
           {
             cmd: 'search-products',
@@ -23,10 +41,6 @@ export class ProductService {
           data,
         ),
       );
-
-      console.log('products', products);
-
-      return products;
     } catch (err) {
       console.error('Error fetching products:', err);
       throw err;
@@ -68,7 +82,7 @@ export class ProductService {
   }
   async add(data: AddProductDto) {
     try {
-      const product = await lastValueFrom(
+      return await lastValueFrom(
         this.mainClient.send(
           {
             cmd: 'add-product',
@@ -76,44 +90,41 @@ export class ProductService {
           data,
         ),
       );
-      return product;
     } catch (err) {
       console.log(`Error adding product: ${err}`);
     }
   }
 
-  async update(oldName: string, data: AddProductDto) {
+  async update(id: string, data: UpdateProductDto) {
     try {
-      const product = await lastValueFrom(
+      return await lastValueFrom(
         this.mainClient.send(
           {
             cmd: 'update-product',
           },
           {
             ...data,
-            oldName,
+            id,
           },
         ),
       );
-      return product;
     } catch (err) {
       console.log(`Error updateing product: ${err}`);
     }
   }
 
-  async deleteProduct(name: string) {
+  async deleteProduct(id: string) {
     try {
-      const product = await lastValueFrom(
+      return await lastValueFrom(
         this.mainClient.send(
           {
             cmd: 'delete-product',
           },
           {
-            name,
+            id,
           },
         ),
       );
-      return product;
     } catch (err) {
       console.log(`Error deleting product: ${err}`);
     }

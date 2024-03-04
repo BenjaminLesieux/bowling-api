@@ -1,12 +1,16 @@
 import { Module } from '@nestjs/common';
 import { BowlingMainController } from './bowling-main.controller';
 import { BowlingMainService } from './bowling-main.service';
-import { AuthenticationModule, MicroservicesModule } from '@app/shared';
+import { AuthenticationModule, DatabaseModule, MicroservicesModule } from '@app/shared';
 import { z } from 'zod';
 import { ConfigModule } from '@nestjs/config';
 import { ProductModule } from './product/product.module';
 import { QrcodeService } from './qrcode/qrcode.service';
 import { PAYMENT_MICROSERVICE } from '@app/shared/services';
+import { BowlingParksController } from './bowling-parks/bowling-parks.controller';
+import { BowlingParksService } from './bowling-parks/bowling-parks.service';
+import { BowlingAlleysController } from './bowling-alleys/bowling-alleys.controller';
+import { BowlingAlleysService } from './bowling-alleys/bowling-alleys.service';
 
 const envSchema = z.object({
   DB_URL: z.string().url(),
@@ -20,6 +24,7 @@ const envSchema = z.object({
     MicroservicesModule,
     AuthenticationModule,
     ProductModule,
+    DatabaseModule,
     ConfigModule.forRoot({
       isGlobal: true,
       validate: (config) => envSchema.parse(config),
@@ -29,7 +34,7 @@ const envSchema = z.object({
       name: PAYMENT_MICROSERVICE,
     }),
   ],
-  controllers: [BowlingMainController],
-  providers: [BowlingMainService, QrcodeService],
+  controllers: [BowlingMainController, BowlingParksController, BowlingAlleysController],
+  providers: [BowlingMainService, BowlingParksService, QrcodeService, BowlingAlleysService],
 })
 export class BowlingMainModule {}

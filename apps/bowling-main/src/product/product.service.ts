@@ -41,6 +41,12 @@ export class ProductService {
   }
   async addProduct(data: Omit<Product, 'id'>) {
     try {
+      const existingProduct = await this.db.query.productTable.findFirst({
+        where: eq(productTable.name, data.name),
+      });
+
+      if (existingProduct) throw new Error(`Product ${existingProduct.name} already exists`);
+
       const product = await this.db.insert(productTable).values(data);
       return product;
     } catch (err) {
@@ -49,7 +55,7 @@ export class ProductService {
     }
   }
 
-  async updateProduct(data: Omit<Product, 'id'> & { oldName: string }) {
+  async updateProduct(data: Product) {
     try {
       const product = await this.db
         .update(productTable)
@@ -57,18 +63,18 @@ export class ProductService {
           name: data.name,
           price: data.price,
         })
-        .where(eq(productTable.name, data.oldName));
+        .where(eq(productTable.id, data.id));
       return product;
     } catch (err) {
       console.log('Error updating product', data);
     }
   }
 
-  async deleteProduct(name: string) {
+  async deleteProduct(id: string) {
     try {
-      await this.db.delete(productTable).where(eq(productTable.name, name));
+      await this.db.delete(productTable).where(eq(productTable.id, id));
     } catch (err) {
-      console.log('Error delete product', name);
+      console.log('Error delete product', id);
     }
   }
 

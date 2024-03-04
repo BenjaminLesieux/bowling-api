@@ -1,9 +1,107 @@
 {
-  "id": "571b6d64-55e5-40d0-9b93-26261b99b042",
+  "id": "77abbaf5-59d9-4658-81c9-7c5495e7880f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
   "tables": {
+    "bowling_alleys": {
+      "name": "bowling_alleys",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "lane_number": {
+          "name": "lane_number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bowling_park_id": {
+          "name": "bowling_park_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "bowling_alleys_bowling_park_id_bowling_parks_id_fk": {
+          "name": "bowling_alleys_bowling_park_id_bowling_parks_id_fk",
+          "tableFrom": "bowling_alleys",
+          "tableTo": "bowling_parks",
+          "columnsFrom": [
+            "bowling_park_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "bowling_parks": {
+      "name": "bowling_parks",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "address": {
+          "name": "address",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "phone": {
+          "name": "phone",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "website": {
+          "name": "website",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "bowling_parks_name_unique": {
+          "name": "bowling_parks_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        }
+      }
+    },
     "orders": {
       "name": "orders",
       "schema": "",
