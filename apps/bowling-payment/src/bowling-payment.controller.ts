@@ -1,6 +1,6 @@
 import { Controller, UseGuards } from '@nestjs/common';
 import { MessagePattern, RpcException, Payload } from '@nestjs/microservices';
-import { BowlingPaymentService } from './bowling-payment.service';
+import { BowlingPaymentService, CheckoutProduct } from './bowling-payment.service';
 import { CurrentUser } from 'apps/bowling-auth/src/current-user.decorator';
 import { User } from '@app/shared/database/schemas/schemas';
 import { JwtAuthGuard } from '@app/shared';
@@ -15,7 +15,7 @@ export class BowlingPaymentController {
   })
   async create(
     @Payload()
-    data: any,
+    data: CheckoutProduct[],
     @CurrentUser() user: User,
   ): Promise<any> {
     const res = await this.bowlingPaymentService.createCheckoutSession(data);

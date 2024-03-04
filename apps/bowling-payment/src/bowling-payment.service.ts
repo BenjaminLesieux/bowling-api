@@ -6,6 +6,13 @@ import { orderTable } from '@app/shared/database/schemas/schemas';
 
 import { Inject } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
+
+export interface CheckoutProduct {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+}
 @Injectable()
 export class BowlingPaymentService {
   constructor(
@@ -14,7 +21,7 @@ export class BowlingPaymentService {
   ) {}
   stripe = new Stripe(this.config.get('STRIPE_SK_KEY'));
 
-  async createCheckoutSession(products: any[]) {
+  async createCheckoutSession(products: CheckoutProduct[]) {
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: products.map((product) => ({

@@ -44,13 +44,19 @@ export class ProductService {
           data.products,
         ),
       );
-      console.log('products', products);
+      const productsWithQuantity = products.map((product) => {
+        const quantity = data.products.find((p) => p.id === product.id).quantity;
+        return {
+          ...product,
+          quantity,
+        };
+      });
       const res = await lastValueFrom(
         this.paymentClient.send(
           {
             cmd: 'create-checkout-session',
           },
-          products,
+          productsWithQuantity,
         ),
       );
 
