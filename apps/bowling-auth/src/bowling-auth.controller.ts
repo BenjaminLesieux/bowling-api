@@ -4,7 +4,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CurrentUser } from './current-user.decorator';
 import { User } from '@app/shared/database/schemas/schemas';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { Ctx, MessagePattern, RmqContext } from '@nestjs/microservices';
+import { MessagePattern } from '@nestjs/microservices';
 
 @Controller()
 export class BowlingAuthController {
@@ -14,16 +14,16 @@ export class BowlingAuthController {
   @MessagePattern({
     cmd: 'login',
   })
-  async loginMicroservice(@CurrentUser() user: User, @Ctx() context: RmqContext) {
+  async loginMicroservice(@CurrentUser() user: User) {
     Logger.log('Received login request from microservice');
-    return await this.bowlingAuthService.loginMicroservice(user, context);
+    return await this.bowlingAuthService.loginMicroservice(user);
   }
 
   @UseGuards(JwtAuthGuard)
   @MessagePattern({
     cmd: 'validate-user',
   })
-  async validateUser(@CurrentUser() user: User, @Ctx() rmqCtx: RmqContext) {
+  async validateUser(@CurrentUser() user: User) {
     console.log(user);
     return {
       ...user,
