@@ -15,6 +15,8 @@ import { BowlingAlleysService } from './bowling-alleys/bowling-alleys.service';
 import { BowlingAlleysController } from './bowling-alleys/bowling-alleys.controller';
 import { StripeController } from './stripe/stripe.controller';
 import { StripeService } from './stripe/stripe.service';
+import { EmailController } from './email/email.controller';
+import { EmailService } from './email/email.service';
 
 const envSchema = z.object({
   DB_URL: z.string().url(),
@@ -46,7 +48,8 @@ const envSchema = z.object({
     AuthenticationController,
     BowlingParksController,
     BowlingAlleysController,
-    StripeController
+    StripeController,
+    EmailController,
   ],
   providers: [
     AppService,
@@ -55,6 +58,7 @@ const envSchema = z.object({
     BowlingParksService,
     BowlingAlleysService,
     StripeService,
+    EmailService,
   ],
 })
 export class AppModule {}

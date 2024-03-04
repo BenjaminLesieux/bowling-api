@@ -59,6 +59,9 @@ dependencies:
   nestjs-zod:
     specifier: ^3.0.0
     version: 3.0.0(@nestjs/common@10.3.3)(@nestjs/core@10.3.3)(@nestjs/swagger@7.3.0)(zod@3.22.4)
+  nodemailer:
+    specifier: ^6.9.11
+    version: 6.9.11
   passport-jwt:
     specifier: ^4.0.1
     version: 4.0.1
@@ -5452,6 +5455,11 @@ packages:
   /node-releases@2.0.14:
     resolution: {integrity: sha512-y10wOWt8yZpqXmOgRo77WaHEmhYQYGNA6y421PKsKYWEK8aW+cqAphborZDhqfyKrbZEN92CN1X2KbafY2s7Yw==}
     dev: true
+
+  /nodemailer@6.9.11:
+    resolution: {integrity: sha512-UiAkgiERuG94kl/3bKfE8o10epvDnl0vokNEtZDPTq9BWzIl6EFT9336SbIT4oaTBD8NmmUTLsQyXHV82eXSWg==}
+    engines: {node: '>=6.0.0'}
+    dev: false
 
   /nopt@5.0.0:
     resolution: {integrity: sha512-Tbj67rffqceeLpcRXrT7vKAN8CwfPeIBgM7E6iBkmKLV7bEMwpGgYLGv0jACUsECaa/vuxP0IjEont6umdMgtQ==}
