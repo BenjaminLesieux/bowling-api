@@ -4,6 +4,7 @@ import Stripe from 'stripe';
 
 @Injectable()
 export class StripeService {
-  constructor(private readonly config: ConfigService) {}
   stripe = new Stripe(this.config.get('STRIPE_SK_KEY'));
+
+  constructor(private readonly config: ConfigService) {}
 }

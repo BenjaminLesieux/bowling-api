@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { BowlingParksService } from './bowling-parks.service';
 import { CreateParkDto, UpdateParkDto } from './dto/bowling-parks.dto';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
@@ -23,9 +15,11 @@ export class BowlingParksController {
 
   @Get()
   @ApiQuery({ name: 'name', required: false })
-  async findAll(@Query('name') name?: string) {
-    if (name) {
-      return this.bowlingParksService.getBowlingParkBy({ name });
+  @ApiQuery({ name: 'limit', required: false })
+  @ApiQuery({ name: 'page', required: false })
+  async findAll(@Query('name') name?: string, @Query('limit') limit?: number, @Query('page') page?: number) {
+    if (name || limit || page) {
+      return this.bowlingParksService.getBowlingParkBy({ name, limit, page });
     }
 
     return this.bowlingParksService.getBowlingParks();

@@ -6,11 +6,13 @@ export const createAlleySchema = z.object({
   laneNumber: z.number().max(20),
 });
 
-export const SearchAlleySchema = z
+export const searchAlleySchema = z
   .object({
     id: z.string().uuid().optional(),
     laneNumber: z.number().optional(),
     bowlingParkId: z.string().uuid().optional(),
+    limit: z.number().optional(),
+    page: z.number().optional(),
   })
   .refine((data) => {
     if (!data.id) {
@@ -21,4 +23,4 @@ export const SearchAlleySchema = z
   });
 
 export class CreateAlleyDto extends createZodDto(createAlleySchema) {}
-export class SearchAlleyDto extends createZodDto(SearchAlleySchema) {}
+export class SearchAlleyDto extends createZodDto(searchAlleySchema) {}

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import * as QRCode from 'qrcode'
+import * as QRCode from 'qrcode';
+import { RpcError } from '@app/shared/rpc-error';
 
 @Injectable()
 export class QrcodeService {
@@ -7,8 +8,10 @@ export class QrcodeService {
     try {
       return await QRCode.toDataURL(data);
     } catch (e) {
-      console.error('Error while generating QR code', e);
-      return '';
+      throw new RpcError({
+        status: 400,
+        message: e.message,
+      });
     }
   }
 }

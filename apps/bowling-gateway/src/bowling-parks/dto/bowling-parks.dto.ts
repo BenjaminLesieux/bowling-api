@@ -4,6 +4,8 @@ import { z } from 'nestjs-zod/z';
 export const searchSchema = z.object({
   id: z.string().optional(),
   name: z.string().optional(),
+  limit: z.number().optional(),
+  page: z.number().optional(),
 });
 
 export const createSchema = z.object({

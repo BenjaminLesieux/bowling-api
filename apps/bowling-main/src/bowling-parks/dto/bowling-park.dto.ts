@@ -16,8 +16,10 @@ export const updateParkSchema = z.object({
 export const searchParkSchema = z.object({
   id: z.string().optional(),
   name: z.string().optional(),
+  limit: z.number().optional(),
+  page: z.number().optional(),
 });
 
-export class CreateParkDto extends createZodDto(createParkSchema) {}
+export class BowlingParkDto extends createZodDto(createParkSchema) {}
 export class UpdateParkDto extends createZodDto(updateParkSchema) {}
 export class SearchParkDto extends createZodDto(searchParkSchema) {}

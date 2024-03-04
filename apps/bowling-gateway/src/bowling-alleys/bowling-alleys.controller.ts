@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { BowlingAlleysService } from './bowling-alleys.service';
 import { CreateAlleyDto } from './dto/bowling-alleys.dto';
@@ -17,11 +9,13 @@ import { JwtAuthGuard } from '@app/shared';
 export class BowlingAlleysController {
   constructor(private readonly bowlingAlleyService: BowlingAlleysService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async addLane(@Body() data: CreateAlleyDto) {
     return this.bowlingAlleyService.createAlley(data);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':alleyId')
   async getLane(@Param('alleyId') alleyId: string) {
     return this.bowlingAlleyService.getBowlingAlleyBy({
@@ -33,13 +27,20 @@ export class BowlingAlleysController {
   @Get()
   @ApiQuery({ name: 'parkId', required: false })
   @ApiQuery({ name: 'laneNumber', required: false })
-  async getLanes(
-    @Param('parkId') parkId?: string,
-    @Query('laneNumber') laneNumber?: number,
-  ) {
+  @ApiQuery({ name: 'limit', required: false })
+  @ApiQuery({ name: 'page', required: false })
+  async getLanes(@Param('parkId') parkId?: string, @Query('laneNumber') laneNumber?: number, @Query('limit') limit?: number, @Query('page') page?: number) {
     return this.bowlingAlleyService.getBowlingAlleyBy({
       bowlingParkId: parkId,
       laneNumber,
+      limit,
+      page,
     });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':alleyId/qrCode')
+  async getQrCode(@Param('alleyId') alleyId: string) {
+    return this.bowlingAlleyService.getQrCode(alleyId);
   }
 }

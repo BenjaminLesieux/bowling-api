@@ -14,7 +14,7 @@ export class ProductService {
 
   async search(data: SearchProductDto) {
     try {
-      const products = await lastValueFrom(
+      return await lastValueFrom(
         this.mainClient.send(
           {
             cmd: 'search-products',
@@ -22,10 +22,6 @@ export class ProductService {
           data,
         ),
       );
-
-      console.log('products', products);
-
-      return products;
     } catch (err) {
       console.error('Error fetching products:', err);
       throw err;
@@ -34,7 +30,7 @@ export class ProductService {
 
   async checkout(data: any) {
     try {
-      const res = await lastValueFrom(
+      return await lastValueFrom(
         this.paymentClient.send(
           {
             cmd: 'create-checkout-session',
@@ -42,10 +38,6 @@ export class ProductService {
           data,
         ),
       );
-
-      console.log('checkout is', res);
-
-      return res;
     } catch (err) {
       console.error('Error creating checkout session:', err);
       throw err;
@@ -53,7 +45,7 @@ export class ProductService {
   }
   async add(data: AddProductDto) {
     try {
-      const product = await lastValueFrom(
+      return await lastValueFrom(
         this.mainClient.send(
           {
             cmd: 'add-product',
@@ -61,7 +53,6 @@ export class ProductService {
           data,
         ),
       );
-      return product;
     } catch (err) {
       console.log(`Error adding product: ${err}`);
     }
@@ -69,7 +60,7 @@ export class ProductService {
 
   async update(oldName: string, data: AddProductDto) {
     try {
-      const product = await lastValueFrom(
+      return await lastValueFrom(
         this.mainClient.send(
           {
             cmd: 'update-product',
@@ -80,7 +71,6 @@ export class ProductService {
           },
         ),
       );
-      return product;
     } catch (err) {
       console.log(`Error updateing product: ${err}`);
     }
@@ -88,7 +78,7 @@ export class ProductService {
 
   async deleteProduct(name: string) {
     try {
-      const product = await lastValueFrom(
+      return await lastValueFrom(
         this.mainClient.send(
           {
             cmd: 'delete-product',
@@ -98,7 +88,6 @@ export class ProductService {
           },
         ),
       );
-      return product;
     } catch (err) {
       console.log(`Error deleting product: ${err}`);
     }
