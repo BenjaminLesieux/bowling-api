@@ -8,6 +8,10 @@ import { z } from 'zod';
 const envSchema = z.object({
   RABBITMQ_URL: z.string().url(),
   RABBITMQ_MAILER_QUEUE: z.string(),
+  GMAIL_USER: z.string(),
+  GMAIL_CLIENT_SECRET: z.string(),
+  GMAIL_CLIENT_ID: z.string(),
+  GMAIL_REFRESH_TOKEN: z.string(),
 });
 
 @Module({

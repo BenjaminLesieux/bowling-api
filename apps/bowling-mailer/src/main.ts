@@ -10,7 +10,7 @@ import { MAILER_MICROSERVICE } from '@app/shared/services';
 
 patchNestJsSwagger();
 
-const logger = new Logger('BowlingMailer');
+export const logger = new Logger('BowlingMailer');
 
 async function bootstrap() {
   const app = await NestFactory.create(BowlingMailerModule);
