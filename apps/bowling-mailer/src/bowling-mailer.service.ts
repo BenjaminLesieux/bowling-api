@@ -1,9 +1,9 @@
 import { RpcError } from '@app/shared/rpc-error';
 import { Injectable } from '@nestjs/common';
-import { EmailDto } from 'apps/bowling-gateway/src/email/dto/email.dto';
 import { SentMessageInfo, Transporter, createTransport } from 'nodemailer';
 import { ConfigService } from '@nestjs/config';
 import { logger } from './main';
+import { EmailDto } from './dto/email.dto';
 
 @Injectable()
 export class BowlingMailerService {

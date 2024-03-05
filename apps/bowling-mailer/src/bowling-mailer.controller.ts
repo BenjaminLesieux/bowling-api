@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { BowlingMailerService } from './bowling-mailer.service';
 import { MessagePattern } from '@nestjs/microservices';
-import { EmailDto } from 'apps/bowling-gateway/src/email/dto/email.dto';
+import { EmailDto } from './dto/email.dto';
 
 @Controller()
 export class BowlingMailerController {
