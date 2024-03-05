@@ -51,10 +51,20 @@ export class BowlingPaymentService {
       const order = await this.db.select().from(schemas.orders).where(eq(transactions.stripeCheckoutSessionId, event.data.object.id)).then(takeUniqueOrThrow);
       if (!order) throw new Error('Order not found');
       //update order paidAmount
-      return await this.db
+      const updatedOrder = await this.db
         .update(orders)
         .set({ payedAmount: sql`${orders.payedAmount} + ${event.data.object.amount_total}` })
-        .where(eq(orders.id, order.id));
+        .where(eq(orders.id, order.id))
+        .returning({
+          payedAmount: orders.payedAmount,
+        })
+        .then(takeUniqueOrThrow);
+
+      if (updatedOrder.payedAmount >= order.totalAmount) {
+        //update order status to paid
+        await this.db.update(orders).set({ status: 'paid' }).where(eq(orders.id, order.id));
+      }
+      return;
     }
     if (event.type === 'checkout.session.expired') {
       return await this.db.update(transactions).set({ status: 'expired' }).where(eq(transactions.stripeCheckoutSessionId, event.data.object.id));
