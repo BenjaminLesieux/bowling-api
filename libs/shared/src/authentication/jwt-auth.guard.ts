@@ -1,50 +1,49 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AUTH_MICROSERVICE } from '@app/shared/services';
 import { ClientProxy } from '@nestjs/microservices';
-import { catchError, Observable, tap } from 'rxjs';
+import { User } from '@app/shared/database/schemas/schemas';
+import { catchError, lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(@Inject(AUTH_MICROSERVICE) private authClient: ClientProxy) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext) {
     const authentication = this.getAuthentication(context);
+    console.log(authentication);
 
-    return this.authClient
-      .send(
-        {
-          cmd: 'validate-user',
-        },
-        {
-          Authentication: authentication,
-        },
-      )
-      .pipe(
-        tap((response) => {
-          this.addUser(response, context);
-        }),
-        catchError((error) => {
-          throw new UnauthorizedException(error.message);
-        }),
-      );
+    const res = await lastValueFrom<User>(
+      this.authClient
+        .send(
+          {
+            cmd: 'validate-user',
+          },
+          {
+            Authentication: authentication,
+          },
+        )
+        .pipe(
+          catchError((err) => {
+            throw new UnauthorizedException(err);
+          }),
+        ),
+    );
+
+    if (res) {
+      this.addUser(res, context);
+    }
+
+    return !!res;
   }
 
   private getAuthentication(context: ExecutionContext) {
     let authentication: string;
 
     if (context.getType() === 'rpc') {
+      console.log(context.switchToRpc().getData());
       authentication = context.switchToRpc().getData().Authentication;
     } else if (context.getType() === 'http') {
-      authentication = context.switchToHttp().getRequest()
-        .cookies?.Authentication;
+      authentication = context.switchToHttp().getRequest().cookies?.Authentication;
     }
 
     if (!authentication) {
@@ -53,11 +52,10 @@ export class JwtAuthGuard implements CanActivate {
     return authentication;
   }
 
-  private addUser(user: any, context: ExecutionContext) {
-    if (context.getType() === 'rpc') {
-      context.switchToRpc().getData().user = user;
-    } else if (context.getType() === 'http') {
-      context.switchToHttp().getRequest().user = user;
-    }
+  private addUser(user: User, context: ExecutionContext) {
+    context.switchToRpc().getData().user = {
+      ...user,
+      password: undefined,
+    };
   }
 }

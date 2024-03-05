@@ -3,9 +3,9 @@ import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import { patchNestJsSwagger } from 'nestjs-zod';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { RpcErrorsInterceptor } from '@app/shared/rpc-errors.interceptor';
 
 import { raw } from 'body-parser';
+import { RpcErrorsInterceptor } from '@app/shared/rpc-errors.interceptor';
 
 patchNestJsSwagger();
 

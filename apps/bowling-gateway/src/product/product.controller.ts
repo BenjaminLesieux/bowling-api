@@ -3,6 +3,7 @@ import { ProductService } from './product.service';
 import { SearchProductDto } from './dto/searchProductDto';
 import { ApiTags } from '@nestjs/swagger';
 import { AddProductDto } from './dto/addProductDto';
+import { CreateCheckoutDto } from './dto/createCheckoutDto';
 import { JwtAuthGuard } from '@app/shared';
 import { UpdateProductDto } from './dto/updateProductDto';
 
@@ -43,8 +44,7 @@ export class ProductController {
 
   @UseGuards(JwtAuthGuard)
   @Post('/checkout')
-  async checkout(@Body() body: any) {
-    console.log('checkout', body);
+  async checkout(@Body() body: CreateCheckoutDto) {
     return await this.productService.checkout(body);
   }
 }

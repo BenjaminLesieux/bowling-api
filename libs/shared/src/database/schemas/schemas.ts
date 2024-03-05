@@ -1,19 +1,16 @@
-import { integer, pgTable, unique, uuid, varchar } from 'drizzle-orm/pg-core';
+import { date, integer, pgEnum, pgTable, primaryKey, unique, uuid, varchar } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
-export const userTable = pgTable('users', {
+export const userRoles = pgEnum('user_role', ['admin', 'manager', 'user']);
+
+export const users = pgTable('users', {
   id: uuid('id').defaultRandom().primaryKey(),
   email: varchar('email', { length: 255 }).unique(),
+  role: userRoles('role').default('user'),
   password: varchar('password', { length: 255 }),
 });
 
-export const productTable = pgTable('products', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  name: varchar('name', { length: 255 }).unique(),
-  price: varchar('price', { length: 255 }),
-});
-
-export const bowlingParkTable = pgTable('bowling_parks', {
+export const bowlingParks = pgTable('bowling_parks', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: varchar('name', { length: 255 }).unique().notNull(),
   address: varchar('address', { length: 255 }).notNull(),
@@ -22,33 +19,32 @@ export const bowlingParkTable = pgTable('bowling_parks', {
   website: varchar('website', { length: 255 }).notNull(),
 });
 
-export const bowlingAlleyTable = pgTable('bowling_alleys', {
+export const bowlingAlleys = pgTable('bowling_alleys', {
   id: uuid('id').defaultRandom().primaryKey(),
   laneNumber: integer('lane_number').notNull(),
   bowlingParkId: uuid('bowling_park_id')
     .notNull()
-    .references(() => bowlingParkTable.id),
+    .references(() => bowlingParks.id),
 });
 
-const bowlingParksRelations = relations(bowlingParkTable, ({ many }) => ({
-  products: many(productTable),
-  bowlingAlleys: many(bowlingAlleyTable),
-}));
-const bowlingAlleysRelations = relations(bowlingAlleyTable, ({ one }) => ({
-  bowlingPark: one(bowlingParkTable),
-}));
-const productRelations = relations(productTable, ({ many }) => ({
-  bowlingParks: many(bowlingParkTable),
-}));
-
-export const orderTable = pgTable('orders', {
+export const orders = pgTable('orders', {
   id: uuid('id').defaultRandom().primaryKey().notNull(),
   userId: uuid('user_id'),
-  productId: uuid('product_id'),
+  status: varchar('status', { length: 255 }),
+  totalAmount: integer('total_amount'),
+  payedAmount: integer('payed_amount'),
+});
+
+export const transactions = pgTable('transactions', {
+  id: uuid('id').defaultRandom().primaryKey().notNull(),
+  orderId: uuid('order_id')
+    .notNull()
+    .references(() => orders.id),
+  amount: integer('amount').notNull(),
+  status: varchar('status', { length: 255 }).notNull(),
   stripeCheckoutSessionId: varchar('stripe_checkout_session_id', {
     length: 255,
   }),
-  status: varchar('status', { length: 255 }),
 });
 
 export const products = pgTable(
@@ -65,21 +61,143 @@ export const products = pgTable(
   },
 );
 
-export type User = typeof userTable.$inferSelect;
-export type Product = typeof productTable.$inferSelect;
-export type BowlingPark = typeof bowlingParkTable.$inferSelect;
-export type AddBowlingPark = typeof bowlingParkTable.$inferInsert;
-export type BowlingAlley = typeof bowlingAlleyTable.$inferSelect;
-export type AddBowlingAlley = typeof bowlingAlleyTable.$inferInsert;
-export type Order = typeof orderTable.$inferSelect;
+export const sessionStatus = pgEnum('session_status', ['finished', 'started', 'payment_pending']);
+
+export const sessions = pgTable('sessions', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  start: date('start').defaultNow(),
+  end: date('end'),
+  status: sessionStatus('status').default('started'),
+  bowlingAlleyId: uuid('bowling_alley_id'),
+  orderId: uuid('order_id'),
+  userId: uuid('user_id'),
+});
+
+export const sessionRelations = relations(sessions, ({ one }) => ({
+  bowlingAlley: one(bowlingAlleys, {
+    fields: [sessions.bowlingAlleyId],
+    references: [bowlingAlleys.id],
+  }),
+  order: one(orders, {
+    fields: [sessions.orderId],
+    references: [orders.id],
+  }),
+  user: one(users, {
+    fields: [sessions.userId],
+    references: [users.id],
+  }),
+}));
+
+export const bowlingParkToProductsTable = pgTable(
+  'bowling_parks_to_products',
+  {
+    bowlingParkId: uuid('bowling_park_id')
+      .notNull()
+      .references(() => bowlingParks.id),
+    productId: uuid('product_id')
+      .notNull()
+      .references(() => products.id),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.bowlingParkId, t.productId] }),
+  }),
+);
+
+export const bowlingParkToProductsRelations = relations(bowlingParkToProductsTable, ({ one }) => ({
+  bowlingParks: one(bowlingParks, {
+    fields: [bowlingParkToProductsTable.bowlingParkId],
+    references: [bowlingParks.id],
+  }),
+  product: one(products, {
+    fields: [bowlingParkToProductsTable.productId],
+    references: [products.id],
+  }),
+}));
+
+export const ordersToProductsTable = pgTable(
+  'orders_to_products',
+  {
+    orderId: uuid('order_id')
+      .notNull()
+      .references(() => orders.id),
+    productId: uuid('product_id')
+      .notNull()
+      .references(() => products.id),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.orderId, t.productId] }),
+  }),
+);
+
+export const ordersToProductsRelations = relations(ordersToProductsTable, ({ one }) => ({
+  order: one(orders, {
+    fields: [ordersToProductsTable.orderId],
+    references: [orders.id],
+  }),
+  product: one(products, {
+    fields: [ordersToProductsTable.productId],
+    references: [products.id],
+  }),
+}));
+
+export const bowlingAlleysRelations = relations(bowlingAlleys, ({ one, many }) => ({
+  bowlingPark: one(bowlingParks, {
+    fields: [bowlingAlleys.bowlingParkId],
+    references: [bowlingParks.id],
+  }),
+  sessions: many(sessions),
+}));
+
+export const bowlingParksRelations = relations(bowlingParks, ({ many }) => ({
+  products: many(bowlingParkToProductsTable),
+  bowlingAlleys: many(bowlingAlleys),
+}));
+
+export const userRelations = relations(users, ({ many }) => ({
+  sessions: many(sessions),
+}));
+
+export const productRelations = relations(products, ({ many }) => ({
+  bowlingParks: many(bowlingParkToProductsTable),
+  orders: many(ordersToProductsTable),
+}));
+
+export const orderRelations = relations(orders, ({ one, many }) => ({
+  session: one(sessions),
+  products: many(ordersToProductsTable),
+  transactions: many(transactions),
+}));
+
+export const transactionRelations = relations(transactions, ({ one }) => ({
+  order: one(orders, {
+    fields: [transactions.orderId],
+    references: [orders.id],
+  }),
+}));
+
+/*
+ */
+
+export type User = typeof users.$inferSelect;
+export type Product = typeof products.$inferSelect;
+export type BowlingPark = typeof bowlingParks.$inferSelect;
+export type AddBowlingPark = typeof bowlingParks.$inferInsert;
+export type BowlingAlley = typeof bowlingAlleys.$inferSelect;
+export type AddBowlingAlley = typeof bowlingAlleys.$inferInsert;
+export type Order = typeof orders.$inferSelect;
+export type Session = typeof sessions.$inferSelect;
 
 export default {
-  userTable,
-  productTable,
-  bowlingParkTable,
-  bowlingAlleyTable,
+  users,
+  userRoles,
+  products,
+  bowlingParks,
+  bowlingAlleys,
+  orders,
   bowlingParksRelations,
   bowlingAlleysRelations,
   productRelations,
-  orderTable,
+  userRelations,
+  orderRelations,
+  sessionRelations,
 };
