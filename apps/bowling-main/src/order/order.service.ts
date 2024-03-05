@@ -17,9 +17,7 @@ export class OrderService {
   ) {}
   async getById(id: string) {
     try {
-      const order = await this.db.query.orders.findFirst({
-        where: eq(orders.id, id),
-      });
+      const order = await this.db.select().from(schemas.orders).where(eq(orders.id, id));
       return order;
     } catch (error) {
       console.error('Error fetching order:', error);
