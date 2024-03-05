@@ -17,7 +17,7 @@ export class ProductController {
     @Payload()
     data: any,
   ) {
-    return this.productService.getProductsByIds(data);
+    return this.productService.getProductsByIds(data.products);
   }
 
   @MessagePattern({ cmd: 'get-product-by-id' })
@@ -26,8 +26,7 @@ export class ProductController {
   }
 
   @MessagePattern({ cmd: 'add-product' })
-  async addProduct(@Payload() data: Omit<Product, 'id'>, @Ctx() context: RmqContext) {
-    console.log(`Pattern: ${context.getPattern()}`);
+  async addProduct(@Payload() data: Omit<Product, 'id'>) {
     return await this.productService.addProduct(data);
   }
 

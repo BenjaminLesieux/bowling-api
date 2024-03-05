@@ -1,15 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateAlleyDto, SearchAlleyDto } from './dto/bowling-alley.dto';
-import schemas from '@app/shared/database/schemas/schemas';
+import schemas from '../database/schemas';
 import { RpcError } from '@app/shared/rpc-error';
 import { eq } from 'drizzle-orm';
-import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
 import { QrcodeService } from '../qrcode/qrcode.service';
+import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
 
 @Injectable()
 export class BowlingAlleysService {
   constructor(
-    @Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase,
+    @Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase<typeof schemas>,
     private readonly qrCodeService: QrcodeService,
   ) {}
 

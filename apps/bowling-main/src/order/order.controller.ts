@@ -1,10 +1,19 @@
-import { Param } from '@nestjs/common';
+import { Param, Controller } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { MessagePattern, Payload, EventPattern } from '@nestjs/microservices';
 import { AddProductDto } from './dto/addProductDto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('orders')
+@Controller('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
+
+  @EventPattern({ cmd: 'on-session-create' })
+  async onSessionCreate(@Payload() data: { id: string; userId: string }) {
+    console.log(data);
+    return await this.orderService.createOrder(data.id, data.userId);
+  }
 
   @MessagePattern({ cmd: 'get-order-by-id' })
   async getOrder(@Param('id') id: string) {

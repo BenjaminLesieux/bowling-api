@@ -4,6 +4,7 @@ import { SearchProductDto } from './dto/searchProductDto';
 import { ApiTags } from '@nestjs/swagger';
 import { AddProductDto } from './dto/addProductDto';
 import { UpdateProductDto } from './dto/updateProductDto';
+import { ReqUser } from '@app/shared/authentication/user.decorator';
 
 @ApiTags('products')
 @Controller('products')

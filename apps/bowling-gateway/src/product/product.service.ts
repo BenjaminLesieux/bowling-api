@@ -47,18 +47,14 @@ export class ProductService {
   }
 
   async add(data: AddProductDto) {
-    try {
-      return await lastValueFrom(
-        this.mainClient.send(
-          {
-            cmd: 'add-product',
-          },
-          data,
-        ),
-      );
-    } catch (err) {
-      console.log(`Error adding product: ${err}`);
-    }
+    return await lastValueFrom(
+      this.mainClient.send(
+        {
+          cmd: 'add-product',
+        },
+        data,
+      ),
+    );
   }
 
   async update(id: string, data: UpdateProductDto) {

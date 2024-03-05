@@ -2,8 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
-import { transactions } from '@app/shared/database/schemas/schemas';
+import schemas, { transactions } from '@app/shared/database/schemas/schemas';
 import { and, eq } from 'drizzle-orm';
+import { ClientProxy } from '@nestjs/microservices';
+import { MAIN_MICROSERVICE } from '@app/shared/services';
 
 export interface CheckoutProduct {
   id: string;
@@ -17,7 +19,8 @@ export class BowlingPaymentService {
 
   constructor(
     private readonly config: ConfigService,
-    @Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase,
+    @Inject(MAIN_MICROSERVICE) private readonly client: ClientProxy,
+    @Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase<typeof schemas>,
   ) {}
 
   async createCheckoutSession(data: { orderId: string; amountToPay: number }) {
@@ -40,7 +43,6 @@ export class BowlingPaymentService {
       success_url: 'https://example.com/success',
       cancel_url: 'https://example.com/cancel',
     });
-    return session;
   }
 
   async createTransaction(id: string, userId: string, orderId: string, amountToPay: number) {

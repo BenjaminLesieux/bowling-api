@@ -7,11 +7,12 @@ import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { AddProductDto } from './dto/addProductDto';
 import { ordersToProductsTable } from '@app/shared/database/schemas/schemas';
+import schemas from '../database/schemas';
 
 @Injectable()
 export class OrderService {
   constructor(
-    @Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase,
+    @Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase<typeof schemas>,
     @Inject(PAYMENT_MICROSERVICE) private readonly paymentClient: ClientProxy,
   ) {}
   async getById(id: string) {
@@ -80,5 +81,16 @@ export class OrderService {
       console.error('Error fetching order:', error);
       throw error;
     }
+  }
+
+  async createOrder(id: string, userId: string) {
+    return this.db
+      .insert(schemas.orders)
+      .values({
+        status: 'pending',
+        id: id,
+        userId: userId,
+      })
+      .returning();
   }
 }
