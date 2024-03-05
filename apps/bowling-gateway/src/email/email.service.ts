@@ -13,7 +13,6 @@ export class EmailService {
   }
 
   async sendEmail(email: EmailDto) {
-    console.log('sending')
     return await lastValueFrom(this.client.send({ cmd: 'send-email' }, email));
   }
 }

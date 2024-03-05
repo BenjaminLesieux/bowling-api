@@ -2,33 +2,20 @@ import { RpcError } from '@app/shared/rpc-error';
 import { Injectable } from '@nestjs/common';
 import { EmailDto } from 'apps/bowling-gateway/src/email/dto/email.dto';
 import { SentMessageInfo, Transporter, createTransport } from 'nodemailer';
-import { google } from 'googleapis';
 import { ConfigService } from '@nestjs/config';
 import { logger } from './main';
 
 @Injectable()
 export class BowlingMailerService {
   
-  private oauthClient;
   private transport: Transporter<SentMessageInfo>;
   
-  constructor(private configService: ConfigService) {
-    this.oauthClient = new google.auth.OAuth2(
-      this.configService.get('GMAIL_CLIENT_ID'),
-      this.configService.get('GMAIL_CLIENT_SECRET'),
-      'https://developers.google.com/oauthplayground',
-    );
-    this.oauthClient.setCredentials({
-      refresh_token: this.configService.get('GMAIL_REFRESH_TOKEN'),
-    });
-  }
+  constructor(private configService: ConfigService) {}
 
   async sendEmail(email: EmailDto) {
-    const accessToken = await this.oauthClient.getAccessToken();
-
     const mailOptions = {
       to: email.to,
-      from: 'Welcome BowlingAlley',
+      from: 'BowlingAlley',
       subject: email.subject,
       html: `<p>${email.text}</p>`,
     }
@@ -36,18 +23,10 @@ export class BowlingMailerService {
     this.transport = createTransport({
       service: 'gmail',
       auth: {
-        type: 'OAuth2',
+        pass: this.configService.get('GMAIL_PASSWORD'),
         user: this.configService.get('GMAIL_USER'),
-        serviceClient: '109899567801543011292',
-        privateKey: 
-        // clientSecret: this.configService.get('GMAIL_CLIENT_SECRET'),
-        // refreshToken: this.configService.get('GMAIL_REFRESH_TOKEN'),
-        // accessToken,
       },
     });
-    console.log(accessToken)
-    console.log(mailOptions);
-    console.log(this.transport);
 
     try {
       await this.transport.sendMail(mailOptions);
