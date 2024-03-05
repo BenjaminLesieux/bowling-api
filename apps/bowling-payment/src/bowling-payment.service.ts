@@ -4,9 +4,6 @@ import Stripe from 'stripe';
 import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
 import schemas, { transactions } from '@app/shared/database/schemas/schemas';
 import { and, eq } from 'drizzle-orm';
-import { ClientProxy } from '@nestjs/microservices';
-import { MAIN_MICROSERVICE } from '@app/shared/services';
-
 export interface CheckoutProduct {
   id: string;
   name: string;
@@ -19,7 +16,6 @@ export class BowlingPaymentService {
 
   constructor(
     private readonly config: ConfigService,
-    @Inject(MAIN_MICROSERVICE) private readonly client: ClientProxy,
     @Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase<typeof schemas>,
   ) {}
 

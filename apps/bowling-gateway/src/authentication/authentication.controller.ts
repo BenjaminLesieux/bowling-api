@@ -14,6 +14,7 @@ export class AuthenticationController {
 
   @Post('/register')
   async register(@Body() user: CreateUserDto, @Req() req) {
+    console.log('test');
     return this.authService.register(user);
   }
 

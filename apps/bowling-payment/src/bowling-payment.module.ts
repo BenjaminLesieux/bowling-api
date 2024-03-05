@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { BowlingPaymentController } from './bowling-payment.controller';
 import { BowlingPaymentService } from './bowling-payment.service';
 
-import { AuthenticationModule, MicroservicesModule } from '@app/shared';
+import { AuthenticationModule, DatabaseModule, MicroservicesModule } from '@app/shared';
 import { z } from 'zod';
 import { ConfigModule } from '@nestjs/config';
-import { MAIN_MICROSERVICE } from '@app/shared/services';
+import { MAIN_MICROSERVICE, PAYMENT_MICROSERVICE } from '@app/shared/services';
+import schemas from '@app/shared/database/schemas/schemas';
 
 const envSchema = z.object({
-  DB_PAYMENT_URL: z.string().url(),
   RABBITMQ_URL: z.string().url(),
   RABBITMQ_MAIN_QUEUE: z.string(),
   RABBITMQ_PAYMENT_QUEUE: z.string(),
@@ -23,6 +23,7 @@ const envSchema = z.object({
     }),
     MicroservicesModule,
     AuthenticationModule,
+    DatabaseModule.register(PAYMENT_MICROSERVICE, schemas),
     ConfigModule.forRoot({
       isGlobal: true,
       validate: (config) => envSchema.parse(config),
