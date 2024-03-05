@@ -2,8 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
-import schemas, { transactions } from '@app/shared/database/schemas/schemas';
-import { and, eq } from 'drizzle-orm';
+import schemas, { orders, transactions } from '@app/shared/database/schemas/schemas';
+import { and, eq, sql } from 'drizzle-orm';
+import { takeUniqueOrThrow } from 'apps/bowling-main/src/database/helpers';
 export interface CheckoutProduct {
   id: string;
   name: string;
@@ -42,13 +43,21 @@ export class BowlingPaymentService {
     return session;
   }
 
-  async handleStripeWebhook(event: any) {
+  async handleStripeWebhook(event: Stripe.CheckoutSessionCompletedEvent) {
     if (event.type === 'checkout.session.completed') {
+      // update transaction status to completed
       await this.db.update(transactions).set({ status: 'completed' }).where(eq(transactions.stripeCheckoutSessionId, event.data.object.id));
+
+      const order = await this.db.select().from(schemas.orders).where(eq(transactions.stripeCheckoutSessionId, event.data.object.id)).then(takeUniqueOrThrow);
+      if (!order) throw new Error('Order not found');
+      //update order paidAmount
+      return await this.db
+        .update(orders)
+        .set({ payedAmount: sql`${orders.payedAmount} + ${event.data.object.amount_total}` })
+        .where(eq(orders.id, order.id));
     }
     if (event.type === 'checkout.session.expired') {
-      await this.db.update(transactions).set({ status: 'expired' }).where(eq(transactions.stripeCheckoutSessionId, event.data.object.id));
+      return await this.db.update(transactions).set({ status: 'expired' }).where(eq(transactions.stripeCheckoutSessionId, event.data.object.id));
     }
-    return;
   }
 }
