@@ -7,18 +7,20 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { z } from 'zod';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { AUTH_MICROSERVICE } from '@app/shared/services';
+import schemas from './database/schemas';
 
 const envSchema = z.object({
   JWT_SECRET: z.string(),
   JWT_EXPIRATION: z.string(),
-  DB_URL: z.string(),
+  DB_AUTH_URL: z.string(),
   RABBITMQ_URL: z.string(),
   RABBITMQ_AUTH_QUEUE: z.string(),
 });
 
 @Module({
   imports: [
-    DatabaseModule,
+    DatabaseModule.register(AUTH_MICROSERVICE, schemas),
     UsersModule,
     MicroservicesModule,
     ConfigModule.forRoot({

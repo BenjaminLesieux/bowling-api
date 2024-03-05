@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { ConfigModule } from '@nestjs/config';
 import { ProductModule } from './product/product.module';
 import { QrcodeService } from './qrcode/qrcode.service';
-import { PAYMENT_MICROSERVICE } from '@app/shared/services';
+import { MAIN_MICROSERVICE, PAYMENT_MICROSERVICE } from '@app/shared/services';
 import { BowlingParksController } from './bowling-parks/bowling-parks.controller';
 import { BowlingParksService } from './bowling-parks/bowling-parks.service';
 import { BowlingAlleysController } from './bowling-alleys/bowling-alleys.controller';
@@ -15,9 +15,10 @@ import { OrderController } from './order/order.controller';
 import { OrderService } from './order/order.service';
 import { SessionController } from './session/session.controller';
 import { SessionService } from './session/session.service';
+import schemas from './database/schemas';
 
 const envSchema = z.object({
-  DB_URL: z.string().url(),
+  DB_MAIN_URL: z.string().url(),
   RABBITMQ_URL: z.string().url(),
   RABBITMQ_MAIN_QUEUE: z.string(),
   RABBITMQ_PAYMENT_QUEUE: z.string(),
@@ -28,7 +29,7 @@ const envSchema = z.object({
     MicroservicesModule,
     AuthenticationModule,
     ProductModule,
-    DatabaseModule,
+    DatabaseModule.register(MAIN_MICROSERVICE, schemas),
     ConfigModule.forRoot({
       isGlobal: true,
       validate: (config) => envSchema.parse(config),

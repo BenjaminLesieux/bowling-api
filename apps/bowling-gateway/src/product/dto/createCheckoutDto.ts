@@ -9,4 +9,11 @@ export const createCheckoutSchema = z.object({
     }),
   ),
 });
+
+const checkoutSchema = z.object({
+  products: createCheckoutSchema,
+  user: z.any(),
+});
+
 export class CreateCheckoutDto extends createZodDto(createCheckoutSchema) {}
+export type Checkout = z.infer<typeof checkoutSchema>;

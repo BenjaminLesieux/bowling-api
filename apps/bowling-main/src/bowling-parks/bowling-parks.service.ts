@@ -1,13 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { BowlingParkDto, SearchParkDto, UpdateParkDto } from './dto/bowling-park.dto';
 import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
-import schemas, { BowlingPark } from '@app/shared/database/schemas/schemas';
 import { eq } from 'drizzle-orm';
 import { RpcError } from '@app/shared/rpc-error';
+import schemas, { BowlingPark } from '../database/schemas';
 
 @Injectable()
 export class BowlingParksService {
-  constructor(@Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase) {}
+  constructor(@Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase<typeof schemas>) {}
 
   async getBowlingParks() {
     return await this.db.select().from(schemas.bowlingParks).execute();
