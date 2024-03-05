@@ -32,7 +32,10 @@ export class BowlingPaymentController {
       await this.bowlingPaymentService.createTransaction(res.id, user.id, data.orderId, data.amountToPay);
       return res.url;
     }
-    return await this.bowlingPaymentService.create(data.products, data.user);
+    throw new RpcException({
+      message: 'Error creating session',
+      code: 500,
+    });
   }
 
   @UseGuards(JwtAuthGuard)

@@ -43,6 +43,7 @@ export class BowlingPaymentService {
       success_url: 'https://example.com/success',
       cancel_url: 'https://example.com/cancel',
     });
+    return session;
   }
 
   async createTransaction(id: string, userId: string, orderId: string, amountToPay: number) {
