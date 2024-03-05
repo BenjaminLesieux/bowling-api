@@ -24,6 +24,10 @@ STRIPE_WEBHOOK_SECRET=""
 docker-compose up
 ```
 
+## Fetch endpoints
+
+This project comes with an integrated [swagger](https://swagger.io/) application. With it, you can try every endpoint of the application by going on [http://localhost:3000/api](http://localhost:3000/api). ***In this project, it is used as a alternative to postman.***
+
 ## Project architecture
 
 ![architecture diagram](./Architecture.png)
