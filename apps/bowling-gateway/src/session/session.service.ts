@@ -35,6 +35,7 @@ export class SessionService {
           id,
         ),
       );
+      return session;
     } catch (err) {
       console.log('Error terminating session gateway', id, err);
     }

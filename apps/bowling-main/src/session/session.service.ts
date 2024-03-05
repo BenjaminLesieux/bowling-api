@@ -4,10 +4,15 @@ import { AddSessionDto } from 'apps/bowling-gateway/src/session/dto/addSessionDt
 import { sessions } from '@app/shared/database/schemas/schemas';
 import { and, eq, or } from 'drizzle-orm';
 import schemas from '../database/schemas';
+import { ClientProxy } from '@nestjs/microservices';
+import { MAIN_MICROSERVICE } from '@app/shared/services';
 
 @Injectable()
 export class SessionService {
-  constructor(@Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase<typeof schemas>) {}
+  constructor(
+    @Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase<typeof schemas>,
+    @Inject(MAIN_MICROSERVICE) private readonly mainClient: ClientProxy,
+  ) {}
 
   async addSession(data: AddSessionDto) {
     try {
@@ -20,7 +25,28 @@ export class SessionService {
 
       if (existingStartedSession) throw new Error('Session id already started for this alley');
 
-      const createdSession = await this.db.insert(sessions).values(data);
+      const createdSession = (await this.db.insert(sessions).values(data).returning()).at(0);
+
+      // const order = await lastValueFrom(
+      //   this.mainClient.emit(
+      //     {
+      //       cmd: 'on-session-create',
+      //     },
+      //     // TODO gérer l'id
+      //     { id: '6f89a401-d838-44d6-afe0-cda6da1320d7', userId: data.userId },
+      //   ),
+      // );
+
+      // const linkedSession = (
+      //   await this.db
+      //     .update(sessions)
+      //     .set({
+      //       orderId: order.id,
+      //     })
+      //     .where(eq(sessions.id, createdSession.id))
+      //     .returning()
+      // ).at(0);
+
       return createdSession;
     } catch (err) {
       console.log('Error adding session', data, err);
