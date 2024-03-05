@@ -33,7 +33,6 @@ export class BowlingPaymentService {
           },
           quantity: 1,
         },
-        //quantity: product.quantity,
       ],
 
       mode: 'payment',
@@ -43,19 +42,7 @@ export class BowlingPaymentService {
     return session;
   }
 
-  async createTransaction(id: string, userId: string, orderId: string, amountToPay: number) {
-    // create order in db
-    await this.db.insert(transactions).values({
-      orderId,
-      userId,
-      status: 'pending',
-      stripeCheckoutSessionId: id,
-      amount: amountToPay,
-    });
-  }
-
   async handleStripeWebhook(event: any) {
-    console.log('event', event);
     if (event.type === 'checkout.session.completed') {
       await this.db.update(transactions).set({ status: 'completed' }).where(eq(transactions.stripeCheckoutSessionId, event.data.object.id));
     }
@@ -63,11 +50,5 @@ export class BowlingPaymentService {
       await this.db.update(transactions).set({ status: 'expired' }).where(eq(transactions.stripeCheckoutSessionId, event.data.object.id));
     }
     return;
-  }
-
-  async getPendingTransaction(orderId: string) {
-    return await this.db.query.transactions.findFirst({
-      where: and(eq(transactions.orderId, orderId), eq(transactions.status, 'pending')),
-    });
   }
 }

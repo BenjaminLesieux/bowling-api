@@ -29,9 +29,16 @@ export class OrderService {
   async checkout(payload: { orderId: string; amountToPay: number; userId: string }) {
     try {
       const order = await this.db.select().from(schemas.orders).where(eq(orders.id, payload.orderId)).then(takeUniqueOrThrow);
-      console.log('order', order);
       if (!order) throw new Error('Order not found');
       if (order.status !== 'pending') throw new Error('Order already checked out');
+
+      // check that amountToPay is <= remaining amount to pay
+      if (payload.amountToPay <= order.totalAmount - order.payedAmount) {
+        throw new RpcException({
+          message: 'Amount to pay is too high',
+          code: 400,
+        });
+      }
 
       // first we should check if transaction is not already pending
       const transaction = await this.db

@@ -1,8 +1,7 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { MessagePattern, RpcException, Payload } from '@nestjs/microservices';
 
 import { BowlingPaymentService } from './bowling-payment.service';
-import { JwtAuthGuard } from '@app/shared';
 
 @Controller()
 export class BowlingPaymentController {
@@ -19,7 +18,6 @@ export class BowlingPaymentController {
     },
   ): Promise<any> {
     const res = await this.bowlingPaymentService.createCheckoutSession(data);
-    console.log('res', res.url);
     if (res.url) {
       // create order in db
       return res;
@@ -30,7 +28,6 @@ export class BowlingPaymentController {
     });
   }
 
-  @UseGuards(JwtAuthGuard)
   @MessagePattern({
     cmd: 'stripe-webhook',
   })
