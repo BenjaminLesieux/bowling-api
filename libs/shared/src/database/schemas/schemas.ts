@@ -200,4 +200,5 @@ export default {
   userRelations,
   orderRelations,
   sessionRelations,
+  sessions,
 };
