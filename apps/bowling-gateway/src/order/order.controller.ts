@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateCheckoutDto } from './dto/createCheckoutDto';
 import { JwtAuthGuard } from '@app/shared';
@@ -14,8 +14,8 @@ export class OrderController {
 
   @UseGuards(JwtAuthGuard)
   @Post('/checkout')
-  async checkout(@Body() body: CreateCheckoutDto) {
-    return await this.orderService.checkout(body);
+  async checkout(@Body() body: CreateCheckoutDto, @ReqUser() user: User) {
+    return await this.orderService.checkout(body, user);
   }
 
   // route to add products to order

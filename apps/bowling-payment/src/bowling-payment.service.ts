@@ -31,6 +31,7 @@ export class BowlingPaymentService {
             },
             unit_amount: data.amountToPay,
           },
+          quantity: 1,
         },
         //quantity: product.quantity,
       ],

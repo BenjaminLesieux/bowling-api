@@ -21,13 +21,13 @@ export class OrderController {
   }
 
   @MessagePattern({ cmd: 'checkout' })
-  async checkout(@Payload() payload: { orderId: string; amountToPay: number }) {
+  async checkout(@Payload() payload: { orderId: string; amountToPay: number; userId: string }) {
     return await this.orderService.checkout(payload);
   }
 
   @MessagePattern({ cmd: 'add-product-to-order' })
   async addProduct(@Payload() payload: AddProductDto) {
     console.log('receveid', payload);
-    return await this.orderService.addProduct(payload);
+    return await this.orderService.addProductToOrder(payload);
   }
 }

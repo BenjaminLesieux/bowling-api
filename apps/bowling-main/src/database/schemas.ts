@@ -34,6 +34,7 @@ export const transactions = pgTable('transactions', {
     .references(() => orders.id),
   amount: integer('amount').notNull(),
   status: varchar('status', { length: 255 }).notNull(),
+  userId: uuid('user_id'),
   stripeCheckoutSessionId: varchar('stripe_checkout_session_id', {
     length: 255,
   }),
@@ -107,6 +108,7 @@ export const ordersToProductsTable = pgTable(
     productId: uuid('product_id')
       .notNull()
       .references(() => products.id),
+    quantity: integer('quantity').notNull(),
   },
   (t) => ({
     pk: primaryKey({ columns: [t.orderId, t.productId] }),

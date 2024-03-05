@@ -1,7 +1,6 @@
 import { Controller, UseGuards } from '@nestjs/common';
 import { MessagePattern, RpcException, Payload } from '@nestjs/microservices';
-import { CurrentUser } from 'apps/bowling-auth/src/current-user.decorator';
-import { User } from '@app/shared/database/schemas/schemas';
+
 import { BowlingPaymentService } from './bowling-payment.service';
 import { JwtAuthGuard } from '@app/shared';
 
@@ -14,23 +13,16 @@ export class BowlingPaymentController {
   })
   async create(
     @Payload()
-    data: { orderId: string; amountToPay: number },
-    @CurrentUser() user: User,
+    data: {
+      orderId: string;
+      amountToPay: number;
+    },
   ): Promise<any> {
-    // first we should check if transaction is not already pending
-    const transaction = await this.bowlingPaymentService.getPendingTransaction(data.orderId);
-    // manage the concurrency between the payment sessions.
-    if (transaction) {
-      throw new RpcException({
-        message: 'Transaction already pending',
-        code: 400,
-      });
-    }
     const res = await this.bowlingPaymentService.createCheckoutSession(data);
+    console.log('res', res.url);
     if (res.url) {
       // create order in db
-      await this.bowlingPaymentService.createTransaction(res.id, user.id, data.orderId, data.amountToPay);
-      return res.url;
+      return res;
     }
     throw new RpcException({
       message: 'Error creating session',

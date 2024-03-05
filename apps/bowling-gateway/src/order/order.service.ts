@@ -11,7 +11,7 @@ import { User } from '@app/shared/database/schemas/schemas';
 export class OrderService {
   constructor(@Inject(MAIN_MICROSERVICE) private readonly mainClient: ClientProxy) {}
 
-  async checkout(data: CreateCheckoutDto) {
+  async checkout(data: CreateCheckoutDto, checkoutUser: User) {
     try {
       // check if products are available
       const res = await lastValueFrom(
@@ -19,7 +19,7 @@ export class OrderService {
           {
             cmd: 'checkout',
           },
-          data,
+          { ...data, userId: checkoutUser.id },
         ),
       );
 
