@@ -16,8 +16,9 @@ export class OrderController {
     return await this.orderService.checkout(payload);
   }
 
-  @MessagePattern({ cmd: 'add-product' })
+  @MessagePattern({ cmd: 'add-product-to-order' })
   async addProduct(@Payload() payload: AddProductDto) {
+    console.log('receveid');
     return await this.orderService.addProduct(payload);
   }
 }

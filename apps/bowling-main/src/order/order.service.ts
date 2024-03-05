@@ -45,6 +45,7 @@ export class OrderService {
 
   async addProduct(payload: AddProductDto) {
     try {
+      console.log('payload in main microservice', payload);
       const order = await this.db.query.orders.findFirst({
         where: eq(orders.id, payload.orderId),
       });

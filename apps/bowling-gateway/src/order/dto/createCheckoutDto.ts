@@ -3,6 +3,6 @@ import { createZodDto } from 'nestjs-zod';
 
 export const createCheckoutSchema = z.object({
   amountToPay: z.number(),
-  orderId: z.string(),
+  orderId: z.string().uuid(),
 });
 export class CreateCheckoutDto extends createZodDto(createCheckoutSchema) {}

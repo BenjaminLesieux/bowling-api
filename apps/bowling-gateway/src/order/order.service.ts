@@ -31,10 +31,11 @@ export class OrderService {
 
   async addProduct(data: AddProductDto) {
     try {
+      console.log('data:', data);
       const res = await lastValueFrom(
         this.mainClient.send(
           {
-            cmd: 'add-product',
+            cmd: 'add-product-to-order',
           },
           data,
         ),
