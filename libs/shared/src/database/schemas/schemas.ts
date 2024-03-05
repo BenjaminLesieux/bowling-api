@@ -204,4 +204,5 @@ export default {
   userRelations,
   orderRelations,
   sessionRelations,
+  ordersToProductsTable,
 };
