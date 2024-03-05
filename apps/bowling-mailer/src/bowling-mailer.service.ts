@@ -38,10 +38,11 @@ export class BowlingMailerService {
       auth: {
         type: 'OAuth2',
         user: this.configService.get('GMAIL_USER'),
-        clientId: this.configService.get('GMAIL_CLIENT_ID'),
-        clientSecret: this.configService.get('GMAIL_CLIENT_SECRET'),
-        refreshToken: this.configService.get('GMAIL_REFRESH_TOKEN'),
-        accessToken,
+        serviceClient: '109899567801543011292',
+        privateKey: 
+        // clientSecret: this.configService.get('GMAIL_CLIENT_SECRET'),
+        // refreshToken: this.configService.get('GMAIL_REFRESH_TOKEN'),
+        // accessToken,
       },
     });
     console.log(accessToken)

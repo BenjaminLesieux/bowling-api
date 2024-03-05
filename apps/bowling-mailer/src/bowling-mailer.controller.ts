@@ -11,6 +11,7 @@ export class BowlingMailerController {
     cmd: 'send-email',
   })
   sendEmail(data: EmailDto) {
+    console.log('Sending email...');
     return this.mailService.sendEmail(data);
   }
 }
