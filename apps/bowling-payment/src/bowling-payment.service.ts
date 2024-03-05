@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
 import schemas, { orders, transactions } from '@app/shared/database/schemas/schemas';
-import { and, eq, sql } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { takeUniqueOrThrow } from 'apps/bowling-main/src/database/helpers';
 export interface CheckoutProduct {
   id: string;
