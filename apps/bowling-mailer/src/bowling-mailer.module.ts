@@ -6,6 +6,8 @@ import { ConfigModule } from '@nestjs/config';
 import { z } from 'zod';
 
 const envSchema = z.object({
+  RABBITMQ_URL: z.string().url(),
+  RABBITMQ_MAILER_QUEUE: z.string(),
 });
 
 @Module({

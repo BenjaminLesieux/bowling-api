@@ -10,8 +10,7 @@ export class BowlingMailerController {
   @MessagePattern({
     cmd: 'send-email',
   })
-  async sendEmail(data: EmailDto) {
-    console.log('Sending email: ', data.subject);
+  sendEmail(data: EmailDto) {
     return this.mailService.sendEmail(data);
   }
 }

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthenticationModule, MicroservicesModule } from '@app/shared';
-import { MAIN_MICROSERVICE, PAYMENT_MICROSERVICE } from '@app/shared/services';
+import { MAILER_MICROSERVICE, MAIN_MICROSERVICE, PAYMENT_MICROSERVICE } from '@app/shared/services';
 import { ConfigModule } from '@nestjs/config';
 import { z } from 'zod';
 import { ProductController } from './product/product.controller';
@@ -23,6 +23,7 @@ const envSchema = z.object({
   RABBITMQ_URL: z.string().url(),
   RABBITMQ_AUTH_QUEUE: z.string(),
   RABBITMQ_MAIN_QUEUE: z.string(),
+  RABBITMQ_MAILER_QUEUE: z.string(),
   STRIPE_SK_KEY: z.string(),
   STRIPE_WEBHOOK_SECRET: z.string(),
 });
@@ -40,6 +41,9 @@ const envSchema = z.object({
     }),
     MicroservicesModule.register({
       name: PAYMENT_MICROSERVICE,
+    }),
+    MicroservicesModule.register({
+      name: MAILER_MICROSERVICE,
     }),
   ],
   controllers: [

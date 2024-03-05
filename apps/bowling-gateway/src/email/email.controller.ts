@@ -10,7 +10,6 @@ export class EmailController {
 
   @Post()
   async sendEmail(@Body() data: EmailDto) {
-    this.emailService.sendEmail(data);
-    return 'Email sent';
+    return this.emailService.sendEmail(data);
   }
 }
