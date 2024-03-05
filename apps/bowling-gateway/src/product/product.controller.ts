@@ -6,6 +6,7 @@ import { AddProductDto } from './dto/addProductDto';
 import { CreateCheckoutDto } from './dto/createCheckoutDto';
 import { JwtAuthGuard } from '@app/shared';
 import { UpdateProductDto } from './dto/updateProductDto';
+import { ReqUser } from '@app/shared/authentication/user.decorator';
 
 @ApiTags('products')
 @Controller('products')
@@ -44,7 +45,11 @@ export class ProductController {
 
   @UseGuards(JwtAuthGuard)
   @Post('/checkout')
-  async checkout(@Body() body: CreateCheckoutDto) {
-    return await this.productService.checkout(body);
+  async checkout(@Body() body: CreateCheckoutDto, @ReqUser() user: any) {
+    console.log(user);
+    return await this.productService.checkout({
+      products: body.products,
+      user,
+    });
   }
 }

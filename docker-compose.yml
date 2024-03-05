@@ -3,6 +3,41 @@ services:
     image: rabbitmq
     ports:
       - '5672:5672'
+  postgres-auth:
+    container_name: postgres-auth
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./api/data/postgres-auth:/data/postgres
+    environment:
+      - POSTGRES_DB=auth
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  postgres-main:
+    container_name: postgres-main
+    image: postgres:latest
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./api/data/postgres-main:/data/postgres
+    environment:
+      - POSTGRES_DB=main
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  pgadmin:
+    links:
+      - postgres-main:postgres-main
+      - postgres-auth:postgres-auth
+    container_name: pgadmin-bowling
+    image: dpage/pgadmin4
+    ports:
+      - "8080:80"
+    volumes:
+      - ./api/data/pgadmin:/root/.pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=super.cool.efrei@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
   bowling_gateway:
     depends_on:
       - rabbitmq
@@ -23,6 +58,7 @@ services:
     depends_on:
       - rabbitmq
       - bowling-auth
+      - postgres-main
     restart: on-failure
     build:
       context: .
@@ -48,6 +84,7 @@ services:
   bowling-auth:
     depends_on:
       - rabbitmq
+      - postgres-auth
     restart: on-failure
     build:
       context: .

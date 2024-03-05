@@ -4,7 +4,6 @@ import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { MAIN_MICROSERVICE, PAYMENT_MICROSERVICE } from '@app/shared/services';
 import { AddProductDto } from './dto/addProductDto';
-import { CreateCheckoutDto } from './dto/createCheckoutDto';
 import { UpdateProductDto } from './dto/updateProductDto';
 
 @Injectable()
@@ -47,7 +46,7 @@ export class ProductService {
     }
   }
 
-  async checkout(data: CreateCheckoutDto) {
+  async checkout(data: any) {
     try {
       // check if products are available
       const products = await lastValueFrom(
@@ -55,9 +54,10 @@ export class ProductService {
           {
             cmd: 'get-products-by-ids',
           },
-          data.products,
+          data,
         ),
       );
+      console.log(products);
       const productsWithQuantity = products.map((product) => {
         const quantity = data.products.find((p) => p.id === product.id).quantity;
         return {
@@ -70,7 +70,10 @@ export class ProductService {
           {
             cmd: 'create-checkout-session',
           },
-          productsWithQuantity,
+          {
+            products: productsWithQuantity,
+            user: data.user,
+          },
         ),
       );
 
@@ -81,18 +84,14 @@ export class ProductService {
     }
   }
   async add(data: AddProductDto) {
-    try {
-      return await lastValueFrom(
-        this.mainClient.send(
-          {
-            cmd: 'add-product',
-          },
-          data,
-        ),
-      );
-    } catch (err) {
-      console.log(`Error adding product: ${err}`);
-    }
+    return await lastValueFrom(
+      this.mainClient.send(
+        {
+          cmd: 'add-product',
+        },
+        data,
+      ),
+    );
   }
 
   async update(id: string, data: UpdateProductDto) {
