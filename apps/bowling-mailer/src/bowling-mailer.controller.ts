@@ -1,0 +1,16 @@
+import { Controller } from '@nestjs/common';
+import { BowlingMailerService } from './bowling-mailer.service';
+import { MessagePattern } from '@nestjs/microservices';
+import { EmailDto } from './dto/email.dto';
+
+@Controller()
+export class BowlingMailerController {
+  constructor(private readonly mailService: BowlingMailerService) {}
+
+  @MessagePattern({
+    cmd: 'send-email',
+  })
+  sendEmail(data: EmailDto) {
+    return this.mailService.sendEmail(data);
+  }
+}

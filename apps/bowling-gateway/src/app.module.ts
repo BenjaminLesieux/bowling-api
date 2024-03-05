@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthenticationModule, MicroservicesModule } from '@app/shared';
-import { MAIN_MICROSERVICE, PAYMENT_MICROSERVICE } from '@app/shared/services';
+import { MAILER_MICROSERVICE, MAIN_MICROSERVICE, PAYMENT_MICROSERVICE } from '@app/shared/services';
 import { ConfigModule } from '@nestjs/config';
 import { z } from 'zod';
 import { ProductController } from './product/product.controller';
@@ -17,12 +17,15 @@ import { StripeController } from './stripe/stripe.controller';
 import { StripeService } from './stripe/stripe.service';
 import { OrderController } from './order/order.controller';
 import { OrderService } from './order/order.service';
+import { EmailController } from './email/email.controller';
+import { EmailService } from './email/email.service';
 
 const envSchema = z.object({
   DB_URL: z.string().url(),
   RABBITMQ_URL: z.string().url(),
   RABBITMQ_AUTH_QUEUE: z.string(),
   RABBITMQ_MAIN_QUEUE: z.string(),
+  RABBITMQ_MAILER_QUEUE: z.string(),
   RABBITMQ_PAYMENT_QUEUE: z.string(),
   STRIPE_SK_KEY: z.string(),
   STRIPE_WEBHOOK_SECRET: z.string(),
@@ -42,8 +45,21 @@ const envSchema = z.object({
     MicroservicesModule.register({
       name: PAYMENT_MICROSERVICE,
     }),
+    MicroservicesModule.register({
+      name: MAILER_MICROSERVICE,
+    }),
   ],
-  controllers: [AppController, ProductController, AuthenticationController, BowlingParksController, BowlingAlleysController, StripeController, OrderController],
-  providers: [AppService, ProductService, AuthenticationService, BowlingParksService, BowlingAlleysService, StripeService, OrderService],
+
+  controllers: [
+    AppController,
+    ProductController,
+    AuthenticationController,
+    BowlingParksController,
+    BowlingAlleysController,
+    StripeController,
+    EmailController,
+    OrderController,
+  ],
+  providers: [AppService, ProductService, AuthenticationService, BowlingParksService, BowlingAlleysService, StripeService, EmailService, OrderService],
 })
 export class AppModule {}
