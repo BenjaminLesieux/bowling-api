@@ -24,4 +24,19 @@ export class SessionService {
       throw err;
     }
   }
+
+  async terminate(id: string) {
+    try {
+      const session = await lastValueFrom(
+        this.mainClient.send(
+          {
+            cmd: 'terminate-session',
+          },
+          id,
+        ),
+      );
+    } catch (err) {
+      console.log('Error terminating session gateway', id, err);
+    }
+  }
 }

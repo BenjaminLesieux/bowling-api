@@ -10,4 +10,9 @@ export class SessionController {
   async createSession(@Payload() data: AddSessionDto) {
     return await this.sessionService.addSession(data);
   }
+
+  @MessagePattern({ cmd: 'terminate-session' })
+  async terminateSession(@Payload() id: string) {
+    return await this.sessionService.terminateSession(id);
+  }
 }
