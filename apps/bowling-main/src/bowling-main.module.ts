@@ -13,6 +13,8 @@ import { BowlingAlleysController } from './bowling-alleys/bowling-alleys.control
 import { BowlingAlleysService } from './bowling-alleys/bowling-alleys.service';
 import { OrderController } from './order/order.controller';
 import { OrderService } from './order/order.service';
+import { SessionController } from './session/session.controller';
+import { SessionService } from './session/session.service';
 import schemas from './database/schemas';
 
 const envSchema = z.object({
@@ -37,7 +39,7 @@ const envSchema = z.object({
       name: PAYMENT_MICROSERVICE,
     }),
   ],
-  controllers: [BowlingMainController, BowlingParksController, BowlingAlleysController, OrderController],
-  providers: [BowlingMainService, BowlingParksService, QrcodeService, BowlingAlleysService, OrderService],
+  controllers: [BowlingMainController, BowlingParksController, BowlingAlleysController, OrderController, SessionController],
+  providers: [BowlingMainService, BowlingParksService, QrcodeService, BowlingAlleysService, OrderService, SessionService],
 })
 export class BowlingMainModule {}

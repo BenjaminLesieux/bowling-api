@@ -15,6 +15,8 @@ import { BowlingAlleysService } from './bowling-alleys/bowling-alleys.service';
 import { BowlingAlleysController } from './bowling-alleys/bowling-alleys.controller';
 import { StripeController } from './stripe/stripe.controller';
 import { StripeService } from './stripe/stripe.service';
+import { SessionController } from './session/session.controller';
+import { SessionService } from './session/session.service';
 import { EmailController } from './email/email.controller';
 import { EmailService } from './email/email.service';
 
@@ -54,16 +56,9 @@ const envSchema = z.object({
     BowlingParksController,
     BowlingAlleysController,
     StripeController,
+    SessionController,
     EmailController,
   ],
-  providers: [
-    AppService,
-    ProductService,
-    AuthenticationService,
-    BowlingParksService,
-    BowlingAlleysService,
-    StripeService,
-    EmailService,
-  ],
+  providers: [AppService, ProductService, AuthenticationService, BowlingParksService, BowlingAlleysService, StripeService, SessionService, EmailService],
 })
 export class AppModule {}
