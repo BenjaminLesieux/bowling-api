@@ -9,5 +9,6 @@ export const createCheckoutSchema = z.object({
     }),
   ),
   orderId: z.string().uuid(),
+  userId: z.string().uuid(),
 });
 export class AddProductDto extends createZodDto(createCheckoutSchema) {}

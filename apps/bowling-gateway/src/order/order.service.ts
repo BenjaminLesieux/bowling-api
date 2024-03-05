@@ -1,10 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { lastValueFrom } from 'rxjs';
+import { from, lastValueFrom } from 'rxjs';
 import { MAIN_MICROSERVICE } from '@app/shared/services';
 import { CreateCheckoutDto } from './dto/createCheckoutDto';
 
 import { AddProductDto } from './dto/addProductDto';
+import { User } from '@app/shared/database/schemas/schemas';
 
 @Injectable()
 export class OrderService {
@@ -29,9 +30,9 @@ export class OrderService {
     }
   }
 
-  async addProduct(data: AddProductDto) {
+  async addProduct(productData: AddProductDto, fromUser: User) {
     try {
-      console.log('data:', data);
+      const data = { ...productData, userId: fromUser.id };
       const res = await lastValueFrom(
         this.mainClient.send(
           {
