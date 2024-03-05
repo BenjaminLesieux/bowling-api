@@ -1,64 +1,55 @@
-import { Injectable } from '@nestjs/common';
-import { Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
 
-import { Product, products, users } from '@app/shared/database/schemas/schemas';
-
 import { eq, inArray } from 'drizzle-orm';
+import schemas, { Product, products } from '../database/schemas';
+import { RpcError } from '@app/shared/rpc-error';
 
 @Injectable()
 export class ProductService {
-  constructor(@Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase) {}
+  constructor(@Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase<typeof schemas>) {}
 
   async getProducts() {
     try {
-      // TODO FIX PAGINATION
-      const products = await this.db.query.products.findMany();
-      return products;
+      return await this.db.select().from(schemas.products).execute();
     } catch (error) {
-      // Handle errors appropriately (e.g., log, throw, or return a default value)
-      console.error('Error fetching products:', error);
-      throw error;
+      throw new RpcError({
+        message: error.message,
+        status: 500,
+      });
     }
   }
   async getProductById(id: string) {
     try {
-      const product = await this.db.query.products.findFirst({
-        where: eq(users.id, id),
-      });
-      return product;
+      return (await this.db.select().from(schemas.products).where(eq(schemas.products.id, id)).execute())[0];
     } catch (error) {
-      // Handle errors appropriately (e.g., log, throw, or return a default value)
-      console.error('Error fetching product:', error);
-      throw error;
+      throw new RpcError({
+        message: error.message,
+        status: 500,
+      });
     }
   }
   async addProduct(data: Omit<Product, 'id'>) {
     try {
-      const existingProduct = await this.db.query.products.findFirst({
-        where: eq(products.name, data.name),
+      return this.db.insert(products).values(data).returning();
+    } catch (error) {
+      throw new RpcError({
+        message: error.message,
+        status: 500,
       });
-
-      if (existingProduct) throw new Error(`Product ${existingProduct.name} already exists`);
-
-      const product = await this.db.insert(products).values(data);
-      return product;
-    } catch (err) {
-      console.log(`Error adding product`, data);
-      throw err;
     }
   }
 
   async updateProduct(data: Product) {
     try {
-      const product = await this.db
-        .update(products)
+      return await this.db
+        .update(schemas.products)
         .set({
           name: data.name,
           price: data.price,
         })
-        .where(eq(products.id, data.id));
-      return product;
+        .where(eq(schemas.products.id, data.id))
+        .returning();
     } catch (err) {
       console.log('Error updating product', data);
     }
@@ -66,7 +57,7 @@ export class ProductService {
 
   async deleteProduct(id: string) {
     try {
-      await this.db.delete(products).where(eq(products.id, id));
+      await this.db.delete(schemas.products).where(eq(schemas.products.id, id)).returning();
     } catch (err) {
       console.log('Error delete product', id);
     }
@@ -75,13 +66,12 @@ export class ProductService {
   async getProductsByIds(data: any) {
     try {
       const ids = data.map((d) => d.id);
-      const productsData = await this.db.query.products.findMany({
-        where: inArray(products.id, ids),
-      });
-      return productsData;
+      return await this.db.select().from(schemas.products).where(inArray(schemas.products.id, ids)).execute();
     } catch (error) {
-      console.error('Error fetching products by ids:', error);
-      throw error;
+      throw new RpcError({
+        message: error.message,
+        status: 500,
+      });
     }
   }
 }

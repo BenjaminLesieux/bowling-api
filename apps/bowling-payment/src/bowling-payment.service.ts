@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
-import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
-import { orders } from '@app/shared/database/schemas/schemas';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { MAIN_MICROSERVICE } from '@app/shared/services';
+import { lastValueFrom } from 'rxjs';
 
 export interface CheckoutProduct {
   id: string;
@@ -16,11 +17,11 @@ export class BowlingPaymentService {
 
   constructor(
     private readonly config: ConfigService,
-    @Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase,
+    @Inject(MAIN_MICROSERVICE) private readonly client: ClientProxy,
   ) {}
 
   async createCheckoutSession(products: CheckoutProduct[]) {
-    const session = await this.stripe.checkout.sessions.create({
+    return await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: products.map((product) => ({
         price_data: {
@@ -36,14 +37,27 @@ export class BowlingPaymentService {
       success_url: 'https://example.com/success',
       cancel_url: 'https://example.com/cancel',
     });
-    return session;
   }
 
-  async createOrder(id: string, userId: string) {
-    // create order in db
-    await this.db.insert(orders).values({
-      status: 'pending',
-      id: userId,
+  async create(data: CheckoutProduct[], user: any) {
+    const res = await this.createCheckoutSession(data);
+    if (res.url) {
+      const order = await lastValueFrom(
+        this.client.emit(
+          {
+            cmd: 'on-session-create',
+          },
+          { id: res.id, userId: user.id },
+        ),
+      );
+      return {
+        url: res.url,
+        order,
+      };
+    }
+    throw new RpcException({
+      message: 'Error creating checkout session',
+      code: 500,
     });
   }
 

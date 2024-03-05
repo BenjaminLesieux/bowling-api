@@ -1,16 +1,16 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
 import { eq } from 'drizzle-orm';
-import schemas, { User } from '@app/shared/database/schemas/schemas';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
-import { RmqContext, RpcException } from '@nestjs/microservices';
+import { RpcException } from '@nestjs/microservices';
+import schemas, { User } from '../database/schemas';
 
 @Injectable()
 export class UsersService {
-  constructor(@Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase) {}
+  constructor(@Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase<typeof schemas>) {}
 
-  async createUser(user: CreateUserDto, ctx: RmqContext) {
+  async createUser(user: CreateUserDto) {
     if (!(await this.validateUserCreation(user))) {
       throw new RpcException({
         status: 400,
@@ -30,9 +30,7 @@ export class UsersService {
   }
 
   async validate(email: string, password: string) {
-    const user = await this.db.query.users.findFirst({
-      where: eq(schemas.users.email, email),
-    });
+    const user = (await this.db.select().from(schemas.users).where(eq(schemas.users.email, email)).execute())[0];
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
@@ -43,9 +41,13 @@ export class UsersService {
   }
 
   async getBy(userArgs: Partial<Omit<User, 'password'>>) {
-    return this.db.query.users.findFirst({
-      where: userArgs.id ? eq(schemas.users.id, userArgs.id) : eq(schemas.users.email, userArgs.email),
-    });
+    return (
+      await this.db
+        .select()
+        .from(schemas.users)
+        .where(userArgs.id ? eq(schemas.users.id, userArgs.id) : eq(schemas.users.email, userArgs.email))
+        .execute()
+    )[0];
   }
 
   private async validateUserCreation(user: CreateUserDto) {
