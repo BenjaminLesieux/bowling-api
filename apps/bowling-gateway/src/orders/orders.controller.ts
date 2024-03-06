@@ -31,7 +31,6 @@ export class OrdersController {
       uId = userId;
     }
 
-    console.log(userId);
 
     console.log(uId);
 
