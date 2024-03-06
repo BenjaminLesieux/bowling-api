@@ -1,21 +1,31 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { AUTH_MICROSERVICE } from '@app/shared/services';
+import { AUTH_MICROSERVICE, MAILER_MICROSERVICE } from '@app/shared/services';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateUserDto } from './dto/create-user.dto';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, tap } from 'rxjs';
+import { User } from '@app/shared/adapters/user.type';
 
 @Injectable()
 export class AuthenticationService {
-  constructor(@Inject(AUTH_MICROSERVICE) private readonly client: ClientProxy) {}
+  constructor(
+    @Inject(AUTH_MICROSERVICE) private readonly client: ClientProxy,
+    @Inject(MAILER_MICROSERVICE) private readonly mailer: ClientProxy,
+  ) {}
 
   async register(user: CreateUserDto) {
     return await lastValueFrom(
-      this.client.send(
-        {
-          cmd: 'create-user',
-        },
-        user,
-      ),
+      this.client
+        .send(
+          {
+            cmd: 'create-user',
+          },
+          user,
+        )
+        .pipe(
+          tap(async (user: User) => {
+            await lastValueFrom(this.mailer.emit({ cmd: 'on-user-register' }, user));
+          }),
+        ),
     );
   }
 

@@ -1,16 +1,22 @@
-import { MAIN_MICROSERVICE } from '@app/shared/services';
+import { MAILER_MICROSERVICE, MAIN_MICROSERVICE } from '@app/shared/services';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { AddSessionDto } from './dto/addSessionDto';
-import { lastValueFrom } from 'rxjs';
+import { AddSessionDto } from './dto/add-session.dto';
+import { lastValueFrom, tap } from 'rxjs';
+import { RpcError } from '@app/shared/rpc-error';
+import { SearchSessionDto } from './dto/search-session.dto';
+import { User } from '@app/shared/adapters/user.type';
 
 @Injectable()
 export class SessionService {
-  constructor(@Inject(MAIN_MICROSERVICE) private readonly mainClient: ClientProxy) {}
+  constructor(
+    @Inject(MAIN_MICROSERVICE) private readonly mainClient: ClientProxy,
+    @Inject(MAILER_MICROSERVICE) private readonly mailer: ClientProxy,
+  ) {}
 
   async add(data: AddSessionDto) {
     try {
-      const sesssion = await lastValueFrom(
+      return await lastValueFrom(
         this.mainClient.send(
           {
             cmd: 'add-session',
@@ -18,26 +24,41 @@ export class SessionService {
           data,
         ),
       );
-      return sesssion;
     } catch (err) {
-      console.log('Error adding session gateway', data, err);
-      throw err;
+      throw new RpcError({
+        status: 400,
+        message: err.message,
+      });
     }
   }
 
-  async terminate(id: string) {
-    try {
-      const session = await lastValueFrom(
-        this.mainClient.send(
+  async terminate(user: User, id: string) {
+    return await lastValueFrom(
+      this.mainClient
+        .send(
           {
             cmd: 'terminate-session',
           },
-          id,
+          {
+            user,
+            id,
+          },
+        )
+        .pipe(
+          tap((response) => {
+            this.mailer.emit(
+              { cmd: 'on-session-closed' },
+              {
+                user,
+                infoData: response.info,
+              },
+            );
+          }),
         ),
-      );
-      return session;
-    } catch (err) {
-      console.log('Error terminating session gateway', id, err);
-    }
+    );
+  }
+
+  async getBy(data: SearchSessionDto) {
+    return await lastValueFrom(this.mainClient.send({ cmd: 'get-session-by' }, data));
   }
 }
