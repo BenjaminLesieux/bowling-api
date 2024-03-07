@@ -19,6 +19,8 @@ import { SessionController } from './session/session.controller';
 import { SessionService } from './session/session.service';
 import { EmailController } from './email/email.controller';
 import { EmailService } from './email/email.service';
+import { OrdersService } from './orders/orders.service';
+import { OrdersController } from './orders/orders.controller';
 
 const envSchema = z.object({
   DB_URL: z.string().url(),
@@ -58,7 +60,8 @@ const envSchema = z.object({
     StripeController,
     SessionController,
     EmailController,
+    OrdersController,
   ],
-  providers: [AppService, ProductService, AuthenticationService, BowlingParksService, BowlingAlleysService, StripeService, SessionService, EmailService],
+  providers: [AppService, ProductService, AuthenticationService, BowlingParksService, BowlingAlleysService, StripeService, SessionService, EmailService, OrdersService],
 })
 export class AppModule {}
