@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { BowlingPaymentModule } from './bowling-payment.module';
 
-import { MicroservicesService } from '@app/shared/microservices/microservices.service';
+import { MicroservicesService } from '@app/shared/transport/transport.service';
 import { Logger } from '@nestjs/common';
 import { PAYMENT_MICROSERVICE } from '@app/shared/services';
 

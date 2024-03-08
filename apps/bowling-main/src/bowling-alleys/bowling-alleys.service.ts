@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateAlleyDto, SearchAlleyDto } from './dto/bowling-alley.dto';
 import schemas from '../database/schemas';
-import { RpcError } from '@app/shared/rpc-error';
 import { eq } from 'drizzle-orm';
 import { QrcodeService } from '../qrcode/qrcode.service';
-import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
+import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/infrastructure/database/database.provider';
+import { RpcError } from '@app/shared/infrastructure/utils/errors/rpc-error';
 
 @Injectable()
 export class BowlingAlleysService {

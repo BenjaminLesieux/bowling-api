@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Inject } from '@nestjs/common';
 import { BowlingAuthService } from '../bowling-auth.service';
-import { User } from '@app/shared/database/schemas/schemas';
+import { User } from '../database/schemas';
 
 export class JwtAuthGuard implements CanActivate {
   @Inject()

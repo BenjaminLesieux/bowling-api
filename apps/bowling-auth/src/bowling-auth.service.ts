@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '@app/shared/database/schemas/schemas';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { RmqContext, RpcException } from '@nestjs/microservices';
+import { RpcException } from '@nestjs/microservices';
 import { UsersService } from './users/users.service';
+import { User } from './database/schemas';
+import { LogUserResponseDto } from './users/dto/log-user.response.dto';
 
 export interface TokenPayload {
   userId: string;
@@ -19,13 +20,13 @@ export class BowlingAuthService {
     private readonly userService: UsersService,
   ) {}
 
-  async loginMicroservice(user: User, context: RmqContext) {
+  async loginMicroservice(user: User): Promise<LogUserResponseDto> {
     const foundUser = await this.userService.getBy({ email: user.email });
     const tokenPayload: TokenPayload = { userId: user.id, email: user.email, role: user.role };
     const expires = new Date();
     expires.setSeconds(expires.getSeconds() + this.configService.get('JWT_EXPIRATION'));
     const token = this.jwtService.sign(tokenPayload);
-    const t = {
+    return {
       user: {
         ...foundUser,
         password: undefined,
@@ -33,7 +34,6 @@ export class BowlingAuthService {
       token,
       expiresIn: expires.getTime(),
     };
-    return t;
   }
 
   async validateToken(token: string) {

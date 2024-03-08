@@ -1,11 +1,10 @@
-import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
 import { Inject, Injectable } from '@nestjs/common';
-import { AddSessionDto } from 'apps/bowling-gateway/src/session/dto/addSessionDto';
-import { sessions } from '@app/shared/database/schemas/schemas';
 import { and, eq, or } from 'drizzle-orm';
-import schemas from '../database/schemas';
+import schemas, { sessions } from '../database/schemas';
 import { ClientProxy } from '@nestjs/microservices';
-import { MAIN_MICROSERVICE } from '@app/shared/services';
+import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/infrastructure/database/database.provider';
+import { MAIN_MICROSERVICE } from '@app/shared';
+import { AddSessionDto } from '../../../bowling-gateway/src/http/session/dto/addSessionDto';
 
 @Injectable()
 export class SessionService {
