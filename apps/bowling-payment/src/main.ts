@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { BowlingPaymentModule } from './bowling-payment.module';
 
-import { MicroservicesService } from '@app/shared/microservices/microservices.service';
 import { Logger } from '@nestjs/common';
-import { PAYMENT_MICROSERVICE } from '@app/shared/services';
+import { MicroservicesService } from '@app/shared/infrastructure/transport/microservices.service';
+import { PAYMENT_MICROSERVICE } from '@app/shared';
 
 export const logger = new Logger('BowlingPaymentMicroservice');
 

@@ -1,24 +1,25 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AuthenticationModule, MicroservicesModule } from '@app/shared';
-import { MAILER_MICROSERVICE, MAIN_MICROSERVICE, PAYMENT_MICROSERVICE } from '@app/shared/services';
+import { AuthenticationModule, MAILER_MICROSERVICE, MAIN_MICROSERVICE, MicroservicesModule, PAYMENT_MICROSERVICE } from '@app/shared';
 import { ConfigModule } from '@nestjs/config';
 import { z } from 'zod';
-import { ProductController } from './product/product.controller';
-import { ProductService } from './product/product.service';
-import { AuthenticationController } from './authentication/authentication.controller';
-import { AuthenticationService } from './authentication/authentication.service';
-import { BowlingParksController } from './bowling-parks/bowling-parks.controller';
-import { BowlingParksService } from './bowling-parks/bowling-parks.service';
-import { BowlingAlleysService } from './bowling-alleys/bowling-alleys.service';
-import { BowlingAlleysController } from './bowling-alleys/bowling-alleys.controller';
-import { StripeController } from './stripe/stripe.controller';
-import { StripeService } from './stripe/stripe.service';
-import { OrderController } from './order/order.controller';
-import { OrderService } from './order/order.service';
-import { EmailController } from './email/email.controller';
-import { EmailService } from './email/email.service';
+import {
+  AuthenticationController,
+  AuthenticationService,
+  BowlingAlleysController,
+  BowlingAlleysService,
+  BowlingParksController,
+  BowlingParksService,
+  EmailController,
+  EmailService,
+  ProductController,
+  ProductService,
+  SessionController,
+  SessionService,
+  StripeController,
+  StripeService,
+} from './http';
+import { OrdersController } from './http/orders/orders.controller';
+import { OrdersService } from './http/orders/orders.service';
 
 const envSchema = z.object({
   DB_URL: z.string().url(),
@@ -51,15 +52,25 @@ const envSchema = z.object({
   ],
 
   controllers: [
-    AppController,
     ProductController,
     AuthenticationController,
     BowlingParksController,
     BowlingAlleysController,
     StripeController,
+    SessionController,
     EmailController,
-    OrderController,
+    OrdersController,
   ],
-  providers: [AppService, ProductService, AuthenticationService, BowlingParksService, BowlingAlleysService, StripeService, EmailService, OrderService],
+  providers: [
+    ProductService,
+    OrdersService,
+    AuthenticationService,
+    BowlingParksService,
+    BowlingAlleysService,
+    StripeService,
+    SessionService,
+    EmailService,
+    OrdersService,
+  ],
 })
 export class AppModule {}

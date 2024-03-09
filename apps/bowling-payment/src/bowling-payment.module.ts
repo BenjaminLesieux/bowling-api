@@ -5,7 +5,7 @@ import { BowlingPaymentService } from './bowling-payment.service';
 import { AuthenticationModule, DatabaseModule, MicroservicesModule } from '@app/shared';
 import { z } from 'zod';
 import { ConfigModule } from '@nestjs/config';
-import { MAIN_MICROSERVICE, PAYMENT_MICROSERVICE } from '@app/shared/services';
+import { MAIN_MICROSERVICE, PAYMENT_MICROSERVICE } from '@app/shared';
 import schemas from '@app/shared/database/schemas/schemas';
 
 const envSchema = z.object({
@@ -23,7 +23,6 @@ const envSchema = z.object({
     }),
     MicroservicesModule,
     AuthenticationModule,
-    DatabaseModule.register(PAYMENT_MICROSERVICE, schemas),
     ConfigModule.forRoot({
       isGlobal: true,
       validate: (config) => envSchema.parse(config),

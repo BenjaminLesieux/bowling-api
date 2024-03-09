@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as QRCode from 'qrcode';
-import { RpcError } from '@app/shared/rpc-error';
+import { RpcError } from '@app/shared/infrastructure/utils/errors/rpc-error';
 
 @Injectable()
 export class QrcodeService {

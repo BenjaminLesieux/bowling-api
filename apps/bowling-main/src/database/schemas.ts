@@ -1,6 +1,5 @@
 import { date, integer, pgEnum, pgTable, primaryKey, uuid, varchar } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
-import { users } from '@app/shared/database/schemas/schemas';
 
 export const bowlingParks = pgTable('bowling_parks', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -40,6 +39,17 @@ export const transactions = pgTable('transactions', {
   }),
 });
 
+export const catalog = pgTable(
+  'catalog',
+  {
+    bowlingParkId: uuid('bowling_park_id').references(() => bowlingParks.id),
+    productId: uuid('product_id').references(() => products.id),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.bowlingParkId, t.productId] }),
+  }),
+);
+
 export const products = pgTable('products', {
   id: uuid('id').defaultRandom().primaryKey().notNull(),
   name: varchar('name', { length: 255 }).unique(),
@@ -66,10 +76,6 @@ export const sessionRelations = relations(sessions, ({ one }) => ({
   order: one(orders, {
     fields: [sessions.orderId],
     references: [orders.id],
-  }),
-  user: one(users, {
-    fields: [sessions.userId],
-    references: [users.id],
   }),
 }));
 
@@ -174,6 +180,7 @@ export default {
   products,
   sessions,
   sessionRelations,
+  catalog,
   bowlingParkToProductsTable,
   bowlingParkToProductsRelations,
   ordersToProductsTable,

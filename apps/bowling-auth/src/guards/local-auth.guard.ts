@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Inject } from '@nestjs/common';
-import { getCurrentUserByContext } from '../current-user.decorator';
 import { UsersService } from '../users/users.service';
+import { getCurrentUserByContext } from '../decorators/current-user.decorator';
 
 export class LocalAuthGuard implements CanActivate {
   @Inject()
@@ -11,10 +11,7 @@ export class LocalAuthGuard implements CanActivate {
     if (!user) {
       return false;
     } else {
-      const validated = await this.usersService.validate(
-        user.email,
-        user.password,
-      );
+      const validated = await this.usersService.validate(user.email, user.password);
       return !!validated;
     }
   }

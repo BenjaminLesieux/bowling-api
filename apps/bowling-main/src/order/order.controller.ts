@@ -3,16 +3,23 @@ import { OrderService } from './order.service';
 import { MessagePattern, Payload, EventPattern } from '@nestjs/microservices';
 import { AddProductDto } from './dto/addProductDto';
 import { ApiTags } from '@nestjs/swagger';
+import { GetOrdersDto } from './dto/get-orders.dto';
+import { OnSessionCreate } from '@app/shared/infrastructure/transport/events/session-events';
+import OrderCommands from '@app/shared/infrastructure/transport/commands/OrderCommands';
 
 @ApiTags('orders')
 @Controller('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
-  @EventPattern({ cmd: 'on-session-create' })
-  async onSessionCreate(@Payload() data: { id: string; userId: string }) {
-    console.log(data);
-    return await this.orderService.createOrder(data.id, data.userId);
+  @EventPattern(OnSessionCreate)
+  async onSessionCreate(@Payload() data: { sessionId: string; userId: string }) {
+    return await this.orderService.createOrder(data.sessionId, data.userId);
+  }
+
+  @MessagePattern(OrderCommands.GET_ORDERS)
+  async getOrders(data: GetOrdersDto) {
+    return await this.orderService.getOrders(data);
   }
 
   @MessagePattern({ cmd: 'get-order-by-id' })
