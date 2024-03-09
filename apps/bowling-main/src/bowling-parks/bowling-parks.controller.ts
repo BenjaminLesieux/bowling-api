@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern } from '@nestjs/microservices';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { BowlingParkDto, SearchParkDto, UpdateParkDto } from './dto/bowling-park.dto';
 import { BowlingParksService } from './bowling-parks.service';
 import BowlingParkCommands from '@app/shared/infrastructure/transport/commands/BowlingParkCommands';
@@ -31,5 +31,15 @@ export class BowlingParksController {
   @MessagePattern(BowlingParkCommands.DELETE_BOWLING_PARK)
   async deleteBowlingPark(id: string) {
     return this.bowlingParksService.deleteBowlingPark(id);
+  }
+
+  @MessagePattern(BowlingParkCommands.GET_PRODUCTS_BY_BOWLING_PARK)
+  async getProductsByBowlingPark(@Payload() data: { id: string }) {
+    return await this.bowlingParksService.getProductsByBowlingPark(data.id);
+  }
+
+  @MessagePattern(BowlingParkCommands.ADD_PRODUCT_TO_CATALOG)
+  async addProductToCatalog(@Payload() data: { id: string; productId: string }) {
+    return await this.bowlingParksService.addProductToCatalog(data.id, data.productId);
   }
 }

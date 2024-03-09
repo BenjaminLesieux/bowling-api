@@ -23,6 +23,11 @@ export const updateSchema = z.object({
   email: z.string().email().optional(),
 });
 
+export const addProductToCatalogSchema = z.object({
+  productId: z.string(),
+});
+
 export class CreateParkDto extends createZodDto(createSchema) {}
 export class UpdateParkDto extends createZodDto(updateSchema) {}
 export class SearchParkDto extends createZodDto(searchSchema) {}
+export class AddProductToCatalogDto extends createZodDto(addProductToCatalogSchema) {}

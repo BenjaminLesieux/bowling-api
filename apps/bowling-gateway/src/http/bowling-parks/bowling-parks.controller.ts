@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { BowlingParksService } from './bowling-parks.service';
-import { CreateParkDto, UpdateParkDto } from './dto/bowling-parks.dto';
+import { AddProductToCatalogDto, CreateParkDto, UpdateParkDto } from './dto/bowling-parks.dto';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Roles, UserRole } from '@app/shared';
 import { RoleGuard } from '@app/shared/infrastructure/utils/guards/role.guard';
@@ -40,5 +40,17 @@ export class BowlingParksController {
   @UseGuards(RoleGuard)
   async update(@Param('id') id: string, @Body() updateParkDto: UpdateParkDto) {
     return this.bowlingParksService.updateBowlingPark(id, updateParkDto);
+  }
+
+  @Get(':id/catalog')
+  async getProductsFromCatalog(@Param('id') id: string) {
+    return this.bowlingParksService.getProductsByBowlingPark(id);
+  }
+
+  @Post(':id/catalog')
+  @Roles(UserRole.MANAGER, UserRole.ADMIN)
+  @UseGuards(RoleGuard)
+  async addProductToCatalog(@Param('id') id: string, @Body() data: AddProductToCatalogDto) {
+    return this.bowlingParksService.addProductToCatalog(id, data);
   }
 }
