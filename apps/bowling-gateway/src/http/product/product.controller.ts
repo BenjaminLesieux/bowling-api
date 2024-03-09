@@ -6,7 +6,7 @@ import { AddProductDto } from './dto/addProductDto';
 import { CreateCheckoutDto } from './dto/createCheckoutDto';
 import { JwtAuthGuard } from '@app/shared';
 import { UpdateProductDto } from './dto/updateProductDto';
-import { ReqUser } from '@app/shared/authentication/user.decorator';
+import { ReqUser } from '@app/shared/infrastructure/utils/decorators/user.decorator';
 
 @ApiTags('products')
 @Controller('products')

@@ -2,8 +2,8 @@ import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@ne
 import { BowlingParksService } from './bowling-parks.service';
 import { CreateParkDto, UpdateParkDto } from './dto/bowling-parks.dto';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import { Roles, UserRole } from '@app/shared/types';
-import { RoleGuard } from '@app/shared/authentication/role.guard';
+import { Roles, UserRole } from '@app/shared';
+import { RoleGuard } from '@app/shared/infrastructure/utils/guards/role.guard';
 
 @ApiTags('bowling-parks')
 @Roles(UserRole.ADMIN)

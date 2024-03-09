@@ -1,19 +1,19 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { BowlingParkDto, SearchParkDto, UpdateParkDto } from './dto/bowling-park.dto';
-import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
 import { eq } from 'drizzle-orm';
-import { RpcError } from '@app/shared/rpc-error';
 import schemas, { BowlingPark } from '../database/schemas';
+import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/infrastructure/database/database.provider';
+import { RpcError } from '@app/shared/infrastructure/utils/errors/rpc-error';
 
 @Injectable()
 export class BowlingParksService {
   constructor(@Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase<typeof schemas>) {}
 
-  async getBowlingParks() {
+  async getBowlingParks(): Promise<BowlingPark[]> {
     return await this.db.select().from(schemas.bowlingParks).execute();
   }
 
-  async getBowlingParkBy(search: SearchParkDto) {
+  async getBowlingParkBy(search: SearchParkDto): Promise<BowlingPark[]> {
     if (search.id) {
       return await this.db.select().from(schemas.bowlingParks).where(eq(schemas.bowlingParks.id, search.id)).execute();
     } else {
@@ -29,7 +29,7 @@ export class BowlingParksService {
     }
   }
 
-  async createBowlingPark(data: BowlingParkDto) {
+  async createBowlingPark(data: BowlingParkDto): Promise<BowlingPark> {
     try {
       const inserted = await this.db
         .insert(schemas.bowlingParks)
@@ -45,7 +45,7 @@ export class BowlingParksService {
     }
   }
 
-  async updateBowlingPark(data: UpdateParkDto) {
+  async updateBowlingPark(data: UpdateParkDto): Promise<BowlingPark> {
     try {
       const updated = await this.db.update(schemas.bowlingParks).set(data).returning();
       return updated[0];
@@ -57,7 +57,7 @@ export class BowlingParksService {
     }
   }
 
-  async deleteBowlingPark(id: string) {
+  async deleteBowlingPark(id: string): Promise<BowlingPark> {
     try {
       const deleted = await this.db.delete(schemas.bowlingParks).where(eq(schemas.bowlingParks.id, id)).returning();
       return deleted[0];

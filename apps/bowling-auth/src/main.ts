@@ -1,11 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { BowlingAuthModule } from './bowling-auth.module';
-import { MicroservicesService } from '@app/shared/transport/transport.service';
 import { patchNestJsSwagger, ZodValidationPipe } from 'nestjs-zod';
 import { MicroserviceOptions } from '@nestjs/microservices';
 import { Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import { MicroservicesService } from '@app/shared/infrastructure/transport/microservices.service';
 
 patchNestJsSwagger();
 

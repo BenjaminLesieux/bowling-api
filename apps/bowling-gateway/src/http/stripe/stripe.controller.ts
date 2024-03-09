@@ -1,24 +1,15 @@
-import { Controller, Inject, Post, Req, UseGuards } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { lastValueFrom } from 'rxjs';
-import { StripeWebhookGuard } from '../../util/guards/stripe-webhook.guard';
-import { PAYMENT_MICROSERVICE } from '@app/shared';
+import { Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { StripeWebhookGuard } from '../../infrastructure/util/guards/stripe-webhook.guard';
+import { StripeService } from './stripe.service';
 
 @Controller('stripe')
 export class StripeController {
-  constructor(@Inject(PAYMENT_MICROSERVICE) private readonly paymentClient: ClientProxy) {}
+  constructor(private readonly stripeService: StripeService) {}
 
   @UseGuards(StripeWebhookGuard)
   @Post('/webhook')
-  async handleStripWebhook(@Req() req) {
+  async handleStripeWebhook(@Req() req) {
     const event = req.stripeEvent;
-    return await lastValueFrom(
-      this.paymentClient.send(
-        {
-          cmd: 'stripe-webhook',
-        },
-        { ...event },
-      ),
-    );
+    return this.stripeService.handleStripeWebhook(event);
   }
 }

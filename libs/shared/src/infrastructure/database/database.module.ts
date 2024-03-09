@@ -1,6 +1,6 @@
 import { DynamicModule, Global, Module } from '@nestjs/common';
-import { databaseProvider } from '@app/shared/database/database.provider';
-import { DbMicroservice } from '@app/shared/services';
+import { DbMicroservice } from '@app/shared/infrastructure/transport/services';
+import { databaseProvider } from '@app/shared/infrastructure/database/database.provider';
 
 @Global()
 @Module({})

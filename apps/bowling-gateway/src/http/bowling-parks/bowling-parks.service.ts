@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { MAIN_MICROSERVICE } from '@app/shared/services';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateParkDto, SearchParkDto, UpdateParkDto } from './dto/bowling-parks.dto';
 import { lastValueFrom } from 'rxjs';
+import { MAIN_MICROSERVICE } from '@app/shared';
 
 @Injectable()
 export class BowlingParksService {

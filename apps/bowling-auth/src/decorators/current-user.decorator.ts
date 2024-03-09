@@ -1,7 +1,7 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { RmqContext } from '@nestjs/microservices';
-import { User } from './database/schemas';
 import AuthCommands from '@app/shared/infrastructure/transport/commands/AuthCommands';
+import { User } from '../database/schemas';
 
 export function getCurrentUserByContext(context: ExecutionContext): User {
   if (context.getType() === 'http') {

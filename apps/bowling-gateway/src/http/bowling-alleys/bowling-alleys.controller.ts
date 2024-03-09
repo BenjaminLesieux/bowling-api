@@ -43,4 +43,11 @@ export class BowlingAlleysController {
   async getQrCode(@Param('alleyId') alleyId: string) {
     return this.bowlingAlleyService.getQrCode(alleyId);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('catalog')
+  @ApiQuery({ name: 'qrCode', required: true })
+  async getCatalog(@Query('qrCode') qrCode: string) {
+    return this.bowlingAlleyService.getCatalogOfId(qrCode);
+  }
 }

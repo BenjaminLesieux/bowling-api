@@ -1,18 +1,19 @@
 import { Controller } from '@nestjs/common';
 import { Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
 import { ProductService } from './product.service';
-import { Product } from '@app/shared/database/schemas/schemas';
+import { Product } from '../database/schemas';
+import ProductCommands from '@app/shared/infrastructure/transport/commands/ProductCommands';
 
 @Controller()
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @MessagePattern({ cmd: 'search-products' })
+  @MessagePattern(ProductCommands.SEARCH_PRODUCTS)
   async getProducts() {
     return this.productService.getProducts();
   }
 
-  @MessagePattern({ cmd: 'get-products-by-ids' })
+  @MessagePattern(ProductCommands.GET_PRODUCTS_BY_IDS)
   async getProductsByIds(
     @Payload()
     data: any,
@@ -20,25 +21,24 @@ export class ProductController {
     return this.productService.getProductsByIds(data.products);
   }
 
-  @MessagePattern({ cmd: 'get-product-by-id' })
+  @MessagePattern(ProductCommands.GET_PRODUCTS_BY_ID)
   async getProductById(id: string) {
     return await this.productService.getProductById(id);
   }
 
-  @MessagePattern({ cmd: 'add-product' })
+  @MessagePattern(ProductCommands.ADD_PRODUCT)
   async addProduct(@Payload() data: Omit<Product, 'id'>) {
     return await this.productService.addProduct(data);
   }
 
-  @MessagePattern({ cmd: 'update-product' })
+  @MessagePattern(ProductCommands.UPDATE_PRODUCT)
   async updateProduct(@Payload() data: Product, @Ctx() context: RmqContext) {
     console.log(`Pattern: ${context.getPattern()}`);
     return await this.productService.updateProduct(data);
   }
 
-  @MessagePattern({ cmd: 'delete-product' })
-  async deleteProduct(@Payload() data: { id: string }, @Ctx() context: RmqContext) {
-    console.log(`Pattern: ${context.getPattern()}`);
+  @MessagePattern(ProductCommands.DELETE_PRODUCT)
+  async deleteProduct(@Payload() data: { id: string }) {
     return await this.productService.deleteProduct(data.id);
   }
 }

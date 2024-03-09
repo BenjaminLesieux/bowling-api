@@ -1,8 +1,8 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { EmailDto } from "./dto/email.dto";
-import { MAILER_MICROSERVICE } from "@app/shared/services";
-import { ClientProxy } from "@nestjs/microservices";
-import { lastValueFrom } from "rxjs";
+import { MAILER_MICROSERVICE } from '@app/shared';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { EmailDto } from './dto/email.dto';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class EmailService {

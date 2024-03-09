@@ -2,12 +2,10 @@ import { Module } from '@nestjs/common';
 import { BowlingAuthController } from './bowling-auth.controller';
 import { BowlingAuthService } from './bowling-auth.service';
 import { UsersModule } from './users/users.module';
-import { DatabaseModule, MicroservicesModule } from '@app/shared';
+import { AUTH_MICROSERVICE, DatabaseModule, MicroservicesModule } from '@app/shared';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { z } from 'zod';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { AUTH_MICROSERVICE } from '@app/shared/services';
 import schemas from './database/schemas';
 
 const envSchema = z.object({
@@ -39,6 +37,6 @@ const envSchema = z.object({
     }),
   ],
   controllers: [BowlingAuthController],
-  providers: [BowlingAuthService, JwtStrategy],
+  providers: [BowlingAuthService],
 })
 export class BowlingAuthModule {}

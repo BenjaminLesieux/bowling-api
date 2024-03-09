@@ -1,5 +1,5 @@
 import { Body, Controller, Param, Post } from '@nestjs/common';
-import { AddSessionDto } from './dto/addSessionDto';
+import { AddSessionDto } from './dto/add-session.dto';
 import { SessionService } from './session.service';
 import { ApiTags } from '@nestjs/swagger';
 

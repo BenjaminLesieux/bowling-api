@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { AUTH_MICROSERVICE } from '@app/shared/services';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateUserDto } from './dto/create-user.dto';
 import { lastValueFrom } from 'rxjs';
 import { LogUserDto } from './dto/log-user.dto';
-import { LoggedUserResponseDto } from './dto/logged-user-response.dto';
 import AuthCommands from '@app/shared/infrastructure/transport/commands/AuthCommands';
+import { AUTH_MICROSERVICE } from '@app/shared';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthenticationService {
@@ -15,15 +15,8 @@ export class AuthenticationService {
     return await lastValueFrom(this.client.send(AuthCommands.CREATE_USER, user));
   }
 
-  async login(user: LogUserDto, res): Promise<LoggedUserResponseDto> {
-    const response = await lastValueFrom(
-      this.client.send(
-        {
-          cmd: 'login',
-        },
-        user,
-      ),
-    );
+  async login(user: LogUserDto, res: Response): Promise<void> {
+    const response = await lastValueFrom(this.client.send(AuthCommands.LOGIN, user));
 
     res.cookie('Authentication', response.token, {
       httpOnly: true,
@@ -35,7 +28,7 @@ export class AuthenticationService {
     res.send(response);
   }
 
-  async logout(res) {
+  async logout(res: Response) {
     res.cookie('Authentication', '', {
       httpOnly: true,
       expires: new Date(0),

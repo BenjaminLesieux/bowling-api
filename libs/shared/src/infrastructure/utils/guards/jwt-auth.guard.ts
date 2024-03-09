@@ -1,8 +1,8 @@
 import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { AUTH_MICROSERVICE } from '@app/shared/services';
 import { ClientProxy } from '@nestjs/microservices';
-import { User } from '@app/shared/database/schemas/schemas';
 import { catchError, lastValueFrom } from 'rxjs';
+import { AUTH_MICROSERVICE } from '@app/shared/infrastructure/transport/services';
+import { User } from '@app/shared/adapters/user.type';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -10,7 +10,6 @@ export class JwtAuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext) {
     const authentication = this.getAuthentication(context);
-    console.log(authentication);
 
     const res = await lastValueFrom<User>(
       this.authClient

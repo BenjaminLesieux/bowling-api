@@ -2,10 +2,9 @@ import { Module } from '@nestjs/common';
 import { BowlingPaymentController } from './bowling-payment.controller';
 import { BowlingPaymentService } from './bowling-payment.service';
 
-import { AuthenticationModule, MicroservicesModule } from '@app/shared';
+import { AuthenticationModule, MAIN_MICROSERVICE, MicroservicesModule } from '@app/shared';
 import { z } from 'zod';
 import { ConfigModule } from '@nestjs/config';
-import { MAIN_MICROSERVICE } from '@app/shared/services';
 
 const envSchema = z.object({
   DB_PAYMENT_URL: z.string().url(),
