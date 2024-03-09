@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
-import { MAIN_MICROSERVICE } from '@app/shared/services';
 import { lastValueFrom } from 'rxjs';
+import { MAIN_MICROSERVICE } from '@app/shared';
 
 export interface CheckoutProduct {
   id: string;

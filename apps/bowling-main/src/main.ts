@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { BowlingMainModule } from './bowling-main.module';
 
-import { MicroservicesService } from '@app/shared/microservices/microservices.service';
 import { Logger } from '@nestjs/common';
+import { MicroservicesService } from '@app/shared/infrastructure/transport/microservices.service';
 
 export const logger = new Logger('BowlingMainMicroservice');
 

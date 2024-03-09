@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
 
 import { eq, inArray } from 'drizzle-orm';
 import schemas, { Product, products } from '../database/schemas';
-import { RpcError } from '@app/shared/rpc-error';
+import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/infrastructure/database/database.provider';
+import { RpcError } from '@app/shared/infrastructure/utils/errors/rpc-error';
 
 @Injectable()
 export class ProductService {

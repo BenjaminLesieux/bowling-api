@@ -5,7 +5,7 @@ import { patchNestJsSwagger } from 'nestjs-zod';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { raw } from 'body-parser';
-import { RpcErrorsInterceptor } from '@app/shared/rpc-errors.interceptor';
+import { RpcErrorsInterceptor } from '@app/shared/infrastructure/utils/interceptors/rpc-errors.interceptor';
 
 patchNestJsSwagger();
 

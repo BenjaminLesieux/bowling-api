@@ -1,18 +1,17 @@
-import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { AddSessionDto } from '../../../bowling-gateway/src/session/dto/add-session.dto';
-import { sessions } from '@app/shared/database/schemas/schemas';
 import { and, eq, or } from 'drizzle-orm';
-import schemas, { Session } from '../database/schemas';
-import { RpcError } from '@app/shared/rpc-error';
+import schemas, { Session, sessions } from '../database/schemas';
 import { OrderService } from '../order/order.service';
 import { GetBySessionPayloadDto } from './dto/get-by-session-payload.dto';
-import { MAILER_MICROSERVICE } from '@app/shared/services';
 import { ClientProxy } from '@nestjs/microservices';
 import { BowlingParksService } from '../bowling-parks/bowling-parks.service';
 import { BowlingAlleysService } from '../bowling-alleys/bowling-alleys.service';
 import { logger } from '../main';
 import { User } from '@app/shared/adapters/user.type';
+import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/infrastructure/database/database.provider';
+import { MAILER_MICROSERVICE } from '@app/shared';
+import { AddSessionDto } from './dto/add-session.dto';
+import { RpcError } from '@app/shared/infrastructure/utils/errors/rpc-error';
 
 @Injectable()
 export class SessionService {

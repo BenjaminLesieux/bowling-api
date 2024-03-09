@@ -4,24 +4,21 @@ import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { EmailDto } from './dto/email.dto';
 import { User } from '@app/shared/adapters/user.type';
 import { SessionClosedEmailDto } from './dto/session-closed-email.dto';
-import { logger } from './main';
+import { OnUserRegister } from '@app/shared/infrastructure/transport/events/user-events';
+import EmailCommands from '@app/shared/infrastructure/transport/commands/EmailCommands';
+import { OnSessionClosed } from '@app/shared/infrastructure/transport/events/session-events';
 
 @Controller()
 export class BowlingMailerController {
   constructor(private readonly mailService: BowlingMailerService) {}
 
-  @MessagePattern({
-    cmd: 'send-email',
-  })
+  @MessagePattern(EmailCommands.SEND_EMAIL)
   sendEmail(data: EmailDto) {
     return this.mailService.sendEmail(data);
   }
 
-  @EventPattern({
-    cmd: 'on-session-closed',
-  })
+  @EventPattern(OnSessionClosed)
   sendSessionClosedEmail(@Payload() data: { user: User; infoData: SessionClosedEmailDto }) {
-    logger.log('session closing');
     return this.mailService.sendEmail({
       to: data.user.email,
       subject: 'Session Closed',
@@ -29,9 +26,7 @@ export class BowlingMailerController {
     });
   }
 
-  @EventPattern({
-    cmd: 'on-user-register',
-  })
+  @EventPattern(OnUserRegister)
   sendRegisterEmail(@Payload() user: User) {
     return this.mailService.sendEmail({
       to: user.email,

@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/database/database.provider';
 import schemas, { Order, orders } from '../database/schemas';
 import { eq } from 'drizzle-orm';
 import { GetOrdersDto } from './dto/get-orders.dto';
 import { RpcException } from '@nestjs/microservices';
+import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/infrastructure/database/database.provider';
 
 @Injectable()
 export class OrderService {
