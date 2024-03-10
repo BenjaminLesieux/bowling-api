@@ -1,116 +1,122 @@
-# Bowling API
+# Bowling API Documentation
 
 ## Prerequisites
-- You need to have `docker` available on your machine.
 
-- Have a `.env` file in the **root** of the project with the values (rename the .env.example project):
+Before getting started with the Bowling API, ensure the following prerequisites are met:
+
+- Docker is installed and available on your machine.
+- A `.env` file is present at the root of the project with appropriate configurations. Rename the `.env.example` file provided with the necessary values.
+
 ```sh
+# Example .env file
 RABBITMQ_URL=amqp://rabbitmq:5672
 RABBITMQ_AUTH_QUEUE=auth
 RABBITMQ_MAIN_QUEUE=main
 RABBITMQ_PAYMENT_QUEUE=payment
 RABBITMQ_MAILER_QUEUE=mailer
-DB_URL=""
+BASE_URL=http://localhost:3000
+DB_URL=postgresql://clt2ofc1q078xbhmx595k2d38:XraevqnudgyHLAlHjKjV8sk9@37.120.189.116:9009/clt2ofc1q078zbhmx0s5ed7pk
+DB_PAYMENT_URL=postgresql://postgres:postgres@postgres-payment:5432/payment
+DB_AUTH_URL=postgresql://postgres:postgres@postgres-auth:5432/auth
+DB_MAIN_URL=postgresql://postgres:postgres@postgres-main:5432/main
 JWT_SECRET=bowling
-JWT_EXPIRATION=3600 # One hour![alt text](Architecture.png)
-STRIPE_SK_KEY=""
-STRIPE_PK_KEY=""
-STRIPE_WEBHOOK_SECRET=""
-GMAIL_USER=""
-GMAIL_PASSWORD=""
+JWT_EXPIRATION=3600
+STRIPE_SK_KEY="sk_test_51LYu0dLb9iIz9S9TwmrR6zCJ0p6mzH212l1c1R0XyIzyyLH5IXHD55Ks5lxo6gWKOPeeHNMmShDUcGr2mgEeQQ0R005kCmJAhe"
+STRIPE_PK_KEY="pk_test_51LYu0dLb9iIz9S9TbE1XLYWgMi5bBWjVXXFg4L9NChWZbdTvZ8lW4riLGAJZmzPJfPseScf3YblaIaAY2z9DPWqt00zyd1LNQI"
+STRIPE_WEBHOOK_SECRET="prout"
+GMAIL_USER=super.cool.efrei@gmail.com
+GMAIL_PASSWORD=gxth nyon nqct mess
+GMAIL_REFRESH_TOKEN=1//04EQ-JxHqXnu2CgYIARAAGAQSNwF-L9IrErLBvdAbFJuAPShZ44-ZmITLEfGwHTJRtXedbYKWI_4-En-FroZCiQRTuXlyOjz3TW8
+# Other configurations...
 ```
 
-- Free `3000` port
+You also have to setup two other env files at the root of the apps/bowling-main & apps/bowling-auth folders with the following content:
 
-## Run the project
+```sh
+# Example .env file
+DB_URL=postgresql://postgres:postgres@localhost:<port>/<db-name>
+# For main service the port is 5434 and the db-name is main
+# For auth service the port is 5432 and the db-name is auth
+```
+
+- That you have your port `3000` is free. (If not, you can always change the docker compose)
+
+## Getting Started
+
+To launch the project, run the following command in your terminal:
 
 ```bash
-docker-compose up
+docker-compose up --build
 ```
 
-## Fetch endpoints
+## Accessing Endpoints
 
-This project comes with an integrated [swagger](https://swagger.io/) application. With it, you can try every endpoint of the application by going on http://localhost:3000/api. ***In this project, it is used as a alternative to postman.***
+The Bowling API includes an integrated [Swagger](https://swagger.io/) application, allowing you to explore and test every endpoint conveniently. Simply navigate to http://localhost:3000/api in your browser. Alternatively, for testing the Stripe integration, you can use our hosted version of the app at http://bowling-api.live-efrei.fr.
 
-## Project architecture
+## Project Architecture
 
-We implemented this API as a microservices architecture in order to make it as scalable as possible. But microservices also grant a lot other advantages:
-- **fault tolerant**: Except for the gateway, if one service is down, the application keeps running. Some services might not work as expected, but the users could still work with the application.
-- **Adding functionnalities is easier**: Since they are not depending on each other, implementing new services does not require a lot of code modification.
-- **More Logical metrics**: Watching different microservices makes more sense than watching a single service. Small services can provide metrics about themselves, making it easier to find the source of the problem.
+_After much discussion and consideration, we found ourselves torn between two architectural approaches: microservices or domain-driven design with the hexagonal architecture.
+Given the specific needs of our project, which is a bowling franchise spread across multiple locations in France, scalability emerged as a crucial factor in our decision-making process.
+Given the potential for substantial traffic volumes, particularly during busy periods, we placed a high priority on a system that could effectively accommodate such demands.
+Ultimately, we decided to adopt a microservice-based approach due to its reputation for scalability and adaptability.
+By opting for microservices, we aim to build a system that can effectively manage traffic across all of our franchise locations._
 
-Each service that require a database has its own instance of a postgreSQL database. They access their databases throught the `DataBase Provider`.
 
-#### RPC
+The Bowling API is designed using a microservices architecture for scalability and maintainability. This architectural approach offers several advantages:
 
-We choose to use an RPC protocol between our services in order to simplify communication and implentation of new services and features. Now, by simply passing a command, we can run functions from different services and get their results.
+- **Fault Tolerance:** Services operate independently, ensuring that if one service fails, the application remains operational.
+- **Ease of Adding Functionality:** New services can be implemented without extensive modifications to existing codebases.
+- **Logical Metrics:** Monitoring individual microservices provides more granular insights into system performance.
 
-We implemented it with RabbitMQ, by using a callback queue system.
+Each service that requires a database has its dedicated instance of a PostgreSQL database, accessed via the DataBase Provider.
 
-*Example :*
-```ts
-// Calling service
+### RPC Communication
+
+Communication between services is facilitated through an RPC protocol, enabling seamless interaction and the addition of new features. This is implemented using **RabbitMQ** and a callback queue system.
+
+```typescript
+// Example RPC Call
 async getHello() {
   return await lastValueFrom<string>(this.client.send({ cmd: 'hello' }, ''));
 }
 ```
 
-```ts
-// Called service
-@MessagePattern({
-  cmd: 'hello',
-})
-getHello(): string {
-  return this.bowlingMainService.getHello();
-}
-```
+### Drizzle-ORM
 
+[Drizzle-ORM](https://www.npmjs.com/package/drizzle-orm) simplifies database management tasks, offering functionalities such as connection handling, schema creation, and data manipulation. It utilizes a schema file to define tables and connections.
 
-#### Drizzle-ORM
+### Payment Handling
 
-[Drizzle-ORM](https://www.npmjs.com/package/drizzle-orm) is a tool allowing us to manage more easily our databases, by creating connections, data collection, tables creation... With simple functions and classes, defined in `apps/libs/shared/src/database`. It uses a schema file to define our tables and connections.
+Payment processing is managed using [Stripe](https://www.npmjs.com/package/stripe), offering a streamlined approach to integrating payment services into the application. The `bowling-payment` service is dedicated to handling payment-related tasks.
 
-#### Payment handling
+### Mail Sending
 
-We used [stripe](https://www.npmjs.com/package/stripe) in order to handle payments. It is a package that simplify the implementation of payment services on the net.
+Email communication with users is facilitated by the `nodemailer` package, configured to use a designated email address (`super.cool.efrei@gmail.com`). The `bowling-mailer` service handles email-related functionalities.
 
-The payment service is quite complex, and may evolve in the future. This is why we decided to create a whole service (`bowling-payment`) for it.
+### QR Code Generation
 
-#### Mail sending
+The `QRCode` package is utilized for generating session QR codes. This service is integrated directly within the `bowling-main` service, as it currently requires no additional features.
 
-We used the [nodemailer](https://www.npmjs.com/package/nodemailer) package in order to send mail to users. We configured so it would use the email adress `super.cool.efrei@gmail.com`, the mail of our group team.
+## Architecture Diagram
 
-The mail service, known as `bowling-maier`, may implement more features in the future, which is why we created a whole service for it.
+![Architecture Diagram](./Architecture.png)
 
-#### QR code generation
+## Service Descriptions
 
-We used the [QRCode](https://www.npmjs.com/package/qrcode) package in order to generate the QR code of a session. It takes an url and return the information to compile the image in HTML.
+All services are interconnected via RabbitMQ, utilizing RPC methods for communication.
 
-There is no services for the QR code generation. Our team did not see how we will add more features to it, and this is why it is a small service inside the `bowling-main` service.
+### Main Service
 
-### Architecture Diagram
-![architecture diagram](./Architecture.png)
+Responsible for managing bowling-related activities, including products, alleys, reservations, and parks.
 
-## Services Explanations
+### Authentication Service
 
-All services are linked by our RabbitMQ server, which we used to implement RPC methods. 
+Handles user authentication and related activities.
 
-#### Main
+### Payment Service
 
-Since we are working on a bowling application, the goal of this service is to handle anything related to this bowling part:
-- products,
-- alleys,
-- reservations,
-- parks,
+Manages client payments using the Stripe integration.
 
-#### Auth
+### Email Service
 
-Since a bowling have customers, an authentification service is required. This service will handle every connection related activity.
-
-#### Payment
-
-A bowling needs to fund itself ! To do this, it will gather the payments of clients through the payment service. In order to create this service, we used [stripe](https://www.npmjs.com/package/stripe), a package simplifying the implementation of payment services on the net.
-
-#### Email
-
-When clients have paid, an invoice and order confirmation is send to them through email. This service uses an google cloud SMTP server.
+Facilitates email communication with users, sending invoices and order confirmations. Utilizes a Google Cloud SMTP server for email delivery.
