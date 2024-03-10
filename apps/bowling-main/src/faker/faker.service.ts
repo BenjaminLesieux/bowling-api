@@ -70,8 +70,9 @@ export class FakerService {
 
     //fint the order linked to the session
     const order = await this.db.select().from(schemas.orders).where(eq(orders.id, session[0].orderId)).execute();
-
     const products = await this.db.select().from(schemas.products).limit(3);
+
+    console.log(order);
 
     let price = 0;
     for (const product of products) {
