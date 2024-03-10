@@ -42,6 +42,7 @@ export class BowlingParksController {
     return this.bowlingParksService.updateBowlingPark(id, updateParkDto);
   }
 
+  @UseGuards(RoleGuard)
   @Get(':id/catalog')
   async getProductsFromCatalog(@Param('id') id: string) {
     return this.bowlingParksService.getProductsByBowlingPark(id);
