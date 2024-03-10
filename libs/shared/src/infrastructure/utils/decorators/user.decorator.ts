@@ -6,7 +6,7 @@ export function getCurrentUserByContext(context: ExecutionContext): User {
     return JSON.parse(context.switchToHttp().getRequest().cookies.User);
   }
   if (context.getType() === 'rpc') {
-    return context.switchToRpc().getData().user;
+    return JSON.parse(context.switchToRpc().getData().user);
   }
 }
 
