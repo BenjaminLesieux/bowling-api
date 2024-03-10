@@ -2,9 +2,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/infrastructure/database/database.provider';
-import schemas, { orders, transactions } from '@app/shared/database/schemas/schemas';
-import { eq, sql } from 'drizzle-orm';
-import { takeUniqueOrThrow } from 'apps/bowling-main/src/database/helpers';
+import schemas from '@app/shared/database/schemas/schemas';
+import { MAIN_MICROSERVICE } from '@app/shared';
+import { ClientProxy } from '@nestjs/microservices';
+import { lastValueFrom } from 'rxjs';
+import OrderCommands from '@app/shared/infrastructure/transport/commands/OrderCommands';
 
 export interface CheckoutProduct {
   id: string;
@@ -19,6 +21,7 @@ export class BowlingPaymentService {
   constructor(
     private readonly config: ConfigService,
     @Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase<typeof schemas>,
+    @Inject(MAIN_MICROSERVICE) private readonly mainMicroservice: ClientProxy,
   ) {}
 
   async createCheckoutSession(data: { orderId: string; amountToPay: number }) {
@@ -46,29 +49,10 @@ export class BowlingPaymentService {
 
   async handleStripeWebhook(event: Stripe.CheckoutSessionCompletedEvent) {
     if (event.type === 'checkout.session.completed') {
-      // update transaction status to completed
-      await this.db.update(transactions).set({ status: 'completed' }).where(eq(transactions.stripeCheckoutSessionId, event.data.object.id));
-
-      const order = await this.db.select().from(schemas.orders).where(eq(transactions.stripeCheckoutSessionId, event.data.object.id)).then(takeUniqueOrThrow);
-      if (!order) throw new Error('Order not found');
-      //update order paidAmount
-      const updatedOrder = await this.db
-        .update(orders)
-        .set({ payedAmount: sql`${orders.payedAmount} + ${event.data.object.amount_total}` })
-        .where(eq(orders.id, order.id))
-        .returning({
-          payedAmount: orders.payedAmount,
-        })
-        .then(takeUniqueOrThrow);
-
-      if (updatedOrder.payedAmount >= order.totalAmount) {
-        //update order status to paid
-        await this.db.update(orders).set({ status: 'paid' }).where(eq(orders.id, order.id));
-      }
-      return;
+      return await lastValueFrom(this.mainMicroservice.send(OrderCommands.UPDATE_ON_CHECKOUT_COMPLETE, { ...event }));
     }
     if (event.type === 'checkout.session.expired') {
-      return await this.db.update(transactions).set({ status: 'expired' }).where(eq(transactions.stripeCheckoutSessionId, event.data.object.id));
+      return await lastValueFrom(this.mainMicroservice.send(OrderCommands.UPDATE_ON_CHECKOUT_EXPIRED, { ...event }));
     }
   }
 }

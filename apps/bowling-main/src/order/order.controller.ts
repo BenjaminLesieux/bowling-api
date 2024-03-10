@@ -6,6 +6,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { GetOrdersDto } from './dto/get-orders.dto';
 import { OnSessionCreate } from '@app/shared/infrastructure/transport/events/session-events';
 import OrderCommands from '@app/shared/infrastructure/transport/commands/OrderCommands';
+import Stripe from 'stripe';
 
 @ApiTags('orders')
 @Controller('orders')
@@ -36,5 +37,14 @@ export class OrderController {
   async addProduct(@Payload() payload: AddProductDto) {
     console.log('receveid', payload);
     return await this.orderService.addProductToOrder(payload);
+  }
+
+  @MessagePattern(OrderCommands.UPDATE_ON_CHECKOUT_COMPLETE)
+  async updateOnCheckoutComplete(@Payload() payload: Stripe.CheckoutSessionCompletedEvent) {
+    return await this.orderService.updateOnCheckoutComplete(payload);
+  }
+  @MessagePattern(OrderCommands.UPDATE_ON_CHECKOUT_EXPIRED)
+  async updateOnCheckoutExpired(@Payload() payload: Stripe.CheckoutSessionCompletedEvent) {
+    return await this.orderService.updateOnCheckoutExpired(payload);
   }
 }

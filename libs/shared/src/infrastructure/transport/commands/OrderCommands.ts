@@ -11,6 +11,13 @@ class OrderCommands {
   static ADD_PRODUCT_TO_ORDER = {
     cmd: 'add-product-to-order',
   };
+
+  static UPDATE_ON_CHECKOUT_COMPLETE = {
+    cmd: 'update-on-checkout-complete',
+  };
+  static UPDATE_ON_CHECKOUT_EXPIRED = {
+    cmd: 'update-on-checkout-expired',
+  };
 }
 
 export default OrderCommands;

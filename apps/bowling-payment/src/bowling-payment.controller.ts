@@ -2,6 +2,7 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern, RpcException, Payload } from '@nestjs/microservices';
 
 import { BowlingPaymentService } from './bowling-payment.service';
+import StripeCommands from '@app/shared/infrastructure/transport/commands/StripeCommands';
 
 @Controller()
 export class BowlingPaymentController {
@@ -28,9 +29,7 @@ export class BowlingPaymentController {
     });
   }
 
-  @MessagePattern({
-    cmd: 'stripe-webhook',
-  })
+  @MessagePattern(StripeCommands.STRIPE_WEKBHOOK)
   async handleStripeWebhook(event: any) {
     return await this.bowlingPaymentService.handleStripeWebhook(event);
   }
