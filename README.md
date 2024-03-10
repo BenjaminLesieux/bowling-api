@@ -1,5 +1,24 @@
 # Bowling API Documentation
 
+The application has been deployed on http://bowling-api.live-efrei.fr/api. Please use this version of the application to test the code.
+
+You can connect to the `/login` endpoints with the following credentials:
+
+**MANAGER credentials:**
+```
+"email": "manager@bowling.fr",
+"password": "MyManager123"
+```
+
+**ADMIN credentials:**
+```
+"email": "admin@bowling.fr",
+"password": "MyAdmin123",
+```
+
+If you want to connect as a user, create a simple account.
+
+
 ## Prerequisites
 
 Before getting started with the Bowling API, ensure the following prerequisites are met:
