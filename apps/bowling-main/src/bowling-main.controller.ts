@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { BowlingMainService } from './bowling-main.service';
 import { MessagePattern } from '@nestjs/microservices';
 import { QrcodeService } from './qrcode/qrcode.service';
@@ -7,7 +7,7 @@ import { QrcodeService } from './qrcode/qrcode.service';
 export class BowlingMainController {
   constructor(
     private readonly bowlingMainService: BowlingMainService,
-    private readonly qrCodeService: QrcodeService,  
+    private readonly qrCodeService: QrcodeService,
   ) {}
 
   @MessagePattern({
@@ -22,5 +22,12 @@ export class BowlingMainController {
   })
   async getQr(data: string) {
     return await this.qrCodeService.qrcode(data);
+  }
+
+  @MessagePattern({
+    cmd: 'init-db',
+  })
+  async initDb() {
+    return await this.bowlingMainService.initDb();
   }
 }

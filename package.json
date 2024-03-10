@@ -9,6 +9,7 @@
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
+    "push": "cd apps/bowling-main && npx drizzle-kit push:pg && cd ../.. && cd apps/bowling-auth && npx drizzle-kit push:pg && cd ../.. ",
     "start:dev": "nest start --tsc --watch",
     "workspace:dev": "nest start --watch --projects=bowling-gateway & nest start --watch --projects=bowling-main  & nest start --watch --projects=bowling-auth & docker run --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq",
     "start:debug": "nest start --debug --watch",
@@ -21,6 +22,7 @@
     "test:e2e": "jest --config apps/bowling-gateway/test/jest-e2e.json"
   },
   "dependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.0",
     "@nestjs/core": "^10.0.0",

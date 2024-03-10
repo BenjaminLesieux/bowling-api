@@ -5,6 +5,9 @@ export { BowlingAlleysController } from './bowling-alleys/bowling-alleys.control
 export { StripeController } from './stripe/stripe.controller';
 export { SessionController } from './session/session.controller';
 export { EmailController } from './email/email.controller';
+export { OrdersController } from './orders/orders.controller';
+export { FakerController } from './faker/faker.controller';
+
 export { ProductService } from './product/product.service';
 export { AuthenticationService } from './authentication/authentication.service';
 export { BowlingParksService } from './bowling-parks/bowling-parks.service';
@@ -12,3 +15,5 @@ export { BowlingAlleysService } from './bowling-alleys/bowling-alleys.service';
 export { StripeService } from './stripe/stripe.service';
 export { SessionService } from './session/session.service';
 export { EmailService } from './email/email.service';
+export { OrdersService } from './orders/orders.service';
+export { FakerService } from './faker/faker.service';

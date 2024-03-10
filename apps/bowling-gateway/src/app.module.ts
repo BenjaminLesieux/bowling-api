@@ -17,9 +17,11 @@ import {
   SessionService,
   StripeController,
   StripeService,
+  OrdersController,
+  OrdersService,
+  FakerController,
+  FakerService,
 } from './http';
-import { OrdersController } from './http/orders/orders.controller';
-import { OrdersService } from './http/orders/orders.service';
 
 const envSchema = z.object({
   DB_URL: z.string().url(),
@@ -60,7 +62,18 @@ const envSchema = z.object({
     SessionController,
     EmailController,
     OrdersController,
+    FakerController,
   ],
-  providers: [ProductService, OrdersService, AuthenticationService, BowlingParksService, BowlingAlleysService, StripeService, SessionService, EmailService],
+  providers: [
+    ProductService,
+    OrdersService,
+    AuthenticationService,
+    BowlingParksService,
+    BowlingAlleysService,
+    StripeService,
+    SessionService,
+    EmailService,
+    FakerService,
+  ],
 })
 export class AppModule {}
