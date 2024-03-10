@@ -6,6 +6,7 @@ import { MAIN_MICROSERVICE } from '@app/shared';
 import { CreateCheckoutDto } from './dto/createCheckoutDto';
 import { User } from '@app/shared/adapters/user.type';
 import { AddProductDto } from './dto/addProductDto';
+import OrderCommands from '@app/shared/infrastructure/transport/commands/OrderCommands';
 
 @Injectable()
 export class OrdersService {
@@ -25,14 +26,7 @@ export class OrdersService {
   async checkout(data: CreateCheckoutDto, checkoutUser: User) {
     try {
       // check if products are available
-      const res = await lastValueFrom(
-        this.client.send(
-          {
-            cmd: 'checkout',
-          },
-          { ...data, userId: checkoutUser.id },
-        ),
-      );
+      const res = await lastValueFrom(this.client.send(OrderCommands.CHECKOUT, { ...data, userId: checkoutUser.id }));
 
       return res;
     } catch (err) {
@@ -44,14 +38,7 @@ export class OrdersService {
   async addProduct(productData: AddProductDto, fromUser: User) {
     try {
       const data = { ...productData, userId: fromUser.id };
-      const res = await lastValueFrom(
-        this.client.send(
-          {
-            cmd: 'add-product-to-order',
-          },
-          data,
-        ),
-      );
+      const res = await lastValueFrom(this.client.send(OrderCommands.ADD_PRODUCT_TO_ORDER, data));
 
       return res;
     } catch (err) {

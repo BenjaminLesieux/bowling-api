@@ -22,17 +22,17 @@ export class OrderController {
     return await this.orderService.getOrders(data);
   }
 
-  @MessagePattern({ cmd: 'get-order-by-id' })
+  @MessagePattern(OrderCommands.GET_ORDER_BY_ID)
   async getOrder(@Param('id') id: string) {
     return await this.orderService.getById(id);
   }
 
-  @MessagePattern({ cmd: 'checkout' })
+  @MessagePattern(OrderCommands.CHECKOUT)
   async checkout(@Payload() payload: { orderId: string; amountToPay: number; userId: string }) {
     return await this.orderService.checkout(payload);
   }
 
-  @MessagePattern({ cmd: 'add-product-to-order' })
+  @MessagePattern(OrderCommands.ADD_PRODUCT_TO_ORDER)
   async addProduct(@Payload() payload: AddProductDto) {
     console.log('receveid', payload);
     return await this.orderService.addProductToOrder(payload);

@@ -23,11 +23,4 @@ export class BowlingMainController {
   async getQr(data: string) {
     return await this.qrCodeService.qrcode(data);
   }
-
-  @MessagePattern({
-    cmd: 'init-db',
-  })
-  async initDb() {
-    return await this.bowlingMainService.initDb();
-  }
 }
