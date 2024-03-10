@@ -14,6 +14,8 @@ import { OrderController } from './order/order.controller';
 import { OrderService } from './order/order.service';
 import { SessionController } from './session/session.controller';
 import { SessionService } from './session/session.service';
+import { FakerController } from './faker/faker.controller';
+import { FakerService } from './faker/faker.service';
 import schemas from './database/schemas';
 
 const envSchema = z.object({
@@ -21,7 +23,7 @@ const envSchema = z.object({
   RABBITMQ_URL: z.string().url(),
   RABBITMQ_MAIN_QUEUE: z.string(),
   RABBITMQ_PAYMENT_QUEUE: z.string(),
-  BASE_URL: z.string().url(),
+  BASE_URL: z.string(),
 });
 
 @Module({
@@ -42,7 +44,7 @@ const envSchema = z.object({
       name: MAILER_MICROSERVICE,
     }),
   ],
-  controllers: [BowlingMainController, BowlingParksController, BowlingAlleysController, OrderController, SessionController],
-  providers: [BowlingMainService, BowlingParksService, QrcodeService, BowlingAlleysService, OrderService, SessionService],
+  controllers: [BowlingMainController, BowlingParksController, BowlingAlleysController, OrderController, SessionController, FakerController],
+  providers: [BowlingMainService, BowlingParksService, QrcodeService, BowlingAlleysService, OrderService, SessionService, FakerService],
 })
 export class BowlingMainModule {}
