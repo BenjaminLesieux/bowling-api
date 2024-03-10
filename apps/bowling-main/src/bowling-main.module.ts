@@ -23,7 +23,7 @@ const envSchema = z.object({
   RABBITMQ_URL: z.string().url(),
   RABBITMQ_MAIN_QUEUE: z.string(),
   RABBITMQ_PAYMENT_QUEUE: z.string(),
-  BASE_URL: z.string(),
+  BASE_URL: z.string().url(),
 });
 
 @Module({
