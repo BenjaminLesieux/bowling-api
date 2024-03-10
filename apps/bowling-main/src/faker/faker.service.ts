@@ -96,7 +96,7 @@ export class FakerService {
     }
 
     //update the order with the total amount
-    await this.db.update(schemas.orders).set({ totalAmount: price, payedAmount: 0 }).where(eq(orders.id, order[0].id));
+    await this.db.update(schemas.orders).set({ totalAmount: price, payedAmount: 0, status: 'pending' }).where(eq(orders.id, order[0].id));
 
     return 'Order Id is  ' + session[0].orderId;
   }
