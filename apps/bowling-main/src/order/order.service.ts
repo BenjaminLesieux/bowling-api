@@ -35,7 +35,7 @@ export class OrderService {
       if (order.status !== 'pending') throw new Error('Order already checked out');
 
       // check that amountToPay is <= remaining amount to pay
-      if (payload.amountToPay <= order.totalAmount - order.payedAmount) {
+      if (payload.amountToPay > order.totalAmount - order.payedAmount) {
         throw new RpcException({
           message: 'Amount to pay is too high',
           code: 400,
