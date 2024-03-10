@@ -1,6 +1,7 @@
 # Bowling API Documentation
 
 ## Credentials on hosting server
+
 You cannot set yourself a role with the gateway on your local server and must modify your role via pgAdmin instance on port 8080.
 
 The credentials are super.cool.efrei@gmail.com and the password is "admin".
@@ -70,6 +71,8 @@ docker-compose up --build
 
 The Bowling API includes an integrated [Swagger](https://swagger.io/) application, allowing you to explore and test every endpoint conveniently. Simply navigate to http://localhost:3000/api in your browser. Alternatively, for testing the Stripe integration, you can use our hosted version of the app at http://bowling-api.live-efrei.fr.
 
+To test Stripe with a fake card (we are in sandbox) use 4242 4242 4242 (42/42) 424
+
 ## Project Architecture
 
 _After much discussion and consideration, we found ourselves torn between two architectural approaches: microservices or domain-driven design with the hexagonal architecture.
@@ -77,7 +80,6 @@ Given the specific needs of our project, which is a bowling franchise spread acr
 Given the potential for substantial traffic volumes, particularly during busy periods, we placed a high priority on a system that could effectively accommodate such demands.
 Ultimately, we decided to adopt a microservice-based approach due to its reputation for scalability and adaptability.
 By opting for microservices, we aim to build a system that can effectively manage traffic across all of our franchise locations._
-
 
 The Bowling API is designed using a microservices architecture for scalability and maintainability. This architectural approach offers several advantages:
 
