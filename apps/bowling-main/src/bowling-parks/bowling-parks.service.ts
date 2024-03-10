@@ -1,13 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { BowlingParkDto, SearchParkDto, UpdateParkDto } from './dto/bowling-park.dto';
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import schemas, { BowlingPark } from '../database/schemas';
 import { DATABASE_PROVIDER, PostgresDatabase } from '@app/shared/infrastructure/database/database.provider';
 import { RpcError } from '@app/shared/infrastructure/utils/errors/rpc-error';
 
 @Injectable()
 export class BowlingParksService {
-  constructor(@Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase<typeof schemas>) {}
+  constructor(@Inject(DATABASE_PROVIDER) private readonly db: PostgresDatabase<typeof schemas>) { }
 
   async getBowlingParks(): Promise<BowlingPark[]> {
     return await this.db.select().from(schemas.bowlingParks).execute();
@@ -39,7 +39,7 @@ export class BowlingParksService {
       return inserted[0];
     } catch (error) {
       throw new RpcError({
-        status: 400,
+        status: 500,
         message: error.message,
       });
     }
@@ -65,6 +65,38 @@ export class BowlingParksService {
       throw new RpcError({
         status: 500,
         message: error.message,
+      });
+    }
+  }
+
+  async getProductsByBowlingPark(id: string) {
+    try {
+      const productIds = await this.db
+        .select({
+          productId: schemas.catalog.productId,
+        }).from(schemas.catalog)
+        .where(eq(schemas.catalog.bowlingParkId, id))
+        .execute();
+
+      return await this.db.select()
+        .from(schemas.products)
+        .where(inArray(schemas.products.id, productIds.map(p => p.productId)))
+        .execute();
+    } catch (error) {
+      throw new RpcError({
+        message: error.message,
+        status: 500,
+      });
+    }
+  }
+
+  async addProductToCatalog(id: string, productId: string) {
+    try {
+      return await this.db.insert(schemas.catalog).values({ bowlingParkId: id, productId }).returning();
+    } catch (error) {
+      throw new RpcError({
+        message: error.message,
+        status: 500,
       });
     }
   }
