@@ -1,23 +1,21 @@
 # Bowling API Documentation
 
-The application has been deployed on http://bowling-api.live-efrei.fr/api. Please use this version of the application to test the code.
+## Credentials on hosting server
+You cannot set yourself a role with the gateway on your local server and must modify your role via pgAdmin instance on port 8080.
 
-You can connect to the `/login` endpoints with the following credentials:
+The credentials are super.cool.efrei@gmail.com and the password is "admin".
+All the db credentials are the same as the ones in the .env file : postgres and postgres.
 
-**MANAGER credentials:**
-```
+**BUT**, if you test using our hosted instance at http://bowling-api.live-efrei.fr/, you can use the following credentials:
+
+credentials MANAGER:
 "email": "manager@bowling.fr",
-"password": "MyManager123"
-```
-
-**ADMIN credentials:**
-```
+"password": "MyManager123",
+credentials ADMIN
 "email": "admin@bowling.fr",
 "password": "MyAdmin123",
-```
 
-If you want to connect as a user, create a simple account.
-
+A swagger API is set to test the API endpoints. But you can also import the Postman project from the URL: http://bowling-api.live-efrei.fr/api-json
 
 ## Prerequisites
 
