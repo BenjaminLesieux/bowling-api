@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { BowlingPaymentController } from './bowling-payment.controller';
 import { BowlingPaymentService } from './bowling-payment.service';
 
-import { AuthenticationModule, MicroservicesModule } from '@app/shared';
 import { z } from 'zod';
 import { ConfigModule } from '@nestjs/config';
-import { MAIN_MICROSERVICE } from '@app/shared';
+import { MAIN_MICROSERVICE, DatabaseModule, AuthenticationModule, MicroservicesModule } from '@app/shared';
+import schemas from '../../bowling-main/src/database/schemas';
 
 const envSchema = z.object({
   RABBITMQ_URL: z.string().url(),
@@ -22,6 +22,7 @@ const envSchema = z.object({
     }),
     MicroservicesModule,
     AuthenticationModule,
+    DatabaseModule.register(MAIN_MICROSERVICE, schemas),
     ConfigModule.forRoot({
       isGlobal: true,
       validate: (config) => envSchema.parse(config),

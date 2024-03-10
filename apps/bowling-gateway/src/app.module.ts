@@ -61,16 +61,6 @@ const envSchema = z.object({
     EmailController,
     OrdersController,
   ],
-  providers: [
-    ProductService,
-    OrdersService,
-    AuthenticationService,
-    BowlingParksService,
-    BowlingAlleysService,
-    StripeService,
-    SessionService,
-    EmailService,
-    OrdersService,
-  ],
+  providers: [ProductService, OrdersService, AuthenticationService, BowlingParksService, BowlingAlleysService, StripeService, SessionService, EmailService],
 })
 export class AppModule {}
