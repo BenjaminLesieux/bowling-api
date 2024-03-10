@@ -158,28 +158,33 @@ export class OrderService {
   }
 
   async updateOnCheckoutComplete(event: Stripe.CheckoutSessionCompletedEvent) {
-    await this.db.update(transactions).set({ status: 'completed' }).where(eq(transactions.stripeCheckoutSessionId, event.data.object.id));
+    const transaction = await this.db
+      .update(schemas.transactions)
+      .set({ status: 'completed' })
+      .where(eq(schemas.transactions.stripeCheckoutSessionId, event.data.object.id))
+      .returning();
 
-    const order = await this.db.select().from(schemas.orders).where(eq(transactions.stripeCheckoutSessionId, event.data.object.id)).then(takeUniqueOrThrow);
-    if (!order) throw new Error('Order not found');
+    const order = await this.db.select().from(schemas.orders).where(eq(schemas.orders.id, transaction[0].orderId)).then(takeUniqueOrThrow);
+
+    console.log('order', order);
     //update order paidAmount
     const updatedOrder = await this.db
       .update(orders)
-      .set({ payedAmount: sql`${orders.payedAmount} + ${event.data.object.amount_total}` })
-      .where(eq(orders.id, order.id))
+      .set({ payedAmount: sql`${schemas.orders.payedAmount} + ${event.data.object.amount_total}` })
+      .where(eq(schemas.orders.id, order.id))
       .returning({
-        payedAmount: orders.payedAmount,
+        payedAmount: schemas.orders.payedAmount,
       })
       .then(takeUniqueOrThrow);
 
     if (updatedOrder.payedAmount >= order.totalAmount) {
       //update order status to paid
-      await this.db.update(orders).set({ status: 'paid' }).where(eq(orders.id, order.id));
+      await this.db.update(schemas.orders).set({ status: 'paid' }).where(eq(schemas.orders.id, order.id));
     }
-    return;
+    return order;
   }
 
   async updateOnCheckoutExpired(event: Stripe.CheckoutSessionCompletedEvent) {
-    return await this.db.update(transactions).set({ status: 'expired' }).where(eq(transactions.stripeCheckoutSessionId, event.data.object.id));
+    return await this.db.update(schemas.transactions).set({ status: 'expired' }).where(eq(schemas.transactions.stripeCheckoutSessionId, event.data.object.id));
   }
 }
