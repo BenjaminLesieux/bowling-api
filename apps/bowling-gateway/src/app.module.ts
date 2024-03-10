@@ -50,6 +50,7 @@ const envSchema = z.object({
       name: MAILER_MICROSERVICE,
     }),
   ],
+
   controllers: [
     ProductController,
     AuthenticationController,

@@ -1,7 +1,7 @@
-import { Controller, UseGuards } from '@nestjs/common';
-import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
-import { BowlingPaymentService, CheckoutProduct } from './bowling-payment.service';
-import { JwtAuthGuard } from '@app/shared';
+import { Controller } from '@nestjs/common';
+import { MessagePattern, RpcException, Payload } from '@nestjs/microservices';
+
+import { BowlingPaymentService } from './bowling-payment.service';
 
 @Controller()
 export class BowlingPaymentController {
@@ -13,18 +13,21 @@ export class BowlingPaymentController {
   async create(
     @Payload()
     data: {
-      products: CheckoutProduct[];
-      user: any;
+      orderId: string;
+      amountToPay: number;
     },
   ): Promise<any> {
-    console.log(data);
-    if (!data.user) {
-      throw new RpcException('Unauthorized');
+    const res = await this.bowlingPaymentService.createCheckoutSession(data);
+    if (res.url) {
+      // create order in db
+      return res;
     }
-    return await this.bowlingPaymentService.create(data.products, data.user);
+    throw new RpcException({
+      message: 'Error creating session',
+      code: 500,
+    });
   }
 
-  @UseGuards(JwtAuthGuard)
   @MessagePattern({
     cmd: 'stripe-webhook',
   })

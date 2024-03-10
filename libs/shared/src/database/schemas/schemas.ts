@@ -1,5 +1,14 @@
-import { date, integer, pgEnum, pgTable, primaryKey, uuid, varchar } from 'drizzle-orm/pg-core';
+import { boolean, date, integer, pgEnum, pgTable, primaryKey, unique, uuid, varchar } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+
+export const userRoles = pgEnum('user_role', ['admin', 'manager', 'user']);
+
+export const users = pgTable('users', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  email: varchar('email', { length: 255 }).unique(),
+  role: userRoles('role').default('user'),
+  password: varchar('password', { length: 255 }),
+});
 
 export const bowlingParks = pgTable('bowling_parks', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -31,30 +40,27 @@ export const transactions = pgTable('transactions', {
   orderId: uuid('order_id')
     .notNull()
     .references(() => orders.id),
-  amount: integer('amount').notNull(),
+  amount: integer('amount'),
+  userId: uuid('user_id').notNull(),
   status: varchar('status', { length: 255 }).notNull(),
-  userId: uuid('user_id'),
   stripeCheckoutSessionId: varchar('stripe_checkout_session_id', {
     length: 255,
   }),
 });
 
-export const catalog = pgTable(
-  'catalog',
+export const products = pgTable(
+  'products',
   {
-    bowlingParkId: uuid('bowling_park_id').references(() => bowlingParks.id),
-    productId: uuid('product_id').references(() => products.id),
+    id: uuid('id').defaultRandom().primaryKey().notNull(),
+    name: varchar('name', { length: 255 }),
+    price: varchar('price', { length: 255 }),
   },
-  (t) => ({
-    pk: primaryKey({ columns: [t.bowlingParkId, t.productId] }),
-  }),
+  (table) => {
+    return {
+      productsNameUnique: unique('products_name_unique').on(table.name),
+    };
+  },
 );
-
-export const products = pgTable('products', {
-  id: uuid('id').defaultRandom().primaryKey().notNull(),
-  name: varchar('name', { length: 255 }).unique(),
-  price: varchar('price', { length: 255 }),
-});
 
 export const sessionStatus = pgEnum('session_status', ['finished', 'started', 'payment_pending']);
 
@@ -76,6 +82,10 @@ export const sessionRelations = relations(sessions, ({ one }) => ({
   order: one(orders, {
     fields: [sessions.orderId],
     references: [orders.id],
+  }),
+  user: one(users, {
+    fields: [sessions.userId],
+    references: [users.id],
   }),
 }));
 
@@ -145,6 +155,10 @@ export const bowlingParksRelations = relations(bowlingParks, ({ many }) => ({
   bowlingAlleys: many(bowlingAlleys),
 }));
 
+export const userRelations = relations(users, ({ many }) => ({
+  sessions: many(sessions),
+}));
+
 export const productRelations = relations(products, ({ many }) => ({
   bowlingParks: many(bowlingParkToProductsTable),
   orders: many(ordersToProductsTable),
@@ -163,31 +177,32 @@ export const transactionRelations = relations(transactions, ({ one }) => ({
   }),
 }));
 
-export type BowlingPark = typeof bowlingParks.$inferSelect;
-export type BowlingAlley = typeof bowlingAlleys.$inferSelect;
-export type Order = typeof orders.$inferSelect;
-export type Transaction = typeof transactions.$inferSelect;
+/*
+ */
+
+export type User = typeof users.$inferSelect;
 export type Product = typeof products.$inferSelect;
+export type BowlingPark = typeof bowlingParks.$inferSelect;
+export type AddBowlingPark = typeof bowlingParks.$inferInsert;
+export type BowlingAlley = typeof bowlingAlleys.$inferSelect;
+export type AddBowlingAlley = typeof bowlingAlleys.$inferInsert;
+export type Order = typeof orders.$inferSelect;
 export type Session = typeof sessions.$inferSelect;
-export type BowlingParkToProduct = typeof bowlingParkToProductsTable.$inferSelect;
-export type OrderToProduct = typeof ordersToProductsTable.$inferSelect;
+export type Transaction = typeof transactions.$inferSelect;
 
 export default {
+  users,
+  userRoles,
+  products,
+  transactions,
   bowlingParks,
   bowlingAlleys,
   orders,
-  transactions,
-  products,
-  sessions,
-  sessionRelations,
-  catalog,
-  bowlingParkToProductsTable,
-  bowlingParkToProductsRelations,
-  ordersToProductsTable,
-  ordersToProductsRelations,
-  bowlingAlleysRelations,
   bowlingParksRelations,
+  bowlingAlleysRelations,
   productRelations,
+  userRelations,
   orderRelations,
-  transactionRelations,
+  sessionRelations,
+  ordersToProductsTable,
 };
