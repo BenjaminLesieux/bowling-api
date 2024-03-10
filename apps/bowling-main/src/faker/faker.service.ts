@@ -80,8 +80,6 @@ export class FakerService {
     //fint the order linked to the session
     const products = await this.db.select().from(schemas.products).limit(3);
 
-    console.log(order);
-
     let price = 0;
     for (const product of products) {
       const quantity = Math.floor(Math.random() * 10);
