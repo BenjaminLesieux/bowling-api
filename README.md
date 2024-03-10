@@ -3,6 +3,8 @@
 ## Prerequisites
 - You need to have `docker` available on your machine.
 
+- You also need `node`.
+
 - Have a `.env` file in the **root** of the project with the values (rename the .env.example project):
 ```sh
 RABBITMQ_URL=amqp://rabbitmq:5672
@@ -12,7 +14,7 @@ RABBITMQ_PAYMENT_QUEUE=payment
 RABBITMQ_MAILER_QUEUE=mailer
 DB_URL=""
 JWT_SECRET=bowling
-JWT_EXPIRATION=3600 # One hour![alt text](Architecture.png)
+JWT_EXPIRATION=3600 # One hour
 STRIPE_SK_KEY=""
 STRIPE_PK_KEY=""
 STRIPE_WEBHOOK_SECRET=""
@@ -20,13 +22,38 @@ GMAIL_USER=""
 GMAIL_PASSWORD=""
 ```
 
-- Free `3000` port
+**main** and **auth** also need `.env` files:
+-   main:
+```env
+DB_MAIN_URL=postgresql://postgres:postgres@localhost:5434/main
+```
+
+- auth:
+```env
+DB_AUTH_URL=postgresql://postgres:postgres@localhost:5432/auth
+```
+
+You can also copy the `.env.example` files and rename them `.env`.
 
 ## Run the project
 
 ```bash
 docker-compose up
 ```
+
+Next, you have to init the databases. Start by running `pnpm install` in the root directory (if you don't have pnpm installed, install it with `npm install -g pnpm`).
+
+Then, go to the `/apps/bowling-auth` directory, and run:
+```sh
+npx drizzle-kit push:pg
+```
+
+After that, head to `/apps/bowling-main` directory and run:
+```sh
+npx drizzle-kit push:pg
+```
+
+Your databases should be initialized.
 
 ## Fetch endpoints
 
