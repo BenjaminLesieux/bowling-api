@@ -23,4 +23,14 @@ export class SessionController {
   async getBy(@Payload() data: GetBySessionPayloadDto) {
     return await this.sessionService.getBy(data);
   }
+
+  @MessagePattern(SessionCommands.GET_ALL_SESSIONS)
+  async getAllSessions() {
+    return await this.sessionService.getAllSessions();
+  }
+
+  @MessagePattern(SessionCommands.GET_SESSION)
+  async getSession(@Payload() id: string) {
+    return await this.sessionService.getSession(id);
+  }
 }

@@ -120,4 +120,12 @@ export class SessionService {
       laneNumber: alley.laneNumber,
     };
   }
+
+  async getAllSessions() {
+    return this.db.select().from(sessions).execute();
+  }
+
+  async getSession(id: string) {
+    return this.db.select().from(sessions).where(eq(sessions.id, id)).execute();
+  }
 }

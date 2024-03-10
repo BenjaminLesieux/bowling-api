@@ -16,4 +16,12 @@ export class SessionService {
   async terminate(id: string) {
     return await lastValueFrom(this.mainClient.send(SessionCommands.TERMINATE_SESSION, id));
   }
+
+  async getAll() {
+    return await lastValueFrom(this.mainClient.send(SessionCommands.GET_ALL_SESSIONS, {}));
+  }
+
+  async get(id: string) {
+    return await lastValueFrom(this.mainClient.send(SessionCommands.GET_SESSION, id));
+  }
 }

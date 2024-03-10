@@ -8,6 +8,12 @@ class SessionCommands {
   static GET_SESSION_BY = {
     cmd: 'get-session-by',
   };
+  static GET_ALL_SESSIONS = {
+    cmd: 'get-all-sessions',
+  };
+  static GET_SESSION = {
+    cmd: 'get-session',
+  };
 }
 
 export default SessionCommands;
