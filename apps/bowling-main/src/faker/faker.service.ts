@@ -57,6 +57,13 @@ export class FakerService {
       }
     }
 
+    const order = await this.db
+      .insert(schemas.orders)
+      .values({
+        userId: data.id,
+      })
+      .returning();
+
     // create a session in a bowlingAlley
     const bowlingAlleys = await this.db.select().from(schemas.bowlingAlleys).limit(1);
     const session = await this.db
@@ -64,12 +71,13 @@ export class FakerService {
       .values({
         userId: data.id,
         bowlingAlleyId: bowlingAlleys[0].id,
+        orderId: order[0].id,
       })
-      .returning()
-      .execute();
+      .returning();
+
+    // create an order linked to the session
 
     //fint the order linked to the session
-    const order = await this.db.select().from(schemas.orders).where(eq(orders.id, session[0].orderId)).execute();
     const products = await this.db.select().from(schemas.products).limit(3);
 
     console.log(order);
@@ -88,7 +96,7 @@ export class FakerService {
     }
 
     //update the order with the total amount
-    await this.db.update(schemas.orders).set({ totalAmount: price }).where(eq(orders.id, order[0].id)).execute();
+    await this.db.update(schemas.orders).set({ totalAmount: price, payedAmount: 0 }).where(eq(orders.id, order[0].id));
 
     return 'Order Id is  ' + session[0].orderId;
   }
